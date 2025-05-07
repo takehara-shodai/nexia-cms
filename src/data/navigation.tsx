@@ -1,0 +1,164 @@
+import React from 'react';
+import { LayoutDashboard, FileText, Image, Database, Globe, Workflow, Languages, Users, Settings, Activity, PieChart, Package, Apple as Api } from 'lucide-react';
+
+export const navigationItems = [
+  {
+    key: 'dashboard',
+    label: 'ダッシュボード',
+    icon: <LayoutDashboard size={20} />,
+    path: '/',
+    children: [
+      { key: 'dashboard-overview', label: 'システム概要', path: '/' },
+      { key: 'dashboard-activity', label: 'アクティビティログ', path: '/activity' },
+      { key: 'dashboard-performance', label: 'パフォーマンス指標', path: '/performance' },
+      { key: 'dashboard-notifications', label: 'お知らせ・更新情報', path: '/notifications' }
+    ]
+  },
+  {
+    key: 'content',
+    label: 'コンテンツ管理',
+    icon: <FileText size={20} />,
+    path: '/content',
+    children: [
+      { key: 'content-list', label: 'コンテンツ一覧', path: '/content' },
+      { key: 'content-create', label: 'コンテンツ作成', path: '/content/create' },
+      { key: 'content-drafts', label: '下書き一覧', path: '/content/drafts' },
+      { key: 'content-published', label: '公開済みコンテンツ', path: '/content/published' },
+      { key: 'content-archive', label: 'アーカイブ', path: '/content/archive' },
+      { key: 'content-trash', label: 'ゴミ箱', path: '/content/trash' }
+    ]
+  },
+  {
+    key: 'media',
+    label: 'メディア管理',
+    icon: <Image size={20} />,
+    path: '/media',
+    children: [
+      { key: 'media-library', label: 'メディアライブラリ', path: '/media' },
+      { key: 'media-upload', label: 'アップロード', path: '/media/upload' },
+      { key: 'media-edit', label: '画像編集', path: '/media/edit' },
+      { key: 'media-folders', label: 'メディアフォルダ', path: '/media/folders' },
+      { key: 'media-usage', label: '使用状況分析', path: '/media/usage' }
+    ]
+  },
+  {
+    key: 'models',
+    label: 'コンテンツモデル',
+    icon: <Database size={20} />,
+    path: '/models',
+    children: [
+      { key: 'models-definition', label: 'モデル定義', path: '/models' },
+      { key: 'models-fields', label: 'フィールド設定', path: '/models/fields' },
+      { key: 'models-relations', label: 'リレーション設定', path: '/models/relations' },
+      { key: 'models-validation', label: 'バリデーションルール', path: '/models/validation' },
+      { key: 'models-components', label: 'コンポーネント管理', path: '/models/components' }
+    ]
+  },
+  {
+    key: 'api',
+    label: 'API管理',
+    icon: <Api size={20} />,
+    path: '/api',
+    children: [
+      { key: 'api-overview', label: 'API概要', path: '/api' },
+      { key: 'api-rest', label: 'REST API設定', path: '/api/rest' },
+      { key: 'api-graphql', label: 'GraphQL設定', path: '/api/graphql' },
+      { key: 'api-keys', label: 'APIキー管理', path: '/api/keys' },
+      { key: 'api-webhooks', label: 'Webhook設定', path: '/api/webhooks' },
+      { key: 'api-monitoring', label: 'APIモニタリング', path: '/api/monitoring' }
+    ]
+  },
+  {
+    key: 'website',
+    label: 'ウェブサイト管理',
+    icon: <Globe size={20} />,
+    path: '/website',
+    children: [
+      { key: 'website-pages', label: 'ページビルダー', path: '/website/pages' },
+      { key: 'website-templates', label: 'テンプレート管理', path: '/website/templates' },
+      { key: 'website-menus', label: 'メニュー設定', path: '/website/menus' },
+      { key: 'website-forms', label: 'フォーム管理', path: '/website/forms' },
+      { key: 'website-urls', label: 'URL管理', path: '/website/urls' },
+      { key: 'website-redirects', label: 'リダイレクト設定', path: '/website/redirects' },
+      { key: 'website-seo', label: 'SEO設定', path: '/website/seo' }
+    ]
+  },
+  {
+    key: 'workflow',
+    label: 'ワークフロー',
+    icon: <Workflow size={20} />,
+    path: '/workflow',
+    children: [
+      { key: 'workflow-tasks', label: 'タスク一覧', path: '/workflow/tasks' },
+      { key: 'workflow-approvals', label: '承認待ちコンテンツ', path: '/workflow/approvals' },
+      { key: 'workflow-settings', label: 'ワークフロー設定', path: '/workflow/settings' },
+      { key: 'workflow-notifications', label: '通知設定', path: '/workflow/notifications' },
+      { key: 'workflow-calendar', label: '編集カレンダー', path: '/workflow/calendar' }
+    ]
+  },
+  {
+    key: 'localization',
+    label: '多言語・ローカライズ',
+    icon: <Languages size={20} />,
+    path: '/localization',
+    children: [
+      { key: 'localization-languages', label: '言語設定', path: '/localization/languages' },
+      { key: 'localization-translations', label: '翻訳管理', path: '/localization/translations' },
+      { key: 'localization-status', label: '翻訳ステータス', path: '/localization/status' },
+      { key: 'localization-regions', label: '地域設定', path: '/localization/regions' }
+    ]
+  },
+  {
+    key: 'users',
+    label: 'ユーザー・権限',
+    icon: <Users size={20} />,
+    path: '/users',
+    children: [
+      { key: 'users-list', label: 'ユーザー一覧', path: '/users' },
+      { key: 'users-groups', label: 'ユーザーグループ', path: '/users/groups' },
+      { key: 'users-roles', label: 'ロール設定', path: '/users/roles' },
+      { key: 'users-permissions', label: 'アクセス権限', path: '/users/permissions' },
+      { key: 'users-activity', label: 'アクティビティログ', path: '/users/activity' }
+    ]
+  },
+  {
+    key: 'integrations',
+    label: '統合・拡張',
+    icon: <Package size={20} />,
+    path: '/integrations',
+    children: [
+      { key: 'integrations-apps', label: 'アプリケーション連携', path: '/integrations/apps' },
+      { key: 'integrations-plugins', label: 'プラグイン管理', path: '/integrations/plugins' },
+      { key: 'integrations-scripts', label: 'カスタムスクリプト', path: '/integrations/scripts' },
+      { key: 'integrations-services', label: '外部サービス連携', path: '/integrations/services' }
+    ]
+  },
+  {
+    key: 'analytics',
+    label: '分析・レポート',
+    icon: <PieChart size={20} />,
+    path: '/analytics',
+    children: [
+      { key: 'analytics-content', label: 'コンテンツ分析', path: '/analytics/content' },
+      { key: 'analytics-access', label: 'アクセス統計', path: '/analytics/access' },
+      { key: 'analytics-api', label: 'API使用状況', path: '/analytics/api' },
+      { key: 'analytics-performance', label: 'パフォーマンスレポート', path: '/analytics/performance' },
+      { key: 'analytics-custom', label: 'カスタムレポート', path: '/analytics/custom' }
+    ]
+  },
+  {
+    key: 'settings',
+    label: '設定',
+    icon: <Settings size={20} />,
+    path: '/settings',
+    children: [
+      { key: 'settings-system', label: 'システム設定', path: '/settings/system' },
+      { key: 'settings-site', label: 'サイト設定', path: '/settings/site' },
+      { key: 'settings-cache', label: 'キャッシュ管理', path: '/settings/cache' },
+      { key: 'settings-backup', label: 'バックアップ・復元', path: '/settings/backup' },
+      { key: 'settings-import', label: 'インポート・エクスポート', path: '/settings/import' },
+      { key: 'settings-logs', label: 'ログ設定', path: '/settings/logs' },
+      { key: 'settings-security', label: 'セキュリティ設定', path: '/settings/security' }
+    ]
+  }
+];
