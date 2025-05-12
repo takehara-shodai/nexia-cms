@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabase';
 interface Tenant {
   id: string;
   name: string;
-  short_name: string;
+  short_name?: string;
+  description?: string;
 }
 
 interface TenantState {
