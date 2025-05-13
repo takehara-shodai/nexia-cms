@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { navigationItems } from '../../data/navigation';
 import { useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   closeSidebar: () => void;
+  onToggle: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = ({ closeSidebar, onToggle }) => {
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   
@@ -22,17 +23,24 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
   };
 
   return (
-    <aside className="w-64 h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
-      {/* Logo */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-        <div className="flex items-center">
+    <aside className="w-[280px] h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto relative">
+      {/* ヘッダー・ロゴ・切り替えボタン */}
+      <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center flex-1">
           <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
             <span className="text-white font-bold">V</span>
           </div>
           <span className="ml-2 text-lg font-semibold">CMS.VAREAL.APP</span>
         </div>
+        {/* SideMenuに戻るボタン（ChevronRight） */}
+        <button
+          onClick={onToggle}
+          className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          aria-label="Show side menu"
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
-      
       {/* Navigation */}
       <nav className="flex-1 py-4">
         <ul className="space-y-1 px-2">
@@ -60,7 +68,6 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
                   expandedItems[item.key] ? <ChevronDown size={18} /> : <ChevronRight size={18} />
                 )}
               </button>
-              
               {item.children && expandedItems[item.key] && (
                 <ul className="pl-10 mt-1 space-y-1">
                   {item.children.map((child) => (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ChevronLeft, 
+  ChevronRight,
   FolderKanban, 
   Settings, 
   Building, 
@@ -21,9 +22,10 @@ import { useTenantStore } from '../../store/tenantStore';
 interface SideMenuProps {
   isOpen: boolean;
   onToggle: () => void;
+  showSidebar?: boolean;
 }
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle }) => {
+const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle, showSidebar }) => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -51,16 +53,26 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle }) => {
       {isOpen && (
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-            <div className="flex items-center">
+          <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center flex-1">
               <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
                 <span className="text-white font-bold">V</span>
               </div>
               <span className="ml-2 text-lg font-semibold">CMS.VAREAL.APP</span>
             </div>
+            {/* PC用切り替えボタン（Sidebarへ） */}
             <button
               onClick={onToggle}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors hidden lg:block"
+              aria-label="Show sidebar"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            {/* モバイル/タブレット用閉じるボタン */}
+            <button
+              onClick={onToggle}
+              className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors lg:hidden"
+              aria-label="Close side menu"
             >
               <ChevronLeft size={20} />
             </button>
