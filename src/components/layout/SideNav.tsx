@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
-  ChevronLeft, 
+//   ChevronLeft, 
   ChevronRight,
   ChevronDown,
   LogOut,
@@ -23,6 +23,7 @@ type SideNavProps = {
 
 const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   // テナント関連の変数は使用しないためコメントアウト
@@ -43,6 +44,14 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
+  };
+
+  // 現在のパスからアクティブなメニューアイテムを判断する
+  const isItemActive = (item: any): boolean => {
+    if (item.path === '/' && location.pathname === '/') {
+      return true;
+    }
+    return item.path !== '/' && location.pathname.startsWith(item.path);
   };
 
   // 表示されていない場合は何も表示しない（モバイル用）
@@ -77,50 +86,67 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
       <div className="flex-1 overflow-y-auto py-0">
         {/* Navigation Items */}
         <ul className="px-0 m-0">
-          {navigationItems.map((item) => (
-            <li key={item.key} className="block m-0 p-0">
-              <div 
-                className="block w-full h-16 m-0 p-0"
-                style={{ height: '64px', minHeight: '64px' }}
-              >
-                <button
-                  onClick={() => {
-                    if (item.children) {
-                      toggleItem(item.key);
-                    } else if (item.path) {
-                      handleNavigation(item.path);
-                    }
-                  }}
-                  className={`w-full h-16 inline-flex items-center justify-between px-4 transition-colors ${
-                    expandedItems[item.key] ? 'bg-gray-100 dark:bg-gray-700' : ''
-                  }`}
-                  style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}
+          {navigationItems.map((item) => {
+            const isActive = isItemActive(item);
+            return (
+              <li key={item.key} className="block m-0 p-0">
+                <div 
+                  className="block w-full h-16 m-0 p-0"
+                  style={{ height: '64px', minHeight: '64px' }}
                 >
-                  <div className="flex items-center">
-                    {item.icon}
-                    <span className="ml-3 font-medium">{item.label}</span>
-                  </div>
-                  {item.children && (
-                    expandedItems[item.key] ? <ChevronDown size={18} /> : <ChevronRight size={18} />
-                  )}
-                </button>
-              </div>
-              {item.children && expandedItems[item.key] && (
-                <ul className="pl-10 mt-1 space-y-1">
-                  {item.children.map((child) => (
-                    <li key={child.key}>
-                      <button
-                        onClick={() => handleNavigation(child.path)}
-                        className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        {child.label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+                  <button
+                    onClick={() => {
+                      if (item.children) {
+                        toggleItem(item.key);
+                      } else if (item.path) {
+                        handleNavigation(item.path);
+                      }
+                    }}
+                    className={`w-full h-16 inline-flex items-center justify-between px-4 transition-colors outline-none focus:outline-none ${
+                      isActive 
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
+                        : expandedItems[item.key] ? 'bg-gray-100 dark:bg-gray-700' : ''
+                    }`}
+                    style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box', border: 'none' }}
+                  >
+                    <div className="flex items-center">
+                      <span className={`${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                        {item.icon}
+                      </span>
+                      <span className={`ml-3 font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                        {item.label}
+                      </span>
+                    </div>
+                    {item.children && (
+                      expandedItems[item.key] ? <ChevronDown size={18} /> : <ChevronRight size={18} />
+                    )}
+                  </button>
+                </div>
+                {item.children && expandedItems[item.key] && (
+                  <ul className="pl-10 mt-1 space-y-1">
+                    {item.children.map((child) => {
+                      const isChildActive = location.pathname === child.path;
+                      return (
+                        <li key={child.key}>
+                          <button
+                            onClick={() => handleNavigation(child.path)}
+                            className={`block w-full text-left py-2 px-4 rounded-md transition-colors outline-none focus:outline-none ${
+                              isChildActive 
+                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
+                                : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                            }`}
+                            style={{ border: 'none' }}
+                          >
+                            {child.label}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         {/* テナントセレクトは非表示 */}
