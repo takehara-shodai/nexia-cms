@@ -7,12 +7,7 @@ type MetricChartProps = {
   children?: ReactNode;
 };
 
-const MetricChart = ({
-  title,
-  description,
-  height = 300,
-  children
-}: MetricChartProps) => {
+const MetricChart = ({ title, description, height = 300, children }: MetricChartProps) => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -26,7 +21,9 @@ const MetricChart = ({
           children
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-750 rounded border border-dashed border-gray-300 dark:border-gray-600">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">チャートデータがここに表示されます</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              チャートデータがここに表示されます
+            </p>
           </div>
         )}
       </div>

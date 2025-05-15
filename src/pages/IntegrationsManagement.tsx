@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Package, Search, Filter, Plus, Globe, Code, Puzzle, ArrowRight, Power, CheckCircle, AlertTriangle, XCircle, Settings, RefreshCw } from 'lucide-react';
+import {
+  Package,
+  Search,
+  Filter,
+  Plus,
+  Globe,
+  Code,
+  Puzzle,
+  _ArrowRight,
+  Power,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  Settings,
+  RefreshCw,
+} from 'lucide-react';
 
 interface Integration {
   id: string;
@@ -15,7 +30,7 @@ interface Integration {
 
 const IntegrationsManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'apps' | 'plugins' | 'scripts' | 'services'>('apps');
-  
+
   const [integrations] = useState<Integration[]>([
     {
       id: '1',
@@ -28,8 +43,8 @@ const IntegrationsManagement: React.FC = () => {
       author: 'Slack Inc.',
       config: {
         webhook: 'https://hooks.slack.com/...',
-        channel: '#notifications'
-      }
+        channel: '#notifications',
+      },
     },
     {
       id: '2',
@@ -39,7 +54,7 @@ const IntegrationsManagement: React.FC = () => {
       status: 'active',
       version: '2.1.3',
       lastUpdated: '2024-03-14',
-      author: 'SEO Tools Ltd.'
+      author: 'SEO Tools Ltd.',
     },
     {
       id: '3',
@@ -49,7 +64,7 @@ const IntegrationsManagement: React.FC = () => {
       status: 'inactive',
       version: '1.0.0',
       lastUpdated: '2024-03-13',
-      author: '山田太郎'
+      author: '山田太郎',
     },
     {
       id: '4',
@@ -59,8 +74,8 @@ const IntegrationsManagement: React.FC = () => {
       status: 'error',
       version: '4.0.1',
       lastUpdated: '2024-03-12',
-      author: 'Google'
-    }
+      author: 'Google',
+    },
   ]);
 
   const getStatusColor = (status: Integration['status']) => {
@@ -109,7 +124,9 @@ const IntegrationsManagement: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold mb-1">統合・拡張管理</h1>
-          <p className="text-gray-600 dark:text-gray-400">アプリケーション連携、プラグイン、スクリプトの管理</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            アプリケーション連携、プラグイン、スクリプトの管理
+          </p>
         </div>
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
           <Plus size={20} />
@@ -172,7 +189,10 @@ const IntegrationsManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="検索..."
@@ -205,8 +225,11 @@ const IntegrationsManagement: React.FC = () => {
                   return true;
               }
             })
-            .map((integration) => (
-              <div key={integration.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            .map(integration => (
+              <div
+                key={integration.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-4">
                     <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -215,15 +238,22 @@ const IntegrationsManagement: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="text-lg font-medium">{integration.name}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs flex items-center gap-1 ${getStatusColor(integration.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs flex items-center gap-1 ${getStatusColor(integration.status)}`}
+                        >
                           {getStatusIcon(integration.status)}
                           <span>
-                            {integration.status === 'active' ? '有効' :
-                             integration.status === 'inactive' ? '無効' : 'エラー'}
+                            {integration.status === 'active'
+                              ? '有効'
+                              : integration.status === 'inactive'
+                                ? '無効'
+                                : 'エラー'}
                           </span>
                         </span>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-400 mb-2">{integration.description}</p>
+                      <p className="text-gray-600 dark:text-gray-400 mb-2">
+                        {integration.description}
+                      </p>
                       <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                         <span>バージョン: {integration.version}</span>
                         <span>作者: {integration.author}</span>

@@ -12,31 +12,34 @@ const Layout = () => {
   const { theme } = useTheme();
 
   const toggleNavMode = () => {
-    setNavMode(prev => prev === 'full' ? 'compact' : 'full');
+    setNavMode(prev => (prev === 'full' ? 'compact' : 'full'));
   };
 
   return (
-    <div className={`flex h-full ${theme}`} style={{ backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}>
+    <div
+      className={`flex h-full ${theme}`}
+      style={{ backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}
+    >
       {/* PC（lg以上）: 常に表示 */}
       <div className="hidden lg:block fixed left-0 top-0 h-full z-30 w-[280px]">
-        <SideNav
-          mode={navMode}
-          onToggleMode={toggleNavMode}
-        />
+        <SideNav mode={navMode} onToggleMode={toggleNavMode} />
       </div>
 
       {/* モバイル/タブレット用（stateで開閉） */}
       {mobileNavOpen && (
         <>
           <div className="fixed left-0 top-0 h-full z-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-[280px] lg:hidden">
-            <SideNav 
+            <SideNav
               mode={navMode}
               isOpen={true}
               onClose={() => setMobileNavOpen(false)}
               onToggleMode={toggleNavMode}
             />
           </div>
-          <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => setMobileNavOpen(false)}></div>
+          <div
+            className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden"
+            onClick={() => setMobileNavOpen(false)}
+          ></div>
         </>
       )}
 
@@ -52,7 +55,10 @@ const Layout = () => {
       )}
 
       {/* メインコンテンツ */}
-      <div className="flex flex-col flex-1 w-full overflow-hidden lg:ml-[280px]" style={{ minHeight: '100vh' }}>
+      <div
+        className="flex flex-col flex-1 w-full overflow-hidden lg:ml-[280px]"
+        style={{ minHeight: '100vh' }}
+      >
         <TopBar />
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <Outlet />

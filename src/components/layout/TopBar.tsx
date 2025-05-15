@@ -1,5 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Search, User, Settings, HelpCircle, LogOut, Sun, Moon, ChevronDown, Building } from 'lucide-react';
+import {
+  Bell,
+  Search,
+  User,
+  Settings,
+  HelpCircle,
+  LogOut,
+  Sun,
+  Moon,
+  ChevronDown,
+  Building,
+} from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTenantStore } from '@/store/tenantStore';
 import { supabase } from '@/lib/supabase';
@@ -59,7 +70,7 @@ const TopBar = () => {
           />
         </div>
       </div>
-      
+
       <div className="flex items-center space-x-4 ml-auto">
         <button
           onClick={toggleTheme}
@@ -68,7 +79,7 @@ const TopBar = () => {
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        
+
         <div className="relative" ref={notificationsRef}>
           <button
             onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -78,12 +89,14 @@ const TopBar = () => {
             <Bell size={20} />
             <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
           </button>
-          
+
           {notificationsOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-20">
               <div className="p-3 border-b border-gray-200 dark:border-gray-700 font-medium flex justify-between items-center">
                 <span>Notifications</span>
-                <a href="#" className="text-blue-600 dark:text-blue-400 text-sm">Mark all as read</a>
+                <a href="#" className="text-blue-600 dark:text-blue-400 text-sm">
+                  Mark all as read
+                </a>
               </div>
               <div className="max-h-96 overflow-y-auto">
                 <div className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
@@ -110,16 +123,21 @@ const TopBar = () => {
                 </div>
               </div>
               <div className="p-3 text-center border-t border-gray-200 dark:border-gray-700">
-                <a href="#" className="text-blue-600 dark:text-blue-400 text-sm font-medium">View all notifications</a>
+                <a href="#" className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                  View all notifications
+                </a>
               </div>
             </div>
           )}
         </div>
-        
-        <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Help">
+
+        <button
+          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Help"
+        >
           <HelpCircle size={20} />
         </button>
-        
+
         <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -132,7 +150,7 @@ const TopBar = () => {
             <span className="hidden md:block font-medium">Admin</span>
             <ChevronDown size={16} />
           </button>
-          
+
           {userMenuOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
               <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
@@ -142,7 +160,9 @@ const TopBar = () => {
                 </p>
               </div>
               <div className="py-2 border-b border-gray-200 dark:border-gray-700">
-                <p className="px-4 py-1 text-xs text-gray-500 dark:text-gray-400 font-medium">テナント切替</p>
+                <p className="px-4 py-1 text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  テナント切替
+                </p>
                 {tenants.map(tenant => (
                   <button
                     key={tenant.id}
@@ -158,11 +178,17 @@ const TopBar = () => {
                   </button>
                 ))}
               </div>
-              <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+              >
                 <User size={16} className="mr-2" />
                 Profile
               </a>
-              <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+              >
                 <Settings size={16} className="mr-2" />
                 Settings
               </a>

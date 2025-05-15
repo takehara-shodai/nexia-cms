@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Globe, Search, Filter, Plus, LayoutTemplate, Menu, Link as LinkIcon, Settings, Eye, Pencil, Trash, ArrowRight } from 'lucide-react';
+import {
+  Globe,
+  Search,
+  Filter,
+  Plus,
+  LayoutTemplate,
+  Menu,
+  Link as LinkIcon,
+  Settings,
+  Eye,
+  Pencil,
+  Trash,
+  ArrowRight,
+} from 'lucide-react';
 
 interface Page {
   id: string;
@@ -30,7 +43,7 @@ interface MenuItem {
 
 const WebsiteManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'pages' | 'templates' | 'menus' | 'settings'>('pages');
-  
+
   const [pages] = useState<Page[]>([
     {
       id: '1',
@@ -39,7 +52,7 @@ const WebsiteManagement: React.FC = () => {
       template: 'メインテンプレート',
       status: 'published',
       updatedAt: '2024-03-15',
-      author: '山田太郎'
+      author: '山田太郎',
     },
     {
       id: '2',
@@ -48,7 +61,7 @@ const WebsiteManagement: React.FC = () => {
       template: '標準ページ',
       status: 'published',
       updatedAt: '2024-03-14',
-      author: '佐藤花子'
+      author: '佐藤花子',
     },
     {
       id: '3',
@@ -57,8 +70,8 @@ const WebsiteManagement: React.FC = () => {
       template: 'ニュース',
       status: 'scheduled',
       updatedAt: '2024-03-13',
-      author: '鈴木一郎'
-    }
+      author: '鈴木一郎',
+    },
   ]);
 
   const [templates] = useState<Template[]>([
@@ -66,23 +79,26 @@ const WebsiteManagement: React.FC = () => {
       id: '1',
       name: 'メインテンプレート',
       description: 'トップページ用のテンプレート',
-      thumbnail: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-      usageCount: 1
+      thumbnail:
+        'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      usageCount: 1,
     },
     {
       id: '2',
       name: '標準ページ',
       description: '一般的なコンテンツページ用テンプレート',
-      thumbnail: 'https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-      usageCount: 8
+      thumbnail:
+        'https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      usageCount: 8,
     },
     {
       id: '3',
       name: 'ニュース',
       description: 'ニュース記事用テンプレート',
-      thumbnail: 'https://images.pexels.com/photos/196646/pexels-photo-196646.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-      usageCount: 15
-    }
+      thumbnail:
+        'https://images.pexels.com/photos/196646/pexels-photo-196646.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      usageCount: 15,
+    },
   ]);
 
   const [menuItems] = useState<MenuItem[]>([
@@ -90,7 +106,7 @@ const WebsiteManagement: React.FC = () => {
     { id: '2', label: '会社概要', url: '/about', type: 'internal', position: 2 },
     { id: '3', label: 'サービス', url: '/services', type: 'internal', position: 3 },
     { id: '4', label: 'ブログ', url: '/blog', type: 'internal', position: 4 },
-    { id: '5', label: 'お問い合わせ', url: '/contact', type: 'internal', position: 5 }
+    { id: '5', label: 'お問い合わせ', url: '/contact', type: 'internal', position: 5 },
   ]);
 
   const getStatusColor = (status: Page['status']) => {
@@ -187,7 +203,10 @@ const WebsiteManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="検索..."
@@ -212,15 +231,20 @@ const WebsiteManagement: React.FC = () => {
       {activeTab === 'pages' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {pages.map((page) => (
-              <div key={page.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {pages.map(page => (
+              <div
+                key={page.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <h3 className="text-lg font-medium">{page.title}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{page.slug}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs ${getStatusColor(page.status)}`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${getStatusColor(page.status)}`}
+                    >
                       {getStatusText(page.status)}
                     </span>
                     <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
@@ -247,8 +271,11 @@ const WebsiteManagement: React.FC = () => {
 
       {activeTab === 'templates' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templates.map((template) => (
-            <div key={template.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          {templates.map(template => (
+            <div
+              key={template.id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+            >
               <img
                 src={template.thumbnail}
                 alt={template.name}
@@ -256,9 +283,13 @@ const WebsiteManagement: React.FC = () => {
               />
               <div className="p-4">
                 <h3 className="text-lg font-medium mb-1">{template.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{template.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  {template.description}
+                </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">使用中: {template.usageCount}ページ</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    使用中: {template.usageCount}ページ
+                  </span>
                   <button className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm flex items-center gap-1">
                     詳細を見る
                     <ArrowRight size={16} />
@@ -273,8 +304,11 @@ const WebsiteManagement: React.FC = () => {
       {activeTab === 'menus' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {menuItems.map((item) => (
-              <div key={item.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {menuItems.map(item => (
+              <div
+                key={item.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">

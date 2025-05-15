@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Languages, Search, Filter, Plus, Globe, Check, X, ChevronDown, Edit2, Trash, RefreshCw, Download, Upload } from 'lucide-react';
+import {
+  Languages,
+  Search,
+  Filter,
+  Plus,
+  Globe,
+  Check,
+  X,
+  _ChevronDown,
+  Edit2,
+  Trash,
+  _RefreshCw,
+  Download,
+  Upload,
+} from 'lucide-react';
 
 interface Language {
   id: string;
@@ -32,7 +46,7 @@ interface Region {
 
 const LocalizationManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'languages' | 'translations' | 'regions'>('languages');
-  
+
   const [languages] = useState<Language[]>([
     {
       id: '1',
@@ -42,7 +56,7 @@ const LocalizationManagement: React.FC = () => {
       isDefault: true,
       isActive: true,
       progress: 100,
-      lastUpdated: '2024-03-15'
+      lastUpdated: '2024-03-15',
     },
     {
       id: '2',
@@ -52,7 +66,7 @@ const LocalizationManagement: React.FC = () => {
       isDefault: false,
       isActive: true,
       progress: 85,
-      lastUpdated: '2024-03-14'
+      lastUpdated: '2024-03-14',
     },
     {
       id: '3',
@@ -62,8 +76,8 @@ const LocalizationManagement: React.FC = () => {
       isDefault: false,
       isActive: true,
       progress: 60,
-      lastUpdated: '2024-03-13'
-    }
+      lastUpdated: '2024-03-13',
+    },
   ]);
 
   const [translations] = useState<Translation[]>([
@@ -74,9 +88,9 @@ const LocalizationManagement: React.FC = () => {
       translations: {
         ja: '保存',
         en: 'Save',
-        zh: '保存'
+        zh: '保存',
       },
-      lastUpdated: '2024-03-15'
+      lastUpdated: '2024-03-15',
     },
     {
       id: '2',
@@ -85,9 +99,9 @@ const LocalizationManagement: React.FC = () => {
       translations: {
         ja: 'キャンセル',
         en: 'Cancel',
-        zh: '取消'
+        zh: '取消',
       },
-      lastUpdated: '2024-03-14'
+      lastUpdated: '2024-03-14',
     },
     {
       id: '3',
@@ -96,10 +110,10 @@ const LocalizationManagement: React.FC = () => {
       translations: {
         ja: 'ログイン',
         en: 'Login',
-        zh: '登录'
+        zh: '登录',
       },
-      lastUpdated: '2024-03-13'
-    }
+      lastUpdated: '2024-03-13',
+    },
   ]);
 
   const [regions] = useState<Region[]>([
@@ -110,7 +124,7 @@ const LocalizationManagement: React.FC = () => {
       language: 'ja',
       timezone: 'Asia/Tokyo',
       currency: 'JPY',
-      isActive: true
+      isActive: true,
     },
     {
       id: '2',
@@ -119,7 +133,7 @@ const LocalizationManagement: React.FC = () => {
       language: 'en',
       timezone: 'America/New_York',
       currency: 'USD',
-      isActive: true
+      isActive: true,
     },
     {
       id: '3',
@@ -128,8 +142,8 @@ const LocalizationManagement: React.FC = () => {
       language: 'zh',
       timezone: 'Asia/Shanghai',
       currency: 'CNY',
-      isActive: true
-    }
+      isActive: true,
+    },
   ]);
 
   return (
@@ -189,7 +203,10 @@ const LocalizationManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="検索..."
@@ -222,8 +239,11 @@ const LocalizationManagement: React.FC = () => {
       {activeTab === 'languages' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {languages.map((language) => (
-              <div key={language.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {languages.map(language => (
+              <div
+                key={language.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-xl font-medium">
@@ -232,7 +252,9 @@ const LocalizationManagement: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-3">
                         <h3 className="text-lg font-medium">{language.name}</h3>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">({language.nativeName})</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          ({language.nativeName})
+                        </span>
                         {language.isDefault && (
                           <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs rounded-full">
                             デフォルト
@@ -283,15 +305,20 @@ const LocalizationManagement: React.FC = () => {
       {activeTab === 'translations' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {translations.map((translation) => (
-              <div key={translation.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {translations.map(translation => (
+              <div
+                key={translation.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm">
                         {translation.category}
                       </span>
-                      <h3 className="font-mono text-gray-600 dark:text-gray-400">{translation.key}</h3>
+                      <h3 className="font-mono text-gray-600 dark:text-gray-400">
+                        {translation.key}
+                      </h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {Object.entries(translation.translations).map(([lang, text]) => (
@@ -323,8 +350,11 @@ const LocalizationManagement: React.FC = () => {
       {activeTab === 'regions' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {regions.map((region) => (
-              <div key={region.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {regions.map(region => (
+              <div
+                key={region.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-xl font-medium">

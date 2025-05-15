@@ -10,29 +10,19 @@ export type ActivityItemProps = {
   status?: 'success' | 'warning' | 'error' | 'info';
 };
 
-const ActivityItem = ({
-  user,
-  action,
-  target,
-  time,
-  status = 'info'
-}: ActivityItemProps) => {
+const ActivityItem = ({ user, action, target, time, status = 'info' }: ActivityItemProps) => {
   const statusColors = {
     success: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
     warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
     error: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-    info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+    info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
   };
 
   return (
     <div className="flex items-start p-4 border-b border-gray-200 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
       <div className="flex-shrink-0">
         {user.avatar ? (
-          <img
-            src={user.avatar}
-            alt={user.name}
-            className="w-10 h-10 rounded-full"
-          />
+          <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
         ) : (
           <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
             {user.initial || user.name.charAt(0)}

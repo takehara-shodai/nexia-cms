@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Search, Filter, Plus, MoreVertical, Grid, List as ListIcon, Calendar, User, Clock, Edit2, Eye, Globe, ArrowUpRight } from 'lucide-react';
+import {
+  Search,
+  Filter,
+  Plus,
+  MoreVertical,
+  Grid,
+  List as ListIcon,
+  Calendar,
+  User,
+  Clock,
+  Edit2,
+  Eye,
+  Globe,
+  ArrowUpRight,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Content {
@@ -22,7 +36,9 @@ interface Content {
 const ContentList: React.FC = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'published' | 'archived'>('published');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'published' | 'archived'>(
+    'published'
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -39,7 +55,7 @@ const ContentList: React.FC = () => {
       url: '/blog/2024-trends',
       views: 1234,
       likes: 56,
-      comments: 12
+      comments: 12,
     },
     {
       id: '2',
@@ -50,7 +66,7 @@ const ContentList: React.FC = () => {
       updatedAt: '2024-03-09',
       createdAt: '2024-03-09',
       dueDate: '2024-03-20',
-      description: '新製品発表会の詳細レポート。画像の追加が必要。'
+      description: '新製品発表会の詳細レポート。画像の追加が必要。',
     },
     {
       id: '3',
@@ -64,7 +80,7 @@ const ContentList: React.FC = () => {
       url: '/guides/service',
       views: 567,
       likes: 23,
-      comments: 5
+      comments: 5,
     },
     {
       id: '4',
@@ -73,8 +89,8 @@ const ContentList: React.FC = () => {
       status: 'archived',
       author: '田中次郎',
       updatedAt: '2024-01-15',
-      createdAt: '2024-01-10'
-    }
+      createdAt: '2024-01-10',
+    },
   ]);
 
   const handleContentClick = (id: string) => {
@@ -113,9 +129,10 @@ const ContentList: React.FC = () => {
 
   const filteredContents = contents.filter(content => {
     const matchesStatus = filterStatus === 'all' || content.status === filterStatus;
-    const matchesSearch = content.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         content.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         content.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      content.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      content.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      content.description?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -140,12 +157,15 @@ const ContentList: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="コンテンツを検索..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
               />
             </div>
@@ -227,7 +247,7 @@ const ContentList: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         {viewMode === 'list' ? (
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredContents.map((content) => (
+            {filteredContents.map(content => (
               <div
                 key={content.id}
                 onClick={() => handleContentClick(content.id)}
@@ -237,7 +257,9 @@ const ContentList: React.FC = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <h3 className="text-lg font-medium">{content.title}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
+                      >
                         {getStatusText(content.status)}
                       </span>
                     </div>
@@ -258,11 +280,13 @@ const ContentList: React.FC = () => {
                           <Globe size={14} />
                           公開: {content.publishedAt}
                         </span>
-                      ) : content.dueDate && (
-                        <span className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          期限: {content.dueDate}
-                        </span>
+                      ) : (
+                        content.dueDate && (
+                          <span className="flex items-center gap-1">
+                            <Calendar size={14} />
+                            期限: {content.dueDate}
+                          </span>
+                        )
                       )}
                       <span className="flex items-center gap-1">
                         <Clock size={14} />
@@ -280,7 +304,7 @@ const ContentList: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {content.status === 'published' && content.url && (
                       <button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           handlePreview(content.url!);
                         }}
@@ -290,9 +314,9 @@ const ContentList: React.FC = () => {
                         <ArrowUpRight size={14} />
                       </button>
                     )}
-                    <button 
+                    <button
                       className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         // Handle menu click
                       }}
@@ -306,7 +330,7 @@ const ContentList: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-            {filteredContents.map((content) => (
+            {filteredContents.map(content => (
               <div
                 key={content.id}
                 onClick={() => handleContentClick(content.id)}
@@ -317,7 +341,7 @@ const ContentList: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {content.status === 'published' && content.url && (
                       <button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           handlePreview(content.url!);
                         }}
@@ -327,9 +351,9 @@ const ContentList: React.FC = () => {
                         <ArrowUpRight size={12} />
                       </button>
                     )}
-                    <button 
+                    <button
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         // Handle menu click
                       }}
@@ -339,7 +363,9 @@ const ContentList: React.FC = () => {
                   </div>
                 </div>
                 {content.description && (
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{content.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
+                    {content.description}
+                  </p>
                 )}
                 <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-center justify-between">
@@ -347,7 +373,9 @@ const ContentList: React.FC = () => {
                       <Edit2 size={14} />
                       {content.type}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
+                    >
                       {getStatusText(content.status)}
                     </span>
                   </div>
@@ -360,11 +388,13 @@ const ContentList: React.FC = () => {
                       <Globe size={14} />
                       公開: {content.publishedAt}
                     </p>
-                  ) : content.dueDate && (
-                    <p className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      期限: {content.dueDate}
-                    </p>
+                  ) : (
+                    content.dueDate && (
+                      <p className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        期限: {content.dueDate}
+                      </p>
+                    )
                   )}
                   <p className="flex items-center gap-1">
                     <Clock size={14} />

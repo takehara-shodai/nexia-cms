@@ -30,7 +30,10 @@ const ActivityLog = ({ activities, title }: ActivityLogProps) => {
         )}
       </div>
       <div className="px-6 py-3 bg-gray-50 dark:bg-gray-750 border-t border-gray-200 dark:border-gray-700">
-        <a href="#" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+        <a
+          href="#"
+          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+        >
           すべてのアクティビティを表示
         </a>
       </div>

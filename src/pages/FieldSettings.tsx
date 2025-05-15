@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Database, Search, Filter, Plus, SeparatorVertical as DragIndicator, Settings, Copy, Trash, Save, X, Check, ChevronDown } from 'lucide-react';
+import {
+  _Database,
+  Search,
+  Filter,
+  Plus,
+  SeparatorVertical as DragIndicator,
+  Settings,
+  Copy,
+  Trash,
+  _Save,
+  X,
+  _Check,
+  _ChevronDown,
+} from 'lucide-react';
 
 interface Field {
   id: string;
@@ -11,7 +24,17 @@ interface Field {
   settings: FieldSettings;
 }
 
-type FieldType = 'text' | 'number' | 'date' | 'boolean' | 'select' | 'relation' | 'media' | 'json' | 'markdown' | 'color';
+type FieldType =
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'boolean'
+  | 'select'
+  | 'relation'
+  | 'media'
+  | 'json'
+  | 'markdown'
+  | 'color';
 
 interface FieldSettings {
   minLength?: number;
@@ -37,8 +60,8 @@ const FieldSettings: React.FC = () => {
       description: '記事のタイトル',
       settings: {
         minLength: 1,
-        maxLength: 100
-      }
+        maxLength: 100,
+      },
     },
     {
       id: '2',
@@ -46,7 +69,7 @@ const FieldSettings: React.FC = () => {
       type: 'markdown',
       required: true,
       description: '記事の本文',
-      settings: {}
+      settings: {},
     },
     {
       id: '3',
@@ -55,9 +78,9 @@ const FieldSettings: React.FC = () => {
       required: true,
       description: '記事の公開日',
       settings: {
-        format: 'YYYY-MM-DD'
-      }
-    }
+        format: 'YYYY-MM-DD',
+      },
+    },
   ]);
 
   const [editingField, setEditingField] = useState<Field | null>(null);
@@ -73,7 +96,7 @@ const FieldSettings: React.FC = () => {
     { type: 'media', label: 'メディア', description: '画像、動画、ファイル' },
     { type: 'json', label: 'JSON', description: 'JSONデータ構造' },
     { type: 'markdown', label: 'Markdown', description: 'リッチテキストエディタ' },
-    { type: 'color', label: 'カラー', description: '色選択' }
+    { type: 'color', label: 'カラー', description: '色選択' },
   ];
 
   const handleAddField = () => {
@@ -82,7 +105,7 @@ const FieldSettings: React.FC = () => {
       name: '',
       type: 'text',
       required: false,
-      settings: {}
+      settings: {},
     });
     setShowFieldModal(true);
   };
@@ -96,12 +119,12 @@ const FieldSettings: React.FC = () => {
     if (!editingField) return;
 
     setFields(prev => {
-      const index = prev.findIndex(f => f.id === editingField.id);
-      if (index === -1) {
+      const _index = prev.findIndex(f => f.id === editingField.id);
+      if (_index === -1) {
         return [...prev, editingField];
       }
       const newFields = [...prev];
-      newFields[index] = editingField;
+      newFields[_index] = editingField;
       return newFields;
     });
 
@@ -117,7 +140,7 @@ const FieldSettings: React.FC = () => {
     const newField = {
       ...field,
       id: Date.now().toString(),
-      name: `${field.name} (コピー)`
+      name: `${field.name} (コピー)`,
     };
     setFields(prev => [...prev, newField]);
   };
@@ -127,7 +150,9 @@ const FieldSettings: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold mb-1">フィールド設定</h1>
-          <p className="text-gray-600 dark:text-gray-400">コンテンツモデルのフィールドを定義・管理します</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            コンテンツモデルのフィールドを定義・管理します
+          </p>
         </div>
         <button
           onClick={handleAddField}
@@ -143,7 +168,10 @@ const FieldSettings: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="フィールドを検索..."
@@ -161,7 +189,7 @@ const FieldSettings: React.FC = () => {
       {/* Fields List */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {fields.map((field, index) => (
+          {fields.map((field, _index) => (
             <div
               key={field.id}
               className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -184,7 +212,9 @@ const FieldSettings: React.FC = () => {
                       </span>
                     </div>
                     {field.description && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{field.description}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {field.description}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -217,7 +247,10 @@ const FieldSettings: React.FC = () => {
       {/* Field Modal */}
       {showFieldModal && editingField && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowFieldModal(false)}></div>
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowFieldModal(false)}
+          ></div>
           <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl m-4">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-medium">
@@ -239,7 +272,7 @@ const FieldSettings: React.FC = () => {
                   <input
                     type="text"
                     value={editingField.name}
-                    onChange={(e) => setEditingField({ ...editingField, name: e.target.value })}
+                    onChange={e => setEditingField({ ...editingField, name: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                   />
                 </div>
@@ -250,11 +283,15 @@ const FieldSettings: React.FC = () => {
                   </label>
                   <select
                     value={editingField.type}
-                    onChange={(e) => setEditingField({ ...editingField, type: e.target.value as FieldType })}
+                    onChange={e =>
+                      setEditingField({ ...editingField, type: e.target.value as FieldType })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                   >
                     {fieldTypes.map(type => (
-                      <option key={type.type} value={type.type}>{type.label}</option>
+                      <option key={type.type} value={type.type}>
+                        {type.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -265,7 +302,9 @@ const FieldSettings: React.FC = () => {
                   </label>
                   <textarea
                     value={editingField.description || ''}
-                    onChange={(e) => setEditingField({ ...editingField, description: e.target.value })}
+                    onChange={e =>
+                      setEditingField({ ...editingField, description: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                     rows={3}
                   />
@@ -276,10 +315,13 @@ const FieldSettings: React.FC = () => {
                     type="checkbox"
                     id="required"
                     checked={editingField.required}
-                    onChange={(e) => setEditingField({ ...editingField, required: e.target.checked })}
+                    onChange={e => setEditingField({ ...editingField, required: e.target.checked })}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="required" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label
+                    htmlFor="required"
+                    className="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                  >
                     必須フィールド
                   </label>
                 </div>
@@ -298,10 +340,15 @@ const FieldSettings: React.FC = () => {
                         <input
                           type="number"
                           value={editingField.settings.minLength || ''}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, minLength: parseInt(e.target.value) }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: {
+                                ...editingField.settings,
+                                minLength: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                       </div>
@@ -312,10 +359,15 @@ const FieldSettings: React.FC = () => {
                         <input
                           type="number"
                           value={editingField.settings.maxLength || ''}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, maxLength: parseInt(e.target.value) }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: {
+                                ...editingField.settings,
+                                maxLength: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                       </div>
@@ -328,17 +380,17 @@ const FieldSettings: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           選択肢
                         </label>
-                        {(editingField.settings.options || []).map((option, index) => (
-                          <div key={index} className="flex items-center gap-2 mb-2">
+                        {(editingField.settings.options || []).map((option, _index) => (
+                          <div key={_index} className="flex items-center gap-2 mb-2">
                             <input
                               type="text"
                               value={option.label}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const newOptions = [...(editingField.settings.options || [])];
-                                newOptions[index] = { ...option, label: e.target.value };
+                                newOptions[_index] = { ...option, label: e.target.value };
                                 setEditingField({
                                   ...editingField,
-                                  settings: { ...editingField.settings, options: newOptions }
+                                  settings: { ...editingField.settings, options: newOptions },
                                 });
                               }}
                               placeholder="ラベル"
@@ -347,12 +399,12 @@ const FieldSettings: React.FC = () => {
                             <input
                               type="text"
                               value={option.value}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const newOptions = [...(editingField.settings.options || [])];
-                                newOptions[index] = { ...option, value: e.target.value };
+                                newOptions[_index] = { ...option, value: e.target.value };
                                 setEditingField({
                                   ...editingField,
-                                  settings: { ...editingField.settings, options: newOptions }
+                                  settings: { ...editingField.settings, options: newOptions },
                                 });
                               }}
                               placeholder="値"
@@ -361,10 +413,10 @@ const FieldSettings: React.FC = () => {
                             <button
                               onClick={() => {
                                 const newOptions = [...(editingField.settings.options || [])];
-                                newOptions.splice(index, 1);
+                                newOptions.splice(_index, 1);
                                 setEditingField({
                                   ...editingField,
-                                  settings: { ...editingField.settings, options: newOptions }
+                                  settings: { ...editingField.settings, options: newOptions },
                                 });
                               }}
                               className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
@@ -379,7 +431,7 @@ const FieldSettings: React.FC = () => {
                             newOptions.push({ label: '', value: '' });
                             setEditingField({
                               ...editingField,
-                              settings: { ...editingField.settings, options: newOptions }
+                              settings: { ...editingField.settings, options: newOptions },
                             });
                           }}
                           className="mt-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -393,13 +445,18 @@ const FieldSettings: React.FC = () => {
                           type="checkbox"
                           id="multiple"
                           checked={editingField.settings.multiple || false}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, multiple: e.target.checked }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: { ...editingField.settings, multiple: e.target.checked },
+                            })
+                          }
                           className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <label htmlFor="multiple" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        <label
+                          htmlFor="multiple"
+                          className="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                        >
                           複数選択を許可
                         </label>
                       </div>
@@ -415,10 +472,15 @@ const FieldSettings: React.FC = () => {
                         <input
                           type="number"
                           value={editingField.settings.min || ''}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, min: parseFloat(e.target.value) }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: {
+                                ...editingField.settings,
+                                min: parseFloat(e.target.value),
+                              },
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                       </div>
@@ -429,10 +491,15 @@ const FieldSettings: React.FC = () => {
                         <input
                           type="number"
                           value={editingField.settings.max || ''}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, max: parseFloat(e.target.value) }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: {
+                                ...editingField.settings,
+                                max: parseFloat(e.target.value),
+                              },
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                       </div>
@@ -443,10 +510,15 @@ const FieldSettings: React.FC = () => {
                         <input
                           type="number"
                           value={editingField.settings.step || ''}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, step: parseFloat(e.target.value) }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: {
+                                ...editingField.settings,
+                                step: parseFloat(e.target.value),
+                              },
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                       </div>
@@ -460,12 +532,12 @@ const FieldSettings: React.FC = () => {
                           許可するファイルタイプ
                         </label>
                         <div className="space-y-2">
-                          {['image/*', 'video/*', 'audio/*', 'application/pdf'].map((type) => (
+                          {['image/*', 'video/*', 'audio/*', 'application/pdf'].map(type => (
                             <label key={type} className="flex items-center">
                               <input
                                 type="checkbox"
                                 checked={(editingField.settings.allowedTypes || []).includes(type)}
-                                onChange={(e) => {
+                                onChange={e => {
                                   const types = new Set(editingField.settings.allowedTypes || []);
                                   if (e.target.checked) {
                                     types.add(type);
@@ -474,16 +546,22 @@ const FieldSettings: React.FC = () => {
                                   }
                                   setEditingField({
                                     ...editingField,
-                                    settings: { ...editingField.settings, allowedTypes: Array.from(types) }
+                                    settings: {
+                                      ...editingField.settings,
+                                      allowedTypes: Array.from(types),
+                                    },
                                   });
                                 }}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                               />
                               <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                {type === 'image/*' ? '画像'
-                                  : type === 'video/*' ? '動画'
-                                  : type === 'audio/*' ? '音声'
-                                  : 'PDF'}
+                                {type === 'image/*'
+                                  ? '画像'
+                                  : type === 'video/*'
+                                    ? '動画'
+                                    : type === 'audio/*'
+                                      ? '音声'
+                                      : 'PDF'}
                               </span>
                             </label>
                           ))}
@@ -494,13 +572,18 @@ const FieldSettings: React.FC = () => {
                           type="checkbox"
                           id="multiple-media"
                           checked={editingField.settings.multiple || false}
-                          onChange={(e) => setEditingField({
-                            ...editingField,
-                            settings: { ...editingField.settings, multiple: e.target.checked }
-                          })}
+                          onChange={e =>
+                            setEditingField({
+                              ...editingField,
+                              settings: { ...editingField.settings, multiple: e.target.checked },
+                            })
+                          }
                           className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <label htmlFor="multiple-media" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        <label
+                          htmlFor="multiple-media"
+                          className="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                        >
                           複数ファイルを許可
                         </label>
                       </div>

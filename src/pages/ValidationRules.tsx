@@ -13,7 +13,7 @@ interface ValidationRule {
   errorMessage: string;
 }
 
-type ValidationRuleType = 
+type ValidationRuleType =
   | 'required'
   | 'minLength'
   | 'maxLength'
@@ -47,7 +47,7 @@ const ValidationRules: React.FC = () => {
       type: 'required',
       settings: {},
       isActive: true,
-      errorMessage: 'タイトルは必須項目です'
+      errorMessage: 'タイトルは必須項目です',
     },
     {
       id: '2',
@@ -58,7 +58,7 @@ const ValidationRules: React.FC = () => {
       type: 'maxLength',
       settings: { maxLength: 100 },
       isActive: true,
-      errorMessage: 'タイトルは100文字以内で入力してください'
+      errorMessage: 'タイトルは100文字以内で入力してください',
     },
     {
       id: '3',
@@ -69,7 +69,7 @@ const ValidationRules: React.FC = () => {
       type: 'email',
       settings: {},
       isActive: true,
-      errorMessage: '有効なメールアドレスを入力してください'
+      errorMessage: '有効なメールアドレスを入力してください',
     },
     {
       id: '4',
@@ -84,11 +84,11 @@ function validatePublishDate(value) {
   const date = new Date(value);
   return date > new Date();
 }
-`
+`,
       },
       isActive: true,
-      errorMessage: '公開日は未来の日付を指定してください'
-    }
+      errorMessage: '公開日は未来の日付を指定してください',
+    },
   ]);
 
   const [showRuleModal, setShowRuleModal] = useState(false);
@@ -132,9 +132,9 @@ function validatePublishDate(value) {
     setRules(rules.filter(rule => rule.id !== id));
   };
 
-  const handleSave = (rule: ValidationRule) => {
+  const _handleSave = (rule: ValidationRule) => {
     if (editingRule) {
-      setRules(rules.map(r => r.id === rule.id ? rule : r));
+      setRules(rules.map(r => (r.id === rule.id ? rule : r)));
     } else {
       setRules([...rules, { ...rule, id: Date.now().toString() }]);
     }
@@ -163,7 +163,10 @@ function validatePublishDate(value) {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="ルールを検索..."
@@ -181,17 +184,22 @@ function validatePublishDate(value) {
       {/* Rules List */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {rules.map((rule) => (
-            <div key={rule.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          {rules.map(rule => (
+            <div
+              key={rule.id}
+              className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-medium">{rule.name}</h3>
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      rule.isActive
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        rule.isActive
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                      }`}
+                    >
                       {rule.isActive ? '有効' : '無効'}
                     </span>
                     <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs">
@@ -244,7 +252,10 @@ function validatePublishDate(value) {
       {/* Rule Modal */}
       {showRuleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowRuleModal(false)}></div>
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowRuleModal(false)}
+          ></div>
           <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl m-4">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-medium">
@@ -340,7 +351,9 @@ function validatePublishDate(value) {
                       type="checkbox"
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">ルールを有効化</span>
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      ルールを有効化
+                    </span>
                   </label>
                 </div>
               </div>

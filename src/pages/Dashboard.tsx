@@ -3,7 +3,7 @@ import StatCard from '@/components/dashboard/StatCard';
 import ActivityLog from '@/components/dashboard/ActivityLog';
 import MetricChart from '@/components/dashboard/MetricChart';
 import SystemStatusCard from '@/components/dashboard/SystemStatusCard';
-import { FileText, Users, Server, Zap, Globe, Database } from 'lucide-react';
+import { FileText, Users, Server, Zap, _Globe, _Database } from 'lucide-react';
 import { ActivityItemProps } from '@/components/dashboard/ActivityItem';
 
 const Dashboard: React.FC = () => {
@@ -14,36 +14,36 @@ const Dashboard: React.FC = () => {
       action: 'が記事を公開しました:',
       target: '2024年の最新トレンド',
       time: '15分前',
-      status: 'success'
+      status: 'success',
     },
     {
       user: { name: '佐藤花子', initial: 'S' },
       action: 'がメディアをアップロードしました:',
       target: 'hero-image.jpg',
       time: '30分前',
-      status: 'info'
+      status: 'info',
     },
     {
       user: { name: '鈴木一郎', initial: 'S' },
       action: 'がユーザーを追加しました:',
       target: '田中次郎',
       time: '1時間前',
-      status: 'info'
+      status: 'info',
     },
     {
       user: { name: 'システム', initial: 'S' },
       action: 'がバックアップを完了しました:',
       target: 'daily-backup-20240610',
       time: '3時間前',
-      status: 'success'
+      status: 'success',
     },
     {
       user: { name: '高橋悠', initial: 'T' },
       action: 'のAPIリクエストが制限を超えました:',
       target: '/api/content',
       time: '5時間前',
-      status: 'warning'
-    }
+      status: 'warning',
+    },
   ];
 
   // System status data
@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
     { name: 'API サービス', status: 'online' },
     { name: 'メディアストレージ', status: 'online' },
     { name: 'データベース', status: 'warning', details: '高負荷' },
-    { name: 'バックアップサービス', status: 'online' }
+    { name: 'バックアップサービス', status: 'online' },
   ];
 
   return (
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
           title="コンテンツ数"
           value="1,243"
           icon={<FileText size={24} />}
-          change={{ value: "12%", isPositive: true }}
+          change={{ value: '12%', isPositive: true }}
           bgColor="bg-blue-100"
           textColor="text-blue-600"
         />
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
           title="アクティブユーザー"
           value="48"
           icon={<Users size={24} />}
-          change={{ value: "5%", isPositive: true }}
+          change={{ value: '5%', isPositive: true }}
           bgColor="bg-green-100"
           textColor="text-green-600"
         />
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
           title="APIリクエスト/日"
           value="142,857"
           icon={<Zap size={24} />}
-          change={{ value: "23%", isPositive: true }}
+          change={{ value: '23%', isPositive: true }}
           bgColor="bg-purple-100"
           textColor="text-purple-600"
         />
@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <ActivityLog activities={recentActivities} title="最近のアクティビティ" />
         </div>
-        
+
         {/* System status - narrower column */}
         <div>
           <SystemStatusCard statuses={systemStatuses} />
@@ -112,14 +112,11 @@ const Dashboard: React.FC = () => {
 
       {/* Charts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <MetricChart 
-          title="コンテンツ作成統計" 
+        <MetricChart
+          title="コンテンツ作成統計"
           description="過去30日間のコンテンツタイプ別作成数"
         />
-        <MetricChart 
-          title="API使用状況" 
-          description="過去7日間のエンドポイント別API呼び出し数"
-        />
+        <MetricChart title="API使用状況" description="過去7日間のエンドポイント別API呼び出し数" />
       </div>
     </div>
   );

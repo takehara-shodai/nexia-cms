@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Image, Search, Filter, Plus, Grid, List as ListIcon, Folder, FileType, Clock, User, Trash, Download, Edit, MoreVertical } from 'lucide-react';
+import {
+  Image,
+  Search,
+  Filter,
+  Plus,
+  Grid,
+  List as ListIcon,
+  Folder,
+  FileType,
+  Clock,
+  User,
+  Trash,
+  Download,
+  Edit,
+  MoreVertical,
+} from 'lucide-react';
 import UploadModal from '@/components/upload/UploadModal';
 
 interface MediaItem {
@@ -18,7 +33,7 @@ const MediaManagement: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedFolder, setSelectedFolder] = useState<string>('all');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  
+
   const [mediaItems] = useState<MediaItem[]>([
     {
       id: '1',
@@ -29,7 +44,7 @@ const MediaManagement: React.FC = () => {
       dimensions: '1920x1080',
       uploadedBy: '山田太郎',
       uploadedAt: '2024-03-15',
-      folder: 'ヒーロー画像'
+      folder: 'ヒーロー画像',
     },
     {
       id: '2',
@@ -39,7 +54,7 @@ const MediaManagement: React.FC = () => {
       size: '5.1 MB',
       uploadedBy: '佐藤花子',
       uploadedAt: '2024-03-14',
-      folder: 'カタログ'
+      folder: 'カタログ',
     },
     {
       id: '3',
@@ -50,8 +65,8 @@ const MediaManagement: React.FC = () => {
       dimensions: '1920x1080',
       uploadedBy: '鈴木一郎',
       uploadedAt: '2024-03-13',
-      folder: 'プロモーション'
-    }
+      folder: 'プロモーション',
+    },
   ]);
 
   const folders = [
@@ -59,7 +74,7 @@ const MediaManagement: React.FC = () => {
     { id: 'hero', name: 'ヒーロー画像', count: 12 },
     { id: 'products', name: '製品画像', count: 45 },
     { id: 'blog', name: 'ブログ', count: 78 },
-    { id: 'documents', name: 'ドキュメント', count: 21 }
+    { id: 'documents', name: 'ドキュメント', count: 21 },
   ];
 
   const handleUpload = (files: File[]) => {
@@ -105,7 +120,7 @@ const MediaManagement: React.FC = () => {
               <h2 className="font-medium">フォルダ</h2>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {folders.map((folder) => (
+              {folders.map(folder => (
                 <button
                   key={folder.id}
                   onClick={() => setSelectedFolder(folder.id)}
@@ -114,7 +129,12 @@ const MediaManagement: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Folder size={20} className={selectedFolder === folder.id ? 'text-blue-600 dark:text-blue-400' : ''} />
+                    <Folder
+                      size={20}
+                      className={
+                        selectedFolder === folder.id ? 'text-blue-600 dark:text-blue-400' : ''
+                      }
+                    />
                     <span>{folder.name}</span>
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">{folder.count}</span>
@@ -131,7 +151,10 @@ const MediaManagement: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="メディアを検索..."
@@ -164,8 +187,11 @@ const MediaManagement: React.FC = () => {
           {/* Media Items */}
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {mediaItems.map((item) => (
-                <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              {mediaItems.map(item => (
+                <div
+                  key={item.id}
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+                >
                   {item.type === 'image' ? (
                     <div className="aspect-video bg-gray-100 dark:bg-gray-700">
                       <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
@@ -203,11 +229,18 @@ const MediaManagement: React.FC = () => {
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                {mediaItems.map((item) => (
-                  <div key={item.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                {mediaItems.map(item => (
+                  <div
+                    key={item.id}
+                    className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
                     <div className="flex items-center gap-4">
                       {item.type === 'image' ? (
-                        <img src={item.url} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                        <img
+                          src={item.url}
+                          alt={item.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
                       ) : (
                         <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
                           {getTypeIcon(item.type)}

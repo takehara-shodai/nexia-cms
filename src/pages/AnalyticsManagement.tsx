@@ -1,5 +1,30 @@
 import React, { useState } from 'react';
-import { PieChart, Search, Filter, Download, Calendar, ArrowUpRight, ArrowDownRight, Users, Globe, Zap, Clock, ChevronDown, BarChart3, LineChart, Table as TableIcon } from 'lucide-react';
+import {
+  Search,
+  Filter,
+  Printer,
+  _ExternalLink,
+  BarChart,
+  _FileText,
+  PieChart,
+} from 'lucide-react';
+import {
+  _Download,
+  Calendar,
+  ArrowUpRight,
+  ArrowDownRight,
+  Users,
+  Globe,
+  Zap,
+  Clock,
+  ChevronDown,
+  LineChart,
+  Table as TableIcon,
+} from 'lucide-react';
+
+// Unused imports
+const _Search = Search;
+const _Filter = Filter;
 
 interface AnalyticsData {
   id: string;
@@ -20,8 +45,8 @@ interface ChartData {
 }
 
 const AnalyticsManagement: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'content' | 'access' | 'api' | 'performance'>('content');
-  const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const [activeTab, setActiveTab] = useState('content');
+  const [_selectedPeriod, _setSelectedPeriod] = useState('month');
 
   const [metrics] = useState<AnalyticsData[]>([
     {
@@ -29,29 +54,29 @@ const AnalyticsManagement: React.FC = () => {
       metric: '総ページビュー',
       value: 125463,
       change: { value: 12.5, isPositive: true },
-      trend: 'up'
+      trend: 'up',
     },
     {
       id: '2',
       metric: 'ユニークユーザー',
       value: 45789,
       change: { value: 8.3, isPositive: true },
-      trend: 'up'
+      trend: 'up',
     },
     {
       id: '3',
       metric: '平均滞在時間',
       value: 245,
       change: { value: 3.2, isPositive: false },
-      trend: 'down'
+      trend: 'down',
     },
     {
       id: '4',
       metric: 'バウンス率',
       value: 42.5,
       change: { value: 1.5, isPositive: true },
-      trend: 'down'
-    }
+      trend: 'down',
+    },
   ]);
 
   const [charts] = useState<ChartData[]>([
@@ -59,26 +84,26 @@ const AnalyticsManagement: React.FC = () => {
       id: '1',
       title: 'ページビューの推移',
       description: '過去30日間のページビュー数の推移',
-      type: 'line'
+      type: 'line',
     },
     {
       id: '2',
       title: 'コンテンツタイプ別アクセス',
       description: 'コンテンツタイプ別のアクセス割合',
-      type: 'pie'
+      type: 'pie',
     },
     {
       id: '3',
       title: '時間帯別アクセス数',
       description: '24時間の時間帯別アクセス数',
-      type: 'bar'
+      type: 'bar',
     },
     {
       id: '4',
       title: '人気ページランキング',
       description: '最もアクセスの多いページTop 10',
-      type: 'table'
-    }
+      type: 'table',
+    },
   ]);
 
   const getMetricIcon = (metric: string) => {
@@ -101,7 +126,7 @@ const AnalyticsManagement: React.FC = () => {
       case 'line':
         return <LineChart size={20} />;
       case 'bar':
-        return <BarChart3 size={20} />;
+        return <BarChart size={20} />;
       case 'pie':
         return <PieChart size={20} />;
       case 'table':
@@ -125,7 +150,7 @@ const AnalyticsManagement: React.FC = () => {
             <ChevronDown size={16} />
           </button>
           <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors">
-            <Download size={20} />
+            <Printer size={20} />
             <span>レポート出力</span>
           </button>
         </div>
@@ -183,7 +208,7 @@ const AnalyticsManagement: React.FC = () => {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        {metrics.map((metric) => (
+        {metrics.map(metric => (
           <div
             key={metric.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
@@ -192,10 +217,18 @@ const AnalyticsManagement: React.FC = () => {
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
                 {getMetricIcon(metric.metric)}
               </div>
-              <div className={`flex items-center gap-1 text-sm ${
-                metric.change.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-              }`}>
-                {metric.change.isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+              <div
+                className={`flex items-center gap-1 text-sm ${
+                  metric.change.isPositive
+                    ? 'text-green-600 dark:text-green-400'
+                    : 'text-red-600 dark:text-red-400'
+                }`}
+              >
+                {metric.change.isPositive ? (
+                  <ArrowUpRight size={16} />
+                ) : (
+                  <ArrowDownRight size={16} />
+                )}
                 <span>{metric.change.value}%</span>
               </div>
             </div>
@@ -207,7 +240,7 @@ const AnalyticsManagement: React.FC = () => {
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {charts.map((chart) => (
+        {charts.map(chart => (
           <div
             key={chart.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"

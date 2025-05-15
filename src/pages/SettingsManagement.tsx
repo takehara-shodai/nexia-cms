@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Settings, Search, Save, Globe, Database, Shield, Bell, Trash, Archive, Clock, Server, RefreshCw } from 'lucide-react';
+import {
+  Settings,
+  Search,
+  Save,
+  Globe,
+  Database,
+  Shield,
+  _Bell,
+  _Trash,
+  Archive,
+  _Clock,
+  _Server,
+  RefreshCw,
+} from 'lucide-react';
 
 interface SettingSection {
   id: string;
@@ -13,8 +26,8 @@ interface SettingField {
   id: string;
   label: string;
   type: 'text' | 'number' | 'email' | 'select' | 'toggle' | 'textarea';
-  value: string | number | boolean;
-  options?: { value: string; label: string }[];
+  _value: string | number | boolean;
+  options?: { _value: string; label: string }[];
   description?: string;
 }
 
@@ -33,28 +46,28 @@ const SettingsManagement: React.FC = () => {
           id: 'site_name',
           label: 'サイト名',
           type: 'text',
-          value: 'My CMS',
-          description: 'システム全体で使用されるサイト名'
+          _value: 'My CMS',
+          description: 'システム全体で使用されるサイト名',
         },
         {
           id: 'admin_email',
           label: '管理者メールアドレス',
           type: 'email',
-          value: 'admin@example.com',
-          description: 'システム通知の送信先メールアドレス'
+          _value: 'admin@example.com',
+          description: 'システム通知の送信先メールアドレス',
         },
         {
           id: 'timezone',
           label: 'タイムゾーン',
           type: 'select',
-          value: 'Asia/Tokyo',
+          _value: 'Asia/Tokyo',
           options: [
-            { value: 'Asia/Tokyo', label: '東京 (UTC+9:00)' },
-            { value: 'America/New_York', label: 'ニューヨーク (UTC-5:00)' },
-            { value: 'Europe/London', label: 'ロンドン (UTC+0:00)' }
-          ]
-        }
-      ]
+            { _value: 'Asia/Tokyo', label: '東京 (UTC+9:00)' },
+            { _value: 'America/New_York', label: 'ニューヨーク (UTC-5:00)' },
+            { _value: 'Europe/London', label: 'ロンドン (UTC+0:00)' },
+          ],
+        },
+      ],
     },
     {
       id: 'site',
@@ -66,24 +79,24 @@ const SettingsManagement: React.FC = () => {
           id: 'site_url',
           label: 'サイトURL',
           type: 'text',
-          value: 'https://example.com',
-          description: 'メインサイトのURL'
+          _value: 'https://example.com',
+          description: 'メインサイトのURL',
         },
         {
           id: 'maintenance_mode',
           label: 'メンテナンスモード',
           type: 'toggle',
-          value: false,
-          description: 'サイトをメンテナンスモードに切り替え'
+          _value: false,
+          description: 'サイトをメンテナンスモードに切り替え',
         },
         {
           id: 'meta_description',
           label: 'メタ説明',
           type: 'textarea',
-          value: 'サイトのデフォルトメタ説明',
-          description: 'デフォルトのメタ説明文'
-        }
-      ]
+          _value: 'サイトのデフォルトメタ説明',
+          description: 'デフォルトのメタ説明文',
+        },
+      ],
     },
     {
       id: 'security',
@@ -95,24 +108,24 @@ const SettingsManagement: React.FC = () => {
           id: 'two_factor',
           label: '二要素認証',
           type: 'toggle',
-          value: true,
-          description: '管理者アカウントの二要素認証を有効化'
+          _value: true,
+          description: '管理者アカウントの二要素認証を有効化',
         },
         {
           id: 'session_timeout',
           label: 'セッションタイムアウト',
           type: 'number',
-          value: 30,
-          description: '管理画面のセッションタイムアウト（分）'
+          _value: 30,
+          description: '管理画面のセッションタイムアウト（分）',
         },
         {
           id: 'allowed_ips',
           label: '許可IPアドレス',
           type: 'textarea',
-          value: '',
-          description: '管理画面へのアクセスを許可するIPアドレス（1行に1つ）'
-        }
-      ]
+          _value: '',
+          description: '管理画面へのアクセスを許可するIPアドレス（1行に1つ）',
+        },
+      ],
     },
     {
       id: 'cache',
@@ -124,17 +137,17 @@ const SettingsManagement: React.FC = () => {
           id: 'cache_enabled',
           label: 'キャッシュ有効化',
           type: 'toggle',
-          value: true,
-          description: 'システム全体のキャッシュを有効化'
+          _value: true,
+          description: 'システム全体のキャッシュを有効化',
         },
         {
           id: 'cache_lifetime',
           label: 'キャッシュ有効期間',
           type: 'number',
-          value: 3600,
-          description: 'キャッシュの有効期間（秒）'
-        }
-      ]
+          _value: 3600,
+          description: 'キャッシュの有効期間（秒）',
+        },
+      ],
     },
     {
       id: 'backup',
@@ -146,34 +159,38 @@ const SettingsManagement: React.FC = () => {
           id: 'auto_backup',
           label: '自動バックアップ',
           type: 'toggle',
-          value: true,
-          description: '定期的な自動バックアップを有効化'
+          _value: true,
+          description: '定期的な自動バックアップを有効化',
         },
         {
           id: 'backup_frequency',
           label: 'バックアップ頻度',
           type: 'select',
-          value: 'daily',
+          _value: 'daily',
           options: [
-            { value: 'daily', label: '毎日' },
-            { value: 'weekly', label: '毎週' },
-            { value: 'monthly', label: '毎月' }
-          ]
+            { _value: 'daily', label: '毎日' },
+            { _value: 'weekly', label: '毎週' },
+            { _value: 'monthly', label: '毎月' },
+          ],
         },
         {
           id: 'backup_retention',
           label: '保持期間',
           type: 'number',
-          value: 30,
-          description: 'バックアップの保持期間（日）'
-        }
-      ]
-    }
+          _value: 30,
+          description: 'バックアップの保持期間（日）',
+        },
+      ],
+    },
   ]);
 
-  const handleFieldChange = (sectionId: string, fieldId: string, value: string | number | boolean) => {
+  const handleFieldChange = (
+    _sectionId: string,
+    _fieldId: string,
+    _value: string | number | boolean
+  ) => {
     setIsDirty(true);
-    // Handle field value change
+    // Handle field _value change
   };
 
   const handleSave = () => {
@@ -218,7 +235,10 @@ const SettingsManagement: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
                 <input
                   type="text"
                   placeholder="設定を検索..."
@@ -227,7 +247,7 @@ const SettingsManagement: React.FC = () => {
               </div>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {sections.map((section) => (
+              {sections.map(section => (
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
@@ -240,7 +260,9 @@ const SettingsManagement: React.FC = () => {
                   {section.icon}
                   <div>
                     <h3 className="font-medium">{section.title}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{section.description}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {section.description}
+                    </p>
                   </div>
                 </button>
               ))}
@@ -276,7 +298,10 @@ const SettingsManagement: React.FC = () => {
           {sections
             .filter(section => section.id === activeSection)
             .map(section => (
-              <div key={section.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div
+                key={section.id}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+              >
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center gap-3">
                     {section.icon}
@@ -293,21 +318,23 @@ const SettingsManagement: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           {field.label}
                         </label>
-                        {field.type === 'text' || field.type === 'email' || field.type === 'number' ? (
+                        {field.type === 'text' ||
+                        field.type === 'email' ||
+                        field.type === 'number' ? (
                           <input
                             type={field.type}
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(section.id, field.id, e.target.value)}
+                            _value={field._value}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           />
                         ) : field.type === 'select' ? (
                           <select
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(section.id, field.id, e.target.value)}
+                            _value={field._value}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           >
                             {field.options?.map(option => (
-                              <option key={option.value} value={option.value}>
+                              <option key={option._value} _value={option._value}>
                                 {option.label}
                               </option>
                             ))}
@@ -316,16 +343,18 @@ const SettingsManagement: React.FC = () => {
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input
                               type="checkbox"
-                              checked={field.value as boolean}
-                              onChange={(e) => handleFieldChange(section.id, field.id, e.target.checked)}
+                              checked={field._value as boolean}
+                              onChange={e =>
+                                handleFieldChange(section.id, field.id, e.target.checked)
+                              }
                               className="sr-only peer"
                             />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                           </label>
                         ) : field.type === 'textarea' ? (
                           <textarea
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(section.id, field.id, e.target.value)}
+                            _value={field._value}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
                             rows={4}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           />

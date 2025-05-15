@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { ListChecks, Search, Filter, Plus, Clock, User, Calendar, CheckCircle, XCircle, AlertTriangle, ArrowRight, ChevronDown, Settings } from 'lucide-react';
+import {
+  ListChecks,
+  Search,
+  Filter,
+  Plus,
+  Clock,
+  User,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  _ArrowRight,
+  ChevronDown,
+  Settings,
+} from 'lucide-react';
 
 interface Task {
   id: string;
@@ -25,7 +39,7 @@ interface Approval {
 
 const WorkflowManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tasks' | 'approvals' | 'settings'>('tasks');
-  
+
   const [tasks] = useState<Task[]>([
     {
       id: '1',
@@ -35,7 +49,7 @@ const WorkflowManagement: React.FC = () => {
       priority: 'high',
       assignee: '山田太郎',
       dueDate: '2024-03-20',
-      createdAt: '2024-03-15'
+      createdAt: '2024-03-15',
     },
     {
       id: '2',
@@ -45,7 +59,7 @@ const WorkflowManagement: React.FC = () => {
       priority: 'medium',
       assignee: '佐藤花子',
       dueDate: '2024-03-18',
-      createdAt: '2024-03-14'
+      createdAt: '2024-03-14',
     },
     {
       id: '3',
@@ -55,8 +69,8 @@ const WorkflowManagement: React.FC = () => {
       priority: 'low',
       assignee: '鈴木一郎',
       dueDate: '2024-03-16',
-      createdAt: '2024-03-13'
-    }
+      createdAt: '2024-03-13',
+    },
   ]);
 
   const [approvals] = useState<Approval[]>([
@@ -66,7 +80,7 @@ const WorkflowManagement: React.FC = () => {
       requestedBy: '山田太郎',
       status: 'pending',
       type: 'publish',
-      requestedAt: '2024-03-15 10:30'
+      requestedAt: '2024-03-15 10:30',
     },
     {
       id: '2',
@@ -76,7 +90,7 @@ const WorkflowManagement: React.FC = () => {
       type: 'update',
       requestedAt: '2024-03-14 15:45',
       reviewedBy: '鈴木一郎',
-      reviewedAt: '2024-03-14 16:30'
+      reviewedAt: '2024-03-14 16:30',
     },
     {
       id: '3',
@@ -86,8 +100,8 @@ const WorkflowManagement: React.FC = () => {
       type: 'delete',
       requestedAt: '2024-03-13 09:15',
       reviewedBy: '山田太郎',
-      reviewedAt: '2024-03-13 11:20'
-    }
+      reviewedAt: '2024-03-13 11:20',
+    },
   ]);
 
   const getStatusColor = (status: Task['status'] | Approval['status']) => {
@@ -148,7 +162,7 @@ const WorkflowManagement: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: Task['status'] | Approval['status']) => {
+  const _getStatusIcon = (status: Task['status'] | Approval['status']) => {
     switch (status) {
       case 'completed':
       case 'approved':
@@ -220,7 +234,10 @@ const WorkflowManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="検索..."
@@ -239,16 +256,23 @@ const WorkflowManagement: React.FC = () => {
       {activeTab === 'tasks' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {tasks.map((task) => (
-              <div key={task.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {tasks.map(task => (
+              <div
+                key={task.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-medium">{task.title}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${getPriorityColor(task.priority)}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getPriorityColor(task.priority)}`}
+                      >
                         {task.priority === 'high' ? '高' : task.priority === 'medium' ? '中' : '低'}
                       </span>
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(task.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getStatusColor(task.status)}`}
+                      >
                         {getStatusText(task.status)}
                       </span>
                     </div>
@@ -281,13 +305,18 @@ const WorkflowManagement: React.FC = () => {
       {activeTab === 'approvals' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {approvals.map((approval) => (
-              <div key={approval.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {approvals.map(approval => (
+              <div
+                key={approval.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-medium">{approval.contentTitle}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(approval.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getStatusColor(approval.status)}`}
+                      >
                         {getStatusText(approval.status)}
                       </span>
                     </div>
@@ -358,16 +387,31 @@ const WorkflowManagement: React.FC = () => {
                     </label>
                     <div className="space-y-2">
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの公開</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          コンテンツの公開
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの更新</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          コンテンツの更新
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの削除</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          コンテンツの削除
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -382,16 +426,31 @@ const WorkflowManagement: React.FC = () => {
                     </label>
                     <div className="space-y-2">
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">メール通知</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          メール通知
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">システム内通知</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          システム内通知
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Slack通知</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          Slack通知
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -401,16 +460,31 @@ const WorkflowManagement: React.FC = () => {
                     </label>
                     <div className="space-y-2">
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">タスク割り当て時</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          タスク割り当て時
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">期限前日</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          期限前日
+                        </span>
                       </label>
                       <label className="flex items-center">
-                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">期限切れ時</span>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          期限切れ時
+                        </span>
                       </label>
                     </div>
                   </div>

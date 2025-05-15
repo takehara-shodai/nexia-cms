@@ -17,7 +17,7 @@ interface TenantState {
   setCurrentTenant: (tenant: Tenant) => void;
 }
 
-export const useTenantStore = create<TenantState>((set) => ({
+export const useTenantStore = create<TenantState>(set => ({
   currentTenant: null,
   tenants: [],
   isLoading: false,
@@ -25,40 +25,44 @@ export const useTenantStore = create<TenantState>((set) => ({
   fetchTenants: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user?.id) {
-        set({ 
+        set({
           tenants: [],
           currentTenant: null,
           error: 'User not authenticated',
-          isLoading: false 
+          isLoading: false,
         });
         return;
       }
 
       const { data: userTenants, error: userTenantsError } = await supabase
         .from('user_tenants')
-        .select(`
+        .select(
+          `
           tenant:tenants (
             id,
             name,
             short_name
           )
-        `)
+        `
+        )
         .eq('user_id', user.id);
 
       if (userTenantsError) throw userTenantsError;
 
       const tenants = userTenants.map(ut => ut.tenant);
-      set({ 
+      set({
         tenants,
         currentTenant: tenants[0] || null,
-        isLoading: false 
+        isLoading: false,
       });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
   },
-  setCurrentTenant: (tenant) => set({ currentTenant: tenant }),
+  setCurrentTenant: tenant => set({ currentTenant: tenant }),
 }));

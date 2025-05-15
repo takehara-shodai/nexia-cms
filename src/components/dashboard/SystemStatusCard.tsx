@@ -49,7 +49,9 @@ const SystemStatusCard = ({ statuses }: SystemStatusCardProps) => {
           <div key={index} className="px-6 py-4 flex items-center justify-between">
             <div className="flex items-center">
               <div className={`w-3 h-3 rounded-full ${getStatusColor(item.status)}`}></div>
-              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-white">{item.name}</span>
+              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-white">
+                {item.name}
+              </span>
             </div>
             <div className="flex items-center">
               <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">

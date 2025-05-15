@@ -17,7 +17,7 @@ interface ContentData {
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   // Mock data - replace with actual data fetching
   const [content, setContent] = useState<ContentData>({
     id: id || '1',
@@ -28,7 +28,7 @@ const ContentDetail: React.FC = () => {
     author: '山田太郎',
     createdAt: '2024-03-01',
     updatedAt: '2024-03-10',
-    tags: ['トレンド', '2024', '予測']
+    tags: ['トレンド', '2024', '予測'],
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -111,12 +111,12 @@ const ContentDetail: React.FC = () => {
                 <input
                   type="text"
                   value={content.title}
-                  onChange={(e) => setContent({ ...content, title: e.target.value })}
+                  onChange={e => setContent({ ...content, title: e.target.value })}
                   className="w-full text-2xl font-bold mb-4 bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-0"
                 />
                 <textarea
                   value={content.content}
-                  onChange={(e) => setContent({ ...content, content: e.target.value })}
+                  onChange={e => setContent({ ...content, content: e.target.value })}
                   className="w-full h-64 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg p-4 focus:border-blue-500 focus:ring-0"
                 />
               </>

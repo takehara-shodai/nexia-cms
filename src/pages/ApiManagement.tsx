@@ -1,5 +1,26 @@
 import React, { useState } from 'react';
-import { Key, RefreshCw, Copy, Eye, EyeOff, AlertTriangle, CheckCircle, XCircle, Search, Filter, Plus, Code, Settings, Trash, ArrowRight, Globe, Lock, Book, Terminal, Download } from 'lucide-react';
+import {
+  Key,
+  _RefreshCw,
+  Copy,
+  Eye,
+  EyeOff,
+  _AlertTriangle,
+  _CheckCircle,
+  _XCircle,
+  Search,
+  Filter,
+  Plus,
+  _Code,
+  Settings,
+  Trash,
+  _ArrowRight,
+  Globe,
+  Lock,
+  Book,
+  Terminal,
+  Download,
+} from 'lucide-react';
 
 interface ApiEndpoint {
   id: string;
@@ -49,8 +70,8 @@ interface ApiKey {
 const ApiManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'endpoints' | 'auth' | 'docs'>('endpoints');
   const [showKey, setShowKey] = useState<string | null>(null);
-  const [showEndpointModal, setShowEndpointModal] = useState(false);
-  const [editingEndpoint, setEditingEndpoint] = useState<ApiEndpoint | null>(null);
+  const [_showEndpointModal, _setShowEndpointModal] = useState(false);
+  const [_editingEndpoint, _setEditingEndpoint] = useState<ApiEndpoint | null>(null);
 
   const [endpoints] = useState<ApiEndpoint[]>([
     {
@@ -67,32 +88,32 @@ const ApiManagement: React.FC = () => {
           type: 'number',
           required: false,
           description: 'ページ番号',
-          example: '1'
+          example: '1',
         },
         {
           name: 'limit',
           type: 'number',
           required: false,
           description: '1ページあたりの件数',
-          example: '10'
-        }
+          example: '10',
+        },
       ],
       responses: [
         {
           status: 200,
           description: '成功',
           schema: 'ContentList',
-          example: '{ "items": [], "total": 0 }'
-        }
+          example: '{ "items": [], "total": 0 }',
+        },
       ],
       rateLimit: {
         requests: 1000,
-        period: '1時間'
+        period: '1時間',
       },
       cache: {
         enabled: true,
-        duration: '5分'
-      }
+        duration: '5分',
+      },
     },
     {
       id: '2',
@@ -107,9 +128,9 @@ const ApiManagement: React.FC = () => {
           name: 'id',
           type: 'string',
           required: true,
-          description: 'コンテンツID'
-        }
-      ]
+          description: 'コンテンツID',
+        },
+      ],
     },
     {
       id: '3',
@@ -118,8 +139,8 @@ const ApiManagement: React.FC = () => {
       description: '新しい分析API',
       auth: true,
       status: 'beta',
-      version: '2.0'
-    }
+      version: '2.0',
+    },
   ]);
 
   const [apiKeys] = useState<ApiKey[]>([
@@ -130,7 +151,7 @@ const ApiManagement: React.FC = () => {
       createdAt: '2024-03-01',
       lastUsed: '2024-03-15',
       status: 'active',
-      permissions: ['read', 'write']
+      permissions: ['read', 'write'],
     },
     {
       id: '2',
@@ -139,8 +160,8 @@ const ApiManagement: React.FC = () => {
       createdAt: '2024-03-10',
       lastUsed: '2024-03-14',
       status: 'active',
-      permissions: ['read']
-    }
+      permissions: ['read'],
+    },
   ]);
 
   const copyToClipboard = (text: string) => {
@@ -241,10 +262,15 @@ const ApiManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
-                placeholder={activeTab === 'endpoints' ? 'エンドポイントを検索...' : 'APIキーを検索...'}
+                placeholder={
+                  activeTab === 'endpoints' ? 'エンドポイントを検索...' : 'APIキーを検索...'
+                }
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
               />
             </div>
@@ -260,18 +286,28 @@ const ApiManagement: React.FC = () => {
       {activeTab === 'endpoints' && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {endpoints.map((endpoint) => (
-              <div key={endpoint.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            {endpoints.map(endpoint => (
+              <div
+                key={endpoint.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${getMethodColor(endpoint.method)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getMethodColor(endpoint.method)}`}
+                      >
                         {endpoint.method}
                       </span>
                       <h3 className="text-lg font-medium font-mono">{endpoint.path}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(endpoint.status)}`}>
-                        {endpoint.status === 'active' ? '有効' :
-                         endpoint.status === 'beta' ? 'ベータ版' : '非推奨'}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${getStatusColor(endpoint.status)}`}
+                      >
+                        {endpoint.status === 'active'
+                          ? '有効'
+                          : endpoint.status === 'beta'
+                            ? 'ベータ版'
+                            : '非推奨'}
                       </span>
                       {endpoint.auth && (
                         <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 rounded-full text-xs">
@@ -283,7 +319,10 @@ const ApiManagement: React.FC = () => {
                     <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                       <span>バージョン: {endpoint.version}</span>
                       {endpoint.rateLimit && (
-                        <span>レート制限: {endpoint.rateLimit.requests}リクエスト/{endpoint.rateLimit.period}</span>
+                        <span>
+                          レート制限: {endpoint.rateLimit.requests}リクエスト/
+                          {endpoint.rateLimit.period}
+                        </span>
                       )}
                       {endpoint.cache?.enabled && (
                         <span>キャッシュ: {endpoint.cache.duration}</span>
@@ -312,11 +351,15 @@ const ApiManagement: React.FC = () => {
                         <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-mono text-sm">{param.name}</span>
-                            <span className={`text-xs ${param.required ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                            <span
+                              className={`text-xs ${param.required ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}
+                            >
                               {param.required ? '必須' : 'オプション'}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{param.description}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {param.description}
+                          </p>
                           {param.example && (
                             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                               例: {param.example}
@@ -336,13 +379,15 @@ const ApiManagement: React.FC = () => {
                       {endpoint.responses.map((response, index) => (
                         <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className={`px-2 py-1 rounded text-xs ${
-                              response.status >= 200 && response.status < 300
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                : response.status >= 400
-                                ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                                : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                            }`}>
+                            <span
+                              className={`px-2 py-1 rounded text-xs ${
+                                response.status >= 200 && response.status < 300
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : response.status >= 400
+                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                              }`}
+                            >
                               {response.status}
                             </span>
                             <span className="text-sm">{response.description}</span>
@@ -375,8 +420,11 @@ const ApiManagement: React.FC = () => {
               </div>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {apiKeys.map((apiKey) => (
-                <div key={apiKey.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              {apiKeys.map(apiKey => (
+                <div
+                  key={apiKey.id}
+                  className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-lg font-medium mb-1">{apiKey.name}</h3>
@@ -398,8 +446,14 @@ const ApiManagement: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(apiKey.status)}`}>
-                      {apiKey.status === 'active' ? '有効' : apiKey.status === 'expired' ? '期限切れ' : '無効'}
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm ${getStatusColor(apiKey.status)}`}
+                    >
+                      {apiKey.status === 'active'
+                        ? '有効'
+                        : apiKey.status === 'expired'
+                          ? '期限切れ'
+                          : '無効'}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
@@ -420,7 +474,9 @@ const ApiManagement: React.FC = () => {
             <div className="p-6">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">認証方式</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    認証方式
+                  </h3>
                   <div className="space-y-2">
                     <label className="flex items-center">
                       <input
@@ -429,58 +485,53 @@ const ApiManagement: React.FC = () => {
                         className="form-radio text-blue-600"
                         checked
                       />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">APIキー認証</span>
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        APIキー認証
+                      </span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="auth-method"
-                        className="form-radio text-blue-600"
-                      />
+                      <input type="radio" name="auth-method" className="form-radio text-blue-600" />
                       <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">JWT認証</span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="auth-method"
-                        className="form-radio text-blue-600"
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">OAuth 2.0</span>
+                      <input type="radio" name="auth-method" className="form-radio text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        OAuth 2.0
+                      </span>
                     </label>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">セキュリティ設定</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    セキュリティ設定
+                  </h3>
                   <div className="space-y-2">
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                        checked
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">CORS制限を有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" checked />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        CORS制限を有効化
+                      </span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                        checked
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">レート制限を有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" checked />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        レート制限を有効化
+                      </span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">IP制限を有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        IP制限を有効化
+                      </span>
                     </label>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">トークン設定</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    トークン設定
+                  </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
@@ -532,7 +583,9 @@ const ApiManagement: React.FC = () => {
             <div className="p-6">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">ドキュメント設定</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    ドキュメント設定
+                  </h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
@@ -568,36 +621,35 @@ const ApiManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">公開設定</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    公開設定
+                  </h3>
                   <div className="space-y-2">
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                        checked
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">公開ドキュメントを有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" checked />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        公開ドキュメントを有効化
+                      </span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                        checked
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Swagger UIを有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" checked />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        Swagger UIを有効化
+                      </span>
                     </label>
                     <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox text-blue-600"
-                      />
-                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Redocを有効化</span>
+                      <input type="checkbox" className="form-checkbox text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        Redocを有効化
+                      </span>
                     </label>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">カスタマイズ</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    カスタマイズ
+                  </h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
@@ -625,7 +677,7 @@ const ApiManagement: React.FC = () => {
             </div>
           </div>
 
-          {/* Example Code */}
+          {/* Example _Code */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-medium">サンプルコード</h2>
@@ -633,7 +685,9 @@ const ApiManagement: React.FC = () => {
             <div className="p-6">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">cURL</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    cURL
+                  </h3>
                   <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg overflow-x-auto">
                     <code>{`curl -X GET "https://api.example.com/v1/content" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
@@ -642,7 +696,9 @@ const ApiManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">JavaScript</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    JavaScript
+                  </h3>
                   <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg overflow-x-auto">
                     <code>{`fetch('https://api.example.com/v1/content', {
   headers: {
@@ -656,7 +712,9 @@ const ApiManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Python</h3>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Python
+                  </h3>
                   <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg overflow-x-auto">
                     <code>{`import requests
 

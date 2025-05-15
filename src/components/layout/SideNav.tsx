@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-//   ChevronLeft, 
+import {
+  //   ChevronLeft,
   ChevronRight,
   ChevronDown,
   LogOut,
   User as UserIcon,
   Moon,
-  Sun
+  Sun,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -21,7 +21,12 @@ type SideNavProps = {
   onToggleMode: () => void;
 };
 
-const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) => {
+const SideNav = ({
+  mode: _mode,
+  isOpen = true,
+  onClose,
+  onToggleMode: _onToggleMode,
+}: SideNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -36,7 +41,8 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
   const handleNavigation = (path: string) => {
     navigate(path);
     // モバイル表示の場合はメニューを閉じる
-    if (window.innerWidth < 1024 && onClose) {  // lg breakpoint = 1024px
+    if (window.innerWidth < 1024 && onClose) {
+      // lg breakpoint = 1024px
       onClose();
     }
   };
@@ -47,7 +53,7 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
   };
 
   // 現在のパスからアクティブなメニューアイテムを判断する
-  const isItemActive = (item: any): boolean => {
+  const isItemActive = (item: { path: string; key: string }): boolean => {
     if (item.path === '/' && location.pathname === '/') {
       return true;
     }
@@ -62,8 +68,10 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
   return (
     <div className="h-full w-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* ヘッダー・ロゴ・切り替えボタン */}
-      <div className="flex items-center border-b border-gray-200 dark:border-gray-700 m-0 p-0" 
-           style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}>
+      <div
+        className="flex items-center border-b border-gray-200 dark:border-gray-700 m-0 p-0"
+        style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}
+      >
         <div className="flex items-center justify-between w-full px-4">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
@@ -73,11 +81,11 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
           </div>
           {/* モード切り替えボタン - 一時的に非表示 */}
           {/* <button
-            onClick={onToggleMode}
+            onClick={_onToggleMode}
             className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            aria-label={mode === 'compact' ? "Switch to full mode" : "Switch to compact mode"}
+            aria-label={_mode === 'compact' ? "Switch to full mode" : "Switch to compact mode"}
           >
-            {mode === 'compact' ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+            {_mode === 'compact' ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </button> */}
         </div>
       </div>
@@ -86,11 +94,11 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
       <div className="flex-1 overflow-y-auto py-0">
         {/* Navigation Items */}
         <ul className="px-0 m-0">
-          {navigationItems.map((item) => {
+          {navigationItems.map(item => {
             const isActive = isItemActive(item);
             return (
               <li key={item.key} className="block m-0 p-0">
-                <div 
+                <div
                   className="block w-full h-16 m-0 p-0"
                   style={{ height: '64px', minHeight: '64px' }}
                 >
@@ -103,36 +111,48 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
                       }
                     }}
                     className={`w-full h-16 inline-flex items-center justify-between px-4 transition-colors outline-none focus:outline-none ${
-                      isActive 
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
-                        : expandedItems[item.key] ? 'bg-gray-100 dark:bg-gray-700' : ''
+                      isActive
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : expandedItems[item.key]
+                          ? 'bg-gray-100 dark:bg-gray-700'
+                          : ''
                     }`}
-                    style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box', border: 'none' }}
+                    style={{
+                      height: '64px',
+                      minHeight: '64px',
+                      boxSizing: 'border-box',
+                      border: 'none',
+                    }}
                   >
                     <div className="flex items-center">
                       <span className={`${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}>
                         {item.icon}
                       </span>
-                      <span className={`ml-3 font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                      <span
+                        className={`ml-3 font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}
+                      >
                         {item.label}
                       </span>
                     </div>
-                    {item.children && (
-                      expandedItems[item.key] ? <ChevronDown size={18} /> : <ChevronRight size={18} />
-                    )}
+                    {item.children &&
+                      (expandedItems[item.key] ? (
+                        <ChevronDown size={18} />
+                      ) : (
+                        <ChevronRight size={18} />
+                      ))}
                   </button>
                 </div>
                 {item.children && expandedItems[item.key] && (
                   <ul className="pl-10 mt-1 space-y-1">
-                    {item.children.map((child) => {
+                    {item.children.map(child => {
                       const isChildActive = location.pathname === child.path;
                       return (
                         <li key={child.key}>
                           <button
                             onClick={() => handleNavigation(child.path)}
                             className={`block w-full text-left py-2 px-4 rounded-md transition-colors outline-none focus:outline-none ${
-                              isChildActive 
-                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
+                              isChildActive
+                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                             style={{ border: 'none' }}
@@ -196,4 +216,4 @@ const SideNav = ({ mode, isOpen = true, onClose, onToggleMode }: SideNavProps) =
   );
 };
 
-export default SideNav; 
+export default SideNav;

@@ -2,27 +2,27 @@
 
 .dark {
   --color-bg-primary: #111827;
-  --color-bg-secondary: #1F2937;
+  --color-bg-secondary: #1f2937;
   --color-bg-tertiary: #374151;
-  --color-text-primary: #F9FAFB;
-  --color-text-secondary: #E5E7EB;
-  --color-text-tertiary: #9CA3AF;
-  --color-border: #4B5563;
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #4b5563;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
   --color-primary-bg: rgba(59, 130, 246, 0.1);
 }
 
 .light {
-  --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #F9FAFB;
-  --color-bg-tertiary: #F3F4F6;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
   --color-text-primary: #111827;
   --color-text-secondary: #374151;
-  --color-text-tertiary: #6B7280;
-  --color-border: #E5E7EB;
-  --color-primary: #2563EB;
-  --color-primary-hover: #1D4ED8;
+  --color-text-tertiary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
   --color-primary-bg: rgba(37, 99, 235, 0.1);
 }
 
@@ -30,10 +30,13 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
-body, html {
+body,
+html {
   height: 100%;
   width: 100%;
 }
@@ -42,7 +45,9 @@ body, html {
   height: 100%;
 }
 
-input:focus, button:focus, a:focus {
+input:focus,
+button:focus,
+a:focus {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }

@@ -1,5 +1,15 @@
 import { useState, useRef, DragEvent, ChangeEvent } from 'react';
-import { Upload, X, File, Image as ImageIcon, FileText, Film, Music, Archive, AlertCircle } from 'lucide-react';
+import {
+  Upload,
+  X,
+  File,
+  Image as ImageIcon,
+  FileText,
+  Film,
+  Music,
+  Archive,
+  AlertCircle,
+} from 'lucide-react';
 
 type FileUploadProps = {
   onFilesSelected: (files: File[]) => void;
@@ -18,7 +28,7 @@ const FileUpload = ({
   accept = '*',
   multiple = true,
   maxSize = 10 * 1024 * 1024, // 10MB default
-  maxFiles = 10
+  maxFiles = 10,
 }: FileUploadProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
@@ -144,17 +154,13 @@ const FileUpload = ({
         <div className="flex flex-col items-center">
           <Upload
             size={48}
-            className={`mb-4 ${
-              isDragging ? 'text-blue-500' : 'text-gray-400 dark:text-gray-500'
-            }`}
+            className={`mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400 dark:text-gray-500'}`}
           />
           <p className="text-lg font-medium mb-2">
             ドラッグ＆ドロップまたはクリックしてファイルを選択
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {accept === '*'
-              ? 'すべてのファイル形式に対応'
-              : `対応形式: ${accept}`}
+            {accept === '*' ? 'すべてのファイル形式に対応' : `対応形式: ${accept}`}
           </p>
           <button
             onClick={() => fileInputRef.current?.click()}

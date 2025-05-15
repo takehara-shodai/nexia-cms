@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Plus, Search, MoreVertical, Database, Hash, Calendar, Type, Image, List, ToggleLeft as Toggle } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  MoreVertical,
+  Database,
+  Hash,
+  Calendar,
+  Type,
+  Image,
+  List,
+  ToggleLeft as Toggle,
+} from 'lucide-react';
 
 interface ContentModel {
   id: string;
@@ -32,7 +43,7 @@ const ContentModels: React.FC = () => {
         { id: '5', name: 'タグ', type: 'array', required: false },
       ],
       createdAt: '2024-03-01',
-      updatedAt: '2024-03-10'
+      updatedAt: '2024-03-10',
     },
     {
       id: '2',
@@ -46,8 +57,8 @@ const ContentModels: React.FC = () => {
         { id: '5', name: '画像ギャラリー', type: 'array', required: false },
       ],
       createdAt: '2024-03-05',
-      updatedAt: '2024-03-08'
-    }
+      updatedAt: '2024-03-08',
+    },
   ]);
 
   const getFieldIcon = (type: ModelField['type']) => {
@@ -85,7 +96,10 @@ const ContentModels: React.FC = () => {
       {/* Search and Filters */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
           <input
             type="text"
             placeholder="モデルを検索..."
@@ -97,8 +111,11 @@ const ContentModels: React.FC = () => {
       {/* Models List */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {models.map((model) => (
-            <div key={model.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          {models.map(model => (
+            <div
+              key={model.id}
+              className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-medium mb-1">{model.name}</h3>
@@ -111,7 +128,7 @@ const ContentModels: React.FC = () => {
 
               {/* Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {model.fields.map((field) => (
+                {model.fields.map(field => (
                   <div
                     key={field.id}
                     className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"

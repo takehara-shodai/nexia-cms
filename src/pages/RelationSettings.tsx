@@ -1,7 +1,27 @@
 import React, { useState } from 'react';
-import { Search, Filter, Plus, ArrowRight, Settings, Trash, CircleDot as DragHandleDots2 } from 'lucide-react';
-import { DndContext, DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  Search,
+  Filter,
+  Plus,
+  ArrowRight,
+  Settings,
+  Trash,
+  CircleDot as DragHandleDots2,
+} from 'lucide-react';
+import {
+  DndContext,
+  DragEndEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Relation {
@@ -28,15 +48,14 @@ interface SortableRelationItemProps {
   onDelete: (id: string) => void;
 }
 
-const SortableRelationItem: React.FC<SortableRelationItemProps> = ({ relation, onEdit, onDelete }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id: relation.id });
+const SortableRelationItem: React.FC<SortableRelationItemProps> = ({
+  relation,
+  onEdit,
+  onDelete,
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: relation.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -122,11 +141,18 @@ const SortableRelationItem: React.FC<SortableRelationItemProps> = ({ relation, o
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{relation.description}</p>
       )}
       <div className="mt-3 flex items-center gap-4 text-sm">
-        <span className={`${relation.isRequired ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}>
+        <span
+          className={`${relation.isRequired ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}`}
+        >
           {relation.isRequired ? '必須' : 'オプション'}
         </span>
         <span className="text-gray-500 dark:text-gray-400">
-          削除時: {relation.onDelete === 'cascade' ? 'カスケード' : relation.onDelete === 'setNull' ? 'NULL設定' : '制限'}
+          削除時:{' '}
+          {relation.onDelete === 'cascade'
+            ? 'カスケード'
+            : relation.onDelete === 'setNull'
+              ? 'NULL設定'
+              : '制限'}
         </span>
       </div>
     </div>
@@ -143,7 +169,7 @@ const RelationSettings: React.FC = () => {
       type: 'manyToOne',
       description: '記事は1つのカテゴリーに属します',
       isRequired: true,
-      onDelete: 'restrict'
+      onDelete: 'restrict',
     },
     {
       id: '2',
@@ -153,7 +179,7 @@ const RelationSettings: React.FC = () => {
       type: 'manyToMany',
       description: '記事は複数のタグを持つことができます',
       isRequired: false,
-      onDelete: 'cascade'
+      onDelete: 'cascade',
     },
     {
       id: '3',
@@ -163,8 +189,8 @@ const RelationSettings: React.FC = () => {
       type: 'oneToOne',
       description: 'ユーザーは1つのプロフィールを持ちます',
       isRequired: true,
-      onDelete: 'cascade'
-    }
+      onDelete: 'cascade',
+    },
   ]);
 
   const [models] = useState<ContentModel[]>([
@@ -172,7 +198,7 @@ const RelationSettings: React.FC = () => {
     { id: '2', name: 'カテゴリー', description: '記事のカテゴリー', fields: 3 },
     { id: '3', name: 'タグ', description: '記事のタグ', fields: 2 },
     { id: '4', name: 'ユーザー', description: 'システムユーザー', fields: 6 },
-    { id: '5', name: 'プロフィール', description: 'ユーザープロフィール', fields: 10 }
+    { id: '5', name: 'プロフィール', description: 'ユーザープロフィール', fields: 10 },
   ]);
 
   const [showRelationModal, setShowRelationModal] = useState(false);
@@ -196,9 +222,9 @@ const RelationSettings: React.FC = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setRelations((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      setRelations(items => {
+        const oldIndex = items.findIndex(item => item.id === active.id);
+        const newIndex = items.findIndex(item => item.id === over.id);
         return arrayMove(items, oldIndex, newIndex);
       });
     }
@@ -213,9 +239,9 @@ const RelationSettings: React.FC = () => {
     setRelations(relations.filter(relation => relation.id !== id));
   };
 
-  const handleSaveRelation = (relation: Relation) => {
+  const _handleSaveRelation = (relation: Relation) => {
     if (editingRelation) {
-      setRelations(relations.map(r => r.id === relation.id ? relation : r));
+      setRelations(relations.map(r => (r.id === relation.id ? relation : r)));
     } else {
       setRelations([...relations, { ...relation, id: Date.now().toString() }]);
     }
@@ -244,7 +270,10 @@ const RelationSettings: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="リレーションを検索..."
@@ -263,7 +292,7 @@ const RelationSettings: React.FC = () => {
       <div className="space-y-4">
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <SortableContext items={relations} strategy={verticalListSortingStrategy}>
-            {relations.map((relation) => (
+            {relations.map(relation => (
               <SortableRelationItem
                 key={relation.id}
                 relation={relation}
@@ -278,7 +307,10 @@ const RelationSettings: React.FC = () => {
       {/* Relation Modal */}
       {showRelationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowRelationModal(false)}></div>
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowRelationModal(false)}
+          ></div>
           <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl m-4">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-medium">
@@ -311,7 +343,9 @@ const RelationSettings: React.FC = () => {
                     </label>
                     <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
                       {models.map(model => (
-                        <option key={model.id} value={model.name}>{model.name}</option>
+                        <option key={model.id} value={model.name}>
+                          {model.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -321,7 +355,9 @@ const RelationSettings: React.FC = () => {
                     </label>
                     <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
                       {models.map(model => (
-                        <option key={model.id} value={model.name}>{model.name}</option>
+                        <option key={model.id} value={model.name}>
+                          {model.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -356,7 +392,9 @@ const RelationSettings: React.FC = () => {
                       type="checkbox"
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">必須フィールド</span>
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      必須フィールド
+                    </span>
                   </label>
                 </div>
 
