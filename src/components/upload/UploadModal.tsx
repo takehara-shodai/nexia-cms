@@ -1,14 +1,13 @@
-import React from 'react';
 import { X } from 'lucide-react';
 import FileUpload from './FileUpload';
 
-interface UploadModalProps {
+type UploadModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onUpload: (files: File[]) => void;
-}
+};
 
-const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onUpload }) => {
+const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
   if (!isOpen) return null;
 
   return (

@@ -1,25 +1,25 @@
-import React, { useState, useRef, DragEvent, ChangeEvent } from 'react';
+import { useState, useRef, DragEvent, ChangeEvent } from 'react';
 import { Upload, X, File, Image as ImageIcon, FileText, Film, Music, Archive, AlertCircle } from 'lucide-react';
 
-interface FileUploadProps {
+type FileUploadProps = {
   onFilesSelected: (files: File[]) => void;
   accept?: string;
   multiple?: boolean;
   maxSize?: number; // in bytes
   maxFiles?: number;
-}
+};
 
 interface FileWithPreview extends File {
   preview?: string;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({
+const FileUpload = ({
   onFilesSelected,
   accept = '*',
   multiple = true,
   maxSize = 10 * 1024 * 1024, // 10MB default
   maxFiles = 10
-}) => {
+}: FileUploadProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [error, setError] = useState<string | null>(null);

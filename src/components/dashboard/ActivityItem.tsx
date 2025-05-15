@@ -1,6 +1,4 @@
-import React from 'react';
-
-export interface ActivityItemProps {
+export type ActivityItemProps = {
   user: {
     name: string;
     avatar?: string;
@@ -10,15 +8,15 @@ export interface ActivityItemProps {
   target: string;
   time: string;
   status?: 'success' | 'warning' | 'error' | 'info';
-}
+};
 
-const ActivityItem: React.FC<ActivityItemProps> = ({
+const ActivityItem = ({
   user,
   action,
   target,
   time,
   status = 'info'
-}) => {
+}: ActivityItemProps) => {
   const statusColors = {
     success: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
     warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',

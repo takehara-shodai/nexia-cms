@@ -1,7 +1,6 @@
-import React from 'react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
-interface StatCardProps {
+type StatCardProps = {
   title: string;
   value: string;
   icon: React.ReactNode;
@@ -11,16 +10,16 @@ interface StatCardProps {
   };
   bgColor: string;
   textColor: string;
-}
+};
 
-const StatCard: React.FC<StatCardProps> = ({
+const StatCard = ({
   title,
   value,
   icon,
   change,
   bgColor,
   textColor
-}) => {
+}: StatCardProps) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="p-5">

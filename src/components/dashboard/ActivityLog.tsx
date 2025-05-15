@@ -1,12 +1,11 @@
-import React from 'react';
 import ActivityItem, { ActivityItemProps } from './ActivityItem';
 
-interface ActivityLogProps {
+type ActivityLogProps = {
   activities: ActivityItemProps[];
   title: string;
-}
+};
 
-const ActivityLog: React.FC<ActivityLogProps> = ({ activities, title }) => {
+const ActivityLog = ({ activities, title }: ActivityLogProps) => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">

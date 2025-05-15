@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bell, Search, User, Settings, HelpCircle, LogOut, Sun, Moon, ChevronDown, Building } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTenantStore } from '../../store/tenantStore';
 import { supabase } from '../../lib/supabase';
 
-const TopBar: React.FC = () => {
+const TopBar = () => {
   const { theme, toggleTheme } = useTheme();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);

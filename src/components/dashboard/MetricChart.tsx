@@ -1,18 +1,18 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
-interface MetricChartProps {
+type MetricChartProps = {
   title: string;
   description?: string;
   height?: number;
-  children?: React.ReactNode;
-}
+  children?: ReactNode;
+};
 
-const MetricChart: React.FC<MetricChartProps> = ({
+const MetricChart = ({
   title,
   description,
   height = 300,
   children
-}) => {
+}: MetricChartProps) => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">

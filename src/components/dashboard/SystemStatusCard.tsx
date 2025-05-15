@@ -1,16 +1,14 @@
-import React from 'react';
-
-interface StatusItemProps {
+type StatusItemProps = {
   name: string;
   status: 'online' | 'warning' | 'error' | 'maintenance';
   details?: string;
-}
+};
 
-interface SystemStatusCardProps {
+type SystemStatusCardProps = {
   statuses: StatusItemProps[];
-}
+};
 
-const SystemStatusCard: React.FC<SystemStatusCardProps> = ({ statuses }) => {
+const SystemStatusCard = ({ statuses }: SystemStatusCardProps) => {
   const getStatusColor = (status: StatusItemProps['status']) => {
     switch (status) {
       case 'online':
