@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bell, Search, User, Settings, HelpCircle, LogOut, Sun, Moon, ChevronDown, Building } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useTenantStore } from '../../store/tenantStore';
-import { supabase } from '../../lib/supabase';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useTenantStore } from '@/store/tenantStore';
+import { supabase } from '@/lib/supabase';
 
 const TopBar = () => {
   const { theme, toggleTheme } = useTheme();

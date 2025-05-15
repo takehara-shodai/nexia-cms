@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Search, Filter, Plus, Grid, List as ListIcon, Folder, FileType, Clock, User, Trash, Download, Edit, MoreVertical } from 'lucide-react';
-import UploadModal from '../components/upload/UploadModal';
+import UploadModal from '@/components/upload/UploadModal';
 
 interface MediaItem {
   id: string;

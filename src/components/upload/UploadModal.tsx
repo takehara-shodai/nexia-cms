@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import FileUpload from './FileUpload';
+import FileUpload from '@/components/upload/FileUpload';
 
 type UploadModalProps = {
   isOpen: boolean;

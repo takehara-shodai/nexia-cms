@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import SideNav from './SideNav';
-import TopBar from './TopBar';
-import Footer from './Footer';
+import SideNav from '@/components/layout/SideNav';
+import TopBar from '@/components/layout/TopBar';
+import Footer from '@/components/layout/Footer';
 import { MenuIcon } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Layout = () => {
   const [navMode, setNavMode] = useState<'compact' | 'full'>('full'); // PC用: full=Sidebar表示、compact=SideMenu表示

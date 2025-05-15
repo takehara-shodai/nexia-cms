@@ -1,4 +1,4 @@
-import ActivityItem, { ActivityItemProps } from './ActivityItem';
+import ActivityItem, { ActivityItemProps } from '@/components/dashboard/ActivityItem';
 
 type ActivityLogProps = {
   activities: ActivityItemProps[];

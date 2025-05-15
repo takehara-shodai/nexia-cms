@@ -1,10 +1,10 @@
 import React from 'react';
-import StatCard from '../components/dashboard/StatCard';
-import ActivityLog from '../components/dashboard/ActivityLog';
-import MetricChart from '../components/dashboard/MetricChart';
-import SystemStatusCard from '../components/dashboard/SystemStatusCard';
+import StatCard from '@/components/dashboard/StatCard';
+import ActivityLog from '@/components/dashboard/ActivityLog';
+import MetricChart from '@/components/dashboard/MetricChart';
+import SystemStatusCard from '@/components/dashboard/SystemStatusCard';
 import { FileText, Users, Server, Zap, Globe, Database } from 'lucide-react';
-import { ActivityItemProps } from '../components/dashboard/ActivityItem';
+import { ActivityItemProps } from '@/components/dashboard/ActivityItem';
 
 const Dashboard: React.FC = () => {
   // Activity log data

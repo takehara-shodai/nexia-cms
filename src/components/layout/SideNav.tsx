@@ -9,10 +9,10 @@ import {
   Moon,
   Sun
 } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { supabase } from '../../lib/supabase';
-// import { useTenantStore } from '../../store/tenantStore';
-import { navigationItems } from '../../data/navigation';
+import { useTheme } from '@/contexts/ThemeContext';
+import { supabase } from '@/lib/supabase';
+// import { useTenantStore } from '@/store/tenantStore';
+import { navigationItems } from '@/data/navigation';
 
 type SideNavProps = {
   mode: 'compact' | 'full'; // compact=SideMenu, full=Sidebar
