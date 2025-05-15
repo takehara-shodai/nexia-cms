@@ -53,50 +53,57 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle, showSidebar }) =>
       {isOpen && (
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center flex-1">
-              <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold">V</span>
+          <div className="flex items-center border-b border-gray-200 dark:border-gray-700 m-0 p-0" 
+               style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}>
+            <div className="flex items-center justify-between w-full px-4">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold">V</span>
+                </div>
+                <span className="ml-2 text-lg font-semibold">CMS.VAREAL.APP</span>
               </div>
-              <span className="ml-2 text-lg font-semibold">CMS.VAREAL.APP</span>
+              {/* PC用切り替えボタン（Sidebarへ） */}
+              <button
+                onClick={onToggle}
+                className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors hidden lg:block"
+                aria-label="Show sidebar"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              {/* モバイル/タブレット用閉じるボタン */}
+              <button
+                onClick={onToggle}
+                className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors lg:hidden"
+                aria-label="Close side menu"
+              >
+                <ChevronLeft size={20} />
+              </button>
             </div>
-            {/* PC用切り替えボタン（Sidebarへ） */}
-            <button
-              onClick={onToggle}
-              className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors hidden lg:block"
-              aria-label="Show sidebar"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            {/* モバイル/タブレット用閉じるボタン */}
-            <button
-              onClick={onToggle}
-              className="ml-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors lg:hidden"
-              aria-label="Close side menu"
-            >
-              <ChevronLeft size={20} />
-            </button>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto py-0">
             {/* Projects Section */}
-            <div className="mb-6">
-              <button
-                onClick={() => handleSectionClick('projects')}
-                className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <FolderKanban size={20} />
-                  <span className="font-medium">プロジェクト</span>
-                </div>
-              </button>
+            <div className="m-0 p-0">
+              <div className="block w-full h-16 m-0 p-0"
+                   style={{ height: '64px', minHeight: '64px' }}>
+                <button
+                  onClick={() => handleSectionClick('projects')}
+                  className="w-full h-16 inline-flex items-center justify-between px-4 transition-colors"
+                  style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}
+                >
+                  <div className="flex items-center">
+                    <FolderKanban size={20} />
+                    <span className="ml-3 font-medium">プロジェクト</span>
+                  </div>
+                </button>
+              </div>
               {activeSection === 'projects' && (
-                <div className="mt-2 ml-8 space-y-2">
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                <div className="pl-10 mt-1 space-y-1">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     プロジェクト一覧
                   </button>
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     新規プロジェクト
                   </button>
                 </div>
@@ -104,28 +111,32 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle, showSidebar }) =>
             </div>
 
             {/* Tenant Settings Section */}
-            <div className="mb-6">
-              <button
-                onClick={() => handleSectionClick('tenant')}
-                className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <Building size={20} />
-                  <span className="font-medium">テナント設定</span>
-                </div>
-              </button>
+            <div className="m-0 p-0">
+              <div className="block w-full h-16 m-0 p-0"
+                   style={{ height: '64px', minHeight: '64px' }}>
+                <button
+                  onClick={() => handleSectionClick('tenant')}
+                  className="w-full h-16 inline-flex items-center justify-between px-4 transition-colors"
+                  style={{ height: '64px', minHeight: '64px', boxSizing: 'border-box' }}
+                >
+                  <div className="flex items-center">
+                    <Building size={20} />
+                    <span className="ml-3 font-medium">テナント設定</span>
+                  </div>
+                </button>
+              </div>
               {activeSection === 'tenant' && (
-                <div className="mt-2 ml-8 space-y-2">
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                <div className="pl-10 mt-1 space-y-1">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     基本設定
                   </button>
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     ユーザー管理
                   </button>
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     権限設定
                   </button>
-                  <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm">
+                  <button className="block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     API設定
                   </button>
                 </div>
@@ -133,8 +144,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onToggle, showSidebar }) =>
             </div>
 
             {/* Tenant Switcher */}
-            <div className="mb-6">
-              <div className="px-2 mb-2">
+            <div className="px-4 py-4">
+              <div className="mb-2">
                 <span className="text-sm text-gray-500 dark:text-gray-400">現在のテナント</span>
               </div>
               <select

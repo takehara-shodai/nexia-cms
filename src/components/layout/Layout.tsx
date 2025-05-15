@@ -48,7 +48,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {sidebarOpen && (
         <>
           <div className="fixed left-0 top-0 h-full z-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-[280px] lg:hidden">
-            <Sidebar closeSidebar={() => setSidebarOpen(false)} />
+            <Sidebar 
+              closeSidebar={() => setSidebarOpen(false)} 
+              onToggle={() => setSidebarOpen(false)} 
+            />
           </div>
           <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => setSidebarOpen(false)}></div>
         </>
@@ -58,7 +61,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {!sideMenuOpen && !sidebarOpen && (
         <button
           onClick={() => setSideMenuOpen(true)}
-          className="fixed top-4 left-4 z-40 p-2 rounded-md bg-white dark:bg-gray-800 shadow-md focus:outline-none lg:hidden"
+          className={`
+            fixed top-4 left-4 z-40 p-2 rounded-md bg-white dark:bg-gray-800 shadow-md focus:outline-none lg:hidden
+            border-2
+            ${showSidebar
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-500'
+              : 'hover:bg-gray-100 dark:hover:bg-gray-700 border-transparent'
+            }
+          `}
           aria-label="Open side menu"
         >
           <MenuIcon size={20} />
@@ -68,7 +78,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {!sideMenuOpen && !sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed left-0 top-1/2 -translate-y-1/2 z-30 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-r-lg shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors mt-12 lg:hidden"
+          className={`
+            fixed left-0 top-1/2 -translate-y-1/2 z-30 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-r-lg shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors mt-12 lg:hidden
+            border-2
+            ${showSidebar
+              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-500'
+              : 'hover:bg-gray-100 dark:hover:bg-gray-700 border-transparent'
+            }
+          `}
           aria-label="Open sidebar"
         >
           <span>&lt;</span>
