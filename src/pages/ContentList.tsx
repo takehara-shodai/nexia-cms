@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -19,8 +19,9 @@ import { contentApi, Content } from '@/lib/api';
 
 const ContentList: React.FC = () => {
   const navigate = useNavigate();
+  const { status: urlStatus } = useParams<{ status?: string }>();
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>(urlStatus || 'all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [contents, setContents] = useState<Content[]>([]);
@@ -30,17 +31,26 @@ const ContentList: React.FC = () => {
   useEffect(() => {
     const fetchContents = async () => {
       try {
-        const data = await contentApi.getContents();
+        setIsLoading(true);
+        setError(null);
+        
+        let data;
+        if (filterStatus === 'all') {
+          data = await contentApi.getContents();
+        } else {
+          data = await contentApi.getContentsByStatus(filterStatus);
+        }
+        
         setContents(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '取得に失敗しました');
+        setError(err instanceof Error ? err.message : 'コンテンツの取得に失敗しました');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchContents();
-  }, []);
+  }, [filterStatus]);
 
   const handleContentClick = (id: string) => {
     navigate(`/content/${id}`);
@@ -48,6 +58,11 @@ const ContentList: React.FC = () => {
 
   const handlePreview = (url: string) => {
     window.open(url, '_blank');
+  };
+
+  const handleStatusChange = (status: string) => {
+    setFilterStatus(status);
+    navigate(`/content${status === 'all' ? '' : `/${status}`}`);
   };
 
   const getStatusColor = (status: string) => {
@@ -64,17 +79,28 @@ const ContentList: React.FC = () => {
   };
 
   const filteredContents = contents.filter(content => {
-    const matchesStatus = filterStatus === 'all' || content.status?.name === filterStatus;
     const matchesSearch = content.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesSearch;
+    return matchesSearch;
   });
 
   if (isLoading) {
-    return <div>読み込み中...</div>;
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-600">読み込み中...</div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>エラー: {error}</div>;
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="text-red-700">エラー: {error}</div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -129,7 +155,7 @@ const ContentList: React.FC = () => {
           {showFilters && (
             <div className="mt-4 flex gap-2">
               <button
-                onClick={() => setFilterStatus('all')}
+                onClick={() => handleStatusChange('all')}
                 className={`px-3 py-1 rounded ${
                   filterStatus === 'all' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'
                 }`}
@@ -137,7 +163,7 @@ const ContentList: React.FC = () => {
                 すべて
               </button>
               <button
-                onClick={() => setFilterStatus('published')}
+                onClick={() => handleStatusChange('published')}
                 className={`px-3 py-1 rounded ${
                   filterStatus === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
                 }`}
@@ -145,7 +171,7 @@ const ContentList: React.FC = () => {
                 公開中
               </button>
               <button
-                onClick={() => setFilterStatus('draft')}
+                onClick={() => handleStatusChange('draft')}
                 className={`px-3 py-1 rounded ${
                   filterStatus === 'draft' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100'
                 }`}
@@ -153,7 +179,7 @@ const ContentList: React.FC = () => {
                 下書き
               </button>
               <button
-                onClick={() => setFilterStatus('archived')}
+                onClick={() => handleStatusChange('archived')}
                 className={`px-3 py-1 rounded ${
                   filterStatus === 'archived' ? 'bg-gray-100 text-gray-800' : 'bg-gray-100'
                 }`}
@@ -164,7 +190,11 @@ const ContentList: React.FC = () => {
           )}
         </div>
 
-        {viewMode === 'list' ? (
+        {filteredContents.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            コンテンツが見つかりませんでした
+          </div>
+        ) : viewMode === 'list' ? (
           <div className="divide-y">
             {filteredContents.map((content) => (
               <div
@@ -193,7 +223,7 @@ const ContentList: React.FC = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handlePreview(content.url);
+                        handlePreview(content.url || '');
                       }}
                       className="p-2 hover:bg-gray-100 rounded"
                     >
@@ -235,7 +265,7 @@ const ContentList: React.FC = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handlePreview(content.url);
+                      handlePreview(content.url || '');
                     }}
                     className="p-1 hover:bg-gray-100 rounded"
                   >
