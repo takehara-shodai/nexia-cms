@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
+import Signup from '@/pages/Signup';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
@@ -27,6 +28,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="content" element={<ContentList />} />
