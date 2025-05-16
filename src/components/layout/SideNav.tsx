@@ -77,7 +77,7 @@ const SideNav = ({
               <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
                 <span className="text-white font-bold">V</span>
               </div>
-              <span className="ml-2 text-lg font-semibold">日報アプリ</span>
+              <span className="ml-2 text-lg font-semibold">VAREAL.CMS.APP</span>
             </div>
             <button
               onClick={() => onCollapsedChange(true)}
@@ -113,15 +113,6 @@ const SideNav = ({
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-2">
-        {!isCollapsed && (
-          <button
-            onClick={() => handleNavigation('/content/create')}
-            className="w-full px-4 py-3 mb-2 bg-white rounded-lg mx-4 text-[#3B4992] font-medium flex items-center justify-center gap-2 hover:bg-white/90 transition-colors"
-          >
-            <span>新規日報作成</span>
-          </button>
-        )}
-
         <div className="px-2">
           {navigationItems.map(item => (
             <button
