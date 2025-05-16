@@ -14,6 +14,20 @@ const ContentDetail: React.FC = () => {
   useEffect(() => {
     const fetchContent = async () => {
       if (!id) return;
+      // Return early if we're on the create route
+      if (id === 'create') {
+        setContent({
+          title: '',
+          content: '',
+          created_at: new Date().toISOString(),
+          status: null,
+          author: null
+        } as Content);
+        setIsEditing(true);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const data = await contentApi.getContent(id);
         setContent(data);
@@ -28,17 +42,22 @@ const ContentDetail: React.FC = () => {
   }, [id]);
 
   const handleSave = async () => {
-    if (!content || !id) return;
+    if (!content) return;
     try {
-      await contentApi.updateContent(id, content);
-      setIsEditing(false);
+      if (id === 'create') {
+        const newContent = await contentApi.createContent(content);
+        navigate(`/content/${newContent.id}`);
+      } else {
+        await contentApi.updateContent(id!, content);
+        setIsEditing(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '更新に失敗しました');
     }
   };
 
   const handleDelete = async () => {
-    if (!id) return;
+    if (!id || id === 'create') return;
     try {
       await contentApi.deleteContent(id);
       navigate('/content');
@@ -86,13 +105,15 @@ const ContentDetail: React.FC = () => {
               保存
             </button>
           )}
-          <button
-            onClick={handleDelete}
-            className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            <Trash className="w-4 h-4 mr-2" />
-            削除
-          </button>
+          {id !== 'create' && (
+            <button
+              onClick={handleDelete}
+              className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              <Trash className="w-4 h-4 mr-2" />
+              削除
+            </button>
+          )}
         </div>
       </div>
 
