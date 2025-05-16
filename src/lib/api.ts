@@ -51,6 +51,17 @@ export const contentApi = {
   },
 
   async getDrafts() {
+    // First, get the draft status ID
+    const { data: statusData, error: statusError } = await supabase
+      .from('nexia_cms_content_statuses')
+      .select('id')
+      .eq('name', 'draft')
+      .single();
+
+    if (statusError) throw statusError;
+    if (!statusData) throw new Error('Draft status not found');
+
+    // Then use the draft status ID to query contents
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
@@ -58,7 +69,7 @@ export const contentApi = {
         type:nexia_cms_content_types(name),
         status:nexia_cms_content_statuses(name, color)
       `)
-      .eq('status_id', 'draft') // Assuming 'draft' is a valid status_id
+      .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
