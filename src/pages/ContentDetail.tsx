@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Eye, Trash, Clock, User, Calendar } from 'lucide-react';
 import { contentApi, Content } from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
@@ -17,12 +18,14 @@ const ContentDetail: React.FC = () => {
 
       // Handle new content creation
       if (id === 'new' || id === 'create') {
+        const { data: { user } } = await supabase.auth.getUser();
+        
         setContent({
           title: '',
           content: '',
           created_at: new Date().toISOString(),
           status_id: null,
-          author_id: null,
+          author_id: user?.id || null,
           type_id: null,
           slug: '',
           excerpt: null,
@@ -61,7 +64,20 @@ const ContentDetail: React.FC = () => {
     if (!content) return;
     try {
       if (id === 'new' || id === 'create') {
-        const newContent = await contentApi.createContent(content);
+        // Ensure author_id is set to current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          throw new Error('ユーザーが認証されていません');
+        }
+        
+        const contentWithAuthor = {
+          ...content,
+          author_id: user.id,
+          // Generate a slug if not provided
+          slug: content.slug || content.title.toLowerCase().replace(/\s+/g, '-')
+        };
+        
+        const newContent = await contentApi.createContent(contentWithAuthor);
         navigate(`/content/${newContent.id}`);
       } else {
         await contentApi.updateContent(id!, content);
