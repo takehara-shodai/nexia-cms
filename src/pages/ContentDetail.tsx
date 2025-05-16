@@ -11,6 +11,24 @@ const ContentDetail: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [contentTypes, setContentTypes] = useState<Array<{ id: string, name: string }>>([]);
+
+  useEffect(() => {
+    const fetchContentTypes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('nexia_cms_content_types')
+          .select('id, name');
+        
+        if (error) throw error;
+        setContentTypes(data || []);
+      } catch (err) {
+        console.error('コンテンツタイプの取得に失敗しました:', err);
+      }
+    };
+
+    fetchContentTypes();
+  }, []);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -20,13 +38,16 @@ const ContentDetail: React.FC = () => {
       if (id === 'new' || id === 'create') {
         const { data: { user } } = await supabase.auth.getUser();
         
+        // Get the first content type as default if available
+        const defaultTypeId = contentTypes.length > 0 ? contentTypes[0].id : null;
+        
         setContent({
           title: '',
           content: '',
           created_at: new Date().toISOString(),
           status_id: null,
           author_id: user?.id || null,
-          type_id: null,
+          type_id: defaultTypeId, // Set default type_id
           slug: '',
           excerpt: null,
           featured_image: null,
@@ -42,7 +63,7 @@ const ContentDetail: React.FC = () => {
       // Validate UUID format before making the API call
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(id)) {
-        setError('Invalid content ID');
+        setError('無効なコンテンツIDです');
         setIsLoading(false);
         return;
       }
@@ -58,13 +79,19 @@ const ContentDetail: React.FC = () => {
     };
 
     fetchContent();
-  }, [id]);
+  }, [id, contentTypes]);
 
   const handleSave = async () => {
     if (!content) return;
+
+    // Validate required fields
+    if (!content.type_id) {
+      setError('コンテンツタイプを選択してください');
+      return;
+    }
+
     try {
       if (id === 'new' || id === 'create') {
-        // Ensure author_id is set to current user
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           throw new Error('ユーザーが認証されていません');
@@ -73,7 +100,6 @@ const ContentDetail: React.FC = () => {
         const contentWithAuthor = {
           ...content,
           author_id: user.id,
-          // Generate a slug if not provided
           slug: content.slug || content.title.toLowerCase().replace(/\s+/g, '-')
         };
         
@@ -103,7 +129,7 @@ const ContentDetail: React.FC = () => {
   }
 
   if (error) {
-    return <div>エラー: {error}</div>;
+    return <div className="text-red-600 p-4 bg-red-50 rounded-lg">{error}</div>;
   }
 
   if (!content) {
@@ -150,44 +176,77 @@ const ContentDetail: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold">
+        <div className="space-y-4">
+          {/* Content Type Selection */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              コンテンツタイプ *
+            </label>
+            <select
+              value={content.type_id || ''}
+              onChange={(e) => setContent({ ...content, type_id: e.target.value })}
+              className="w-full border rounded-lg px-3 py-2"
+              required
+            >
+              <option value="">選択してください</option>
+              {contentTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Title */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              タイトル *
+            </label>
             {isEditing ? (
               <input
                 type="text"
                 value={content.title}
                 onChange={(e) => setContent({ ...content, title: e.target.value })}
-                className="border rounded px-2 py-1 w-full"
+                className="w-full border rounded-lg px-3 py-2"
+                required
               />
             ) : (
-              content.title
+              <h1 className="text-2xl font-bold">{content.title}</h1>
             )}
-          </h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center text-gray-600">
+          </div>
+
+          {/* Content */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              コンテンツ
+            </label>
+            {isEditing ? (
+              <textarea
+                value={content.content || ''}
+                onChange={(e) => setContent({ ...content, content: e.target.value })}
+                className="w-full border rounded-lg px-3 py-2 min-h-[200px]"
+              />
+            ) : (
+              <div className="prose max-w-none">
+                {content.content}
+              </div>
+            )}
+          </div>
+
+          {/* Metadata */}
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center">
               <Calendar className="w-4 h-4 mr-1" />
               {new Date(content.created_at).toLocaleDateString()}
             </div>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center">
               <User className="w-4 h-4 mr-1" />
               {content.author_id || '不明'}
             </div>
-            <div className={`px-3 py-1 rounded-full ${content.status_id ? 'bg-blue-100' : 'bg-gray-100'}`}>
-              {content.status_id || 'ステータスなし'}
+            <div className={`px-3 py-1 rounded-full ${content.status?.color || 'bg-gray-100'}`}>
+              {content.status?.name || 'ステータスなし'}
             </div>
           </div>
-        </div>
-
-        <div className="prose max-w-none">
-          {isEditing ? (
-            <textarea
-              value={content.content}
-              onChange={(e) => setContent({ ...content, content: e.target.value })}
-              className="border rounded p-2 w-full min-h-[200px]"
-            />
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: content.content }} />
-          )}
         </div>
       </div>
     </div>

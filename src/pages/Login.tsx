@@ -45,7 +45,7 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
       if (authError) {
         switch (authError.message) {
           case 'Invalid login credentials':
-            throw new Error('メールアドレスまたはパスワードが正しくありません');
+            throw new Error('メールアドレスまたはパスワードが正しくありません。新規登録がまだの場合は、新規登録を行ってください。');
           case 'Email not confirmed':
             throw new Error('メールアドレスの確認が完了していません。メールをご確認ください');
           case 'Too many requests':
@@ -61,6 +61,10 @@ const Login: React.FC = () => {
           default:
             throw new Error('ログインに失敗しました。もう一度お試しください');
         }
+      }
+
+      if (!data.user) {
+        throw new Error('ユーザー情報の取得に失敗しました');
       }
 
       navigate('/');
