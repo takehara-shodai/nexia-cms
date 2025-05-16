@@ -14,8 +14,9 @@ const ContentDetail: React.FC = () => {
   useEffect(() => {
     const fetchContent = async () => {
       if (!id) return;
-      // Return early if we're on the create route
-      if (id === 'create') {
+
+      // Handle new content creation
+      if (id === 'new' || id === 'create') {
         setContent({
           title: '',
           content: '',
@@ -24,6 +25,14 @@ const ContentDetail: React.FC = () => {
           author: null
         } as Content);
         setIsEditing(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate UUID format before making the API call
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        setError('Invalid content ID');
         setIsLoading(false);
         return;
       }
@@ -44,7 +53,7 @@ const ContentDetail: React.FC = () => {
   const handleSave = async () => {
     if (!content) return;
     try {
-      if (id === 'create') {
+      if (id === 'new' || id === 'create') {
         const newContent = await contentApi.createContent(content);
         navigate(`/content/${newContent.id}`);
       } else {
@@ -57,7 +66,7 @@ const ContentDetail: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (!id || id === 'create') return;
+    if (!id || id === 'new' || id === 'create') return;
     try {
       await contentApi.deleteContent(id);
       navigate('/content');
@@ -105,7 +114,7 @@ const ContentDetail: React.FC = () => {
               保存
             </button>
           )}
-          {id !== 'create' && (
+          {id !== 'new' && id !== 'create' && (
             <button
               onClick={handleDelete}
               className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
