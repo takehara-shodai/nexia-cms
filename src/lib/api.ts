@@ -26,7 +26,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(name)
+        type:nexia_cms_content_types(name),
+        status:nexia_cms_content_statuses(name, color)
       `)
       .order('created_at', { ascending: false });
 
@@ -39,7 +40,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(name)
+        type:nexia_cms_content_types(name),
+        status:nexia_cms_content_statuses(name, color)
       `)
       .eq('id', id)
       .single();
@@ -64,7 +66,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(name)
+        type:nexia_cms_content_types(name),
+        status:nexia_cms_content_statuses(name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
