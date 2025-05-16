@@ -59,9 +59,85 @@ const ContentDetail: React.FC = () => {
     return <div>コンテンツが見つかりません</div>;
   }
 
-  // 残りのコンポーネントのレンダリング部分は同じ
   return (
-    // ... 既存のJSXコード
+    <div className="container mx-auto px-4 py-6">
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={() => navigate('/content')}
+          className="flex items-center text-gray-600 hover:text-gray-900"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          戻る
+        </button>
+        <div className="flex gap-2">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              編集
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              className="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              保存
+            </button>
+          )}
+          <button
+            onClick={handleDelete}
+            className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            <Trash className="w-4 h-4 mr-2" />
+            削除
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold">
+            {isEditing ? (
+              <input
+                type="text"
+                value={content.title}
+                onChange={(e) => setContent({ ...content, title: e.target.value })}
+                className="border rounded px-2 py-1 w-full"
+              />
+            ) : (
+              content.title
+            )}
+          </h1>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center text-gray-600">
+              <Calendar className="w-4 h-4 mr-1" />
+              {new Date(content.created_at).toLocaleDateString()}
+            </div>
+            <div className="flex items-center text-gray-600">
+              <User className="w-4 h-4 mr-1" />
+              {content.author?.name || '不明'}
+            </div>
+            <div className={`px-3 py-1 rounded-full ${content.status?.color || 'bg-gray-100'}`}>
+              {content.status?.name || 'ステータスなし'}
+            </div>
+          </div>
+        </div>
+
+        <div className="prose max-w-none">
+          {isEditing ? (
+            <textarea
+              value={content.content}
+              onChange={(e) => setContent({ ...content, content: e.target.value })}
+              className="border rounded p-2 w-full min-h-[200px]"
+            />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: content.content }} />
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
