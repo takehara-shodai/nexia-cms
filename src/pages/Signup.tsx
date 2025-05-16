@@ -13,43 +13,60 @@ const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // パスワード要件のチェック
+  const checkPasswordRequirements = (password: string) => {
+    const requirements = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecialChar: /[^A-Za-z0-9]/.test(password),
+    };
+
+    // 8文字以上は必須、その他の条件のうち3つ以上を満たす必要がある
+    const optionalRequirements = [
+      requirements.hasUpperCase,
+      requirements.hasLowerCase,
+      requirements.hasNumber,
+      requirements.hasSpecialChar,
+    ];
+
+    const metOptionalRequirements = optionalRequirements.filter(Boolean).length;
+
+    return {
+      ...requirements,
+      isValid: requirements.minLength && metOptionalRequirements >= 3,
+      metOptionalCount: metOptionalRequirements,
+    };
+  };
+
   // パスワード強度の計算
-  const calculatePasswordStrength = (password: string): {
-    score: number;
-    feedback: string;
-    color: string;
-  } => {
-    let score = 0;
-    let feedback = '';
-
-    // 長さチェック
-    if (password.length >= 8) score += 1;
-    if (password.length >= 12) score += 1;
-
-    // 文字種チェック
-    if (/[A-Z]/.test(password)) score += 1; // 大文字
-    if (/[a-z]/.test(password)) score += 1; // 小文字
-    if (/[0-9]/.test(password)) score += 1; // 数字
-    if (/[^A-Za-z0-9]/.test(password)) score += 1; // 特殊文字
-
-    // スコアに基づくフィードバック
-    switch (true) {
-      case score === 0:
-        feedback = 'とても弱い';
-        return { score: 0, feedback, color: 'bg-red-500' };
-      case score <= 2:
-        feedback = '弱い';
-        return { score: 25, feedback, color: 'bg-red-500' };
-      case score <= 3:
-        feedback = '普通';
-        return { score: 50, feedback, color: 'bg-yellow-500' };
-      case score <= 4:
-        feedback = '強い';
-        return { score: 75, feedback, color: 'bg-green-500' };
-      default:
-        feedback = 'とても強い';
-        return { score: 100, feedback, color: 'bg-green-500' };
+  const calculatePasswordStrength = (password: string) => {
+    const requirements = checkPasswordRequirements(password);
+    
+    if (!requirements.minLength) {
+      return {
+        score: 0,
+        feedback: 'とても弱い',
+        color: 'bg-red-500',
+        requirements,
+      };
     }
+
+    const score = Math.min(100, (requirements.metOptionalCount / 4) * 100);
+    
+    let feedback;
+    if (score <= 25) feedback = '弱い';
+    else if (score <= 50) feedback = '普通';
+    else if (score <= 75) feedback = '強い';
+    else feedback = 'とても強い';
+
+    return {
+      score,
+      feedback,
+      color: score < 50 ? 'bg-red-500' : score < 75 ? 'bg-yellow-500' : 'bg-green-500',
+      requirements,
+    };
   };
 
   const passwordStrength = calculatePasswordStrength(password);
@@ -70,8 +87,9 @@ const Signup: React.FC = () => {
       return false;
     }
 
-    if (password.length < 6) {
-      setError('パスワードは6文字以上で入力してください');
+    const requirements = checkPasswordRequirements(password);
+    if (!requirements.isValid) {
+      setError('パスワードは8文字以上で、大文字・小文字・数字・特殊文字のうち3つ以上を含む必要があります');
       return false;
     }
 
@@ -205,7 +223,7 @@ const Signup: React.FC = () => {
                       パスワード強度: {passwordStrength.feedback}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {passwordStrength.score}%
+                      {Math.round(passwordStrength.score)}%
                     </div>
                   </div>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -214,23 +232,29 @@ const Signup: React.FC = () => {
                       style={{ width: `${passwordStrength.score}%` }}
                     ></div>
                   </div>
-                  <ul className="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                    <li className={password.length >= 8 ? 'text-green-500' : ''}>
-                      • 8文字以上
-                    </li>
-                    <li className={/[A-Z]/.test(password) ? 'text-green-500' : ''}>
-                      • 大文字を含む
-                    </li>
-                    <li className={/[a-z]/.test(password) ? 'text-green-500' : ''}>
-                      • 小文字を含む
-                    </li>
-                    <li className={/[0-9]/.test(password) ? 'text-green-500' : ''}>
-                      • 数字を含む
-                    </li>
-                    <li className={/[^A-Za-z0-9]/.test(password) ? 'text-green-500' : ''}>
-                      • 特殊文字を含む
-                    </li>
-                  </ul>
+                  <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="font-medium mb-1">パスワードの要件:</p>
+                    <ul className="space-y-1">
+                      <li className={passwordStrength.requirements.minLength ? 'text-green-500' : ''}>
+                        • 8文字以上（必須）
+                      </li>
+                      <li className={passwordStrength.requirements.hasUpperCase ? 'text-green-500' : ''}>
+                        • 大文字を含む
+                      </li>
+                      <li className={passwordStrength.requirements.hasLowerCase ? 'text-green-500' : ''}>
+                        • 小文字を含む
+                      </li>
+                      <li className={passwordStrength.requirements.hasNumber ? 'text-green-500' : ''}>
+                        • 数字を含む
+                      </li>
+                      <li className={passwordStrength.requirements.hasSpecialChar ? 'text-green-500' : ''}>
+                        • 特殊文字を含む
+                      </li>
+                    </ul>
+                    <p className="mt-2">
+                      ※ 上記のうち、8文字以上は必須です。その他の条件は3つ以上を満たす必要があります。
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
