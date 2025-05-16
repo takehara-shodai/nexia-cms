@@ -77,23 +77,16 @@ export const contentApi = {
     return data;
   },
 
-  async getContentsByStatus(statusName: string) {
-    // First get the status ID from the status name
+  async getDrafts() {
     const { data: statusData, error: statusError } = await supabase
       .from('nexia_cms_content_statuses')
       .select('id')
-      .eq('name', statusName)
+      .eq('name', 'draft')
       .single();
 
-    if (statusError) {
-      // If status not found, return empty array
-      if (statusError.code === 'PGRST116') {
-        return [];
-      }
-      throw statusError;
-    }
+    if (statusError) throw statusError;
+    if (!statusData) throw new Error('Draft status not found');
 
-    // Then get contents with that status ID
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
@@ -118,7 +111,44 @@ export const contentApi = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return data;
+  },
+
+  async getContentsByStatus(statusName: string) {
+    const { data: statusData, error: statusError } = await supabase
+      .from('nexia_cms_content_statuses')
+      .select('id')
+      .eq('name', statusName)
+      .single();
+
+    if (statusError) throw statusError;
+    if (!statusData) throw new Error(`Status "${statusName}" not found`);
+
+    const { data, error } = await supabase
+      .from('nexia_cms_contents')
+      .select(`
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
+      `)
+      .eq('status_id', statusData.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
   },
 
   async createContent(content: Partial<Content>) {
