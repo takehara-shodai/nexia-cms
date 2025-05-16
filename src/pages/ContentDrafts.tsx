@@ -3,7 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { contentApi } from '@/lib/api';
 
 function ContentDrafts() {
-  const { data: drafts, isLoading, error } = useQuery(['drafts'], contentApi.getDrafts);
+  const { data: drafts, isLoading, error } = useQuery({
+    queryKey: ['drafts'],
+    queryFn: contentApi.getDrafts
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
