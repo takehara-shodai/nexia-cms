@@ -15,7 +15,7 @@ export interface Content {
   created_at: string;
   updated_at: string;
   metadata: Record<string, any>;
-  // 結合テーブルからの情報
+  // Joined table information
   type?: { name: string };
   status?: { name: string; color: string };
   category?: { name: string };
@@ -29,7 +29,7 @@ export const contentApi = {
         *,
         type:nexia_cms_content_types(name),
         status:nexia_cms_content_statuses(name, color),
-        category:nexia_cms_categories(name)
+        category:nexia_cms_categories!nexia_cms_contents_category_id_fkey(name)
       `)
       .order('created_at', { ascending: false });
 
@@ -44,7 +44,7 @@ export const contentApi = {
         *,
         type:nexia_cms_content_types(name),
         status:nexia_cms_content_statuses(name, color),
-        category:nexia_cms_categories(name)
+        category:nexia_cms_categories!nexia_cms_contents_category_id_fkey(name)
       `)
       .eq('id', id)
       .single();
