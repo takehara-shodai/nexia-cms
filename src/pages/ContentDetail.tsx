@@ -1,184 +1,291 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Eye, Trash, Clock, User, Calendar } from 'lucide-react';
-
-interface ContentData {
-  id: string;
-  title: string;
-  content: string;
-  type: string;
-  status: 'draft' | 'published' | 'archived';
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-}
+import { contentApi, Content } from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // Mock data - replace with actual data fetching
-  const [content, setContent] = useState<ContentData>({
-    id: id || '1',
-    title: '2024年のトレンド予測',
-    content: 'ここに記事の本文が入ります...',
-    type: 'article',
-    status: 'published',
-    author: '山田太郎',
-    createdAt: '2024-03-01',
-    updatedAt: '2024-03-10',
-    tags: ['トレンド', '2024', '予測'],
-  });
-
+  const [content, setContent] = useState<Content | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [contentTypes, setContentTypes] = useState<Array<{ id: string, name: string }>>([]);
+  const [contentStatuses, setContentStatuses] = useState<Array<{ id: string, name: string }>>([]);
 
-  const handleSave = () => {
-    // Implement save functionality
-    setIsEditing(false);
-  };
+  // 必須項目のバリデーション
+  const isValid = content && content.title && content.type_id && content.status_id;
 
-  const getStatusColor = (status: ContentData['status']) => {
-    switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+  useEffect(() => {
+    const fetchContentTypes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('nexia_cms_content_types')
+          .select('id, name');
+        
+        if (error) throw error;
+        setContentTypes(data || []);
+      } catch (err) {
+        console.error('コンテンツタイプの取得に失敗しました:', err);
+      }
+    };
+
+    const fetchContentStatuses = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('nexia_cms_content_statuses')
+          .select('id, name');
+        
+        if (error) throw error;
+        setContentStatuses(data || []);
+      } catch (err) {
+        console.error('ステータスの取得に失敗しました:', err);
+      }
+    };
+
+    fetchContentTypes();
+    fetchContentStatuses();
+  }, []);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      if (!id) return;
+
+      if (id === 'new' || id === 'create') {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // Get default status (draft)
+        const defaultStatus = contentStatuses.find(status => status.name === 'draft');
+        const defaultType = contentTypes.length > 0 ? contentTypes[0].id : null;
+        
+        setContent({
+          title: '',
+          content: '',
+          created_at: new Date().toISOString(),
+          status_id: defaultStatus?.id || null,
+          author_id: user?.id || null,
+          type_id: defaultType,
+          slug: '',
+          excerpt: null,
+          featured_image: null,
+          category_id: null,
+          published_at: null,
+          metadata: {}
+        } as Content);
+        setIsEditing(true);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const data = await contentApi.getContent(id);
+        setContent(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '取得に失敗しました');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, [id, contentTypes, contentStatuses]);
+
+  const handleSave = async () => {
+    if (!content || !isValid) return;
+
+    try {
+      if (id === 'new' || id === 'create') {
+        const newContent = await contentApi.createContent(content);
+        navigate(`/content/${newContent.id}`);
+      } else {
+        await contentApi.updateContent(id!, content);
+        setIsEditing(false);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '更新に失敗しました');
     }
   };
 
-  const getStatusText = (status: ContentData['status']) => {
-    switch (status) {
-      case 'published':
-        return '公開中';
-      case 'draft':
-        return '下書き';
-      case 'archived':
-        return 'アーカイブ';
-      default:
-        return status;
+  const handleDelete = async () => {
+    if (!id || id === 'new' || id === 'create') return;
+    try {
+      await contentApi.deleteContent(id);
+      navigate('/content');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '削除に失敗しました');
     }
   };
+
+  if (isLoading) {
+    return <div>読み込み中...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-600 p-4 bg-red-50 rounded-lg">{error}</div>;
+  }
+
+  if (!content) {
+    return <div>コンテンツが見つかりません</div>;
+  }
 
   return (
-    <div className="fade-in">
-      {/* Header */}
+    <div className="container mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/content')}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold mb-1">コンテンツ詳細</h1>
-            <p className="text-gray-600 dark:text-gray-400">ID: {content.id}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-          >
-            <Eye size={20} />
-            <span>{isEditing ? 'プレビュー' : '編集'}</span>
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Save size={20} />
-            <span>保存</span>
-          </button>
-          <button className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
-            <Trash size={20} />
-          </button>
+        <button
+          onClick={() => navigate('/content')}
+          className="flex items-center text-gray-600 hover:text-gray-900"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          戻る
+        </button>
+        <div className="flex gap-2">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              編集
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              disabled={!isValid}
+              className={`flex items-center px-4 py-2 text-white rounded ${
+                isValid 
+                  ? 'bg-green-500 hover:bg-green-600' 
+                  : 'bg-gray-400 cursor-not-allowed'
+              }`}
+              title={!isValid ? '必須項目を入力してください' : undefined}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              保存
+            </button>
+          )}
+          {id !== 'new' && id !== 'create' && (
+            <button
+              onClick={handleDelete}
+              className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              <Trash className="w-4 h-4 mr-2" />
+              削除
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Title and content */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="space-y-4">
+          {/* Content Type Selection */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              コンテンツタイプ *
+              {!content.type_id && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
+            </label>
+            <select
+              value={content.type_id || ''}
+              onChange={(e) => setContent({ ...content, type_id: e.target.value })}
+              className={`w-full border rounded-lg px-3 py-2 ${
+                !content.type_id && isEditing ? 'border-red-500' : 'border-gray-300'
+              }`}
+              required
+              disabled={!isEditing}
+            >
+              <option value="">選択してください</option>
+              {contentTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Status Selection */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ステータス *
+              {!content.status_id && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
+            </label>
+            <select
+              value={content.status_id || ''}
+              onChange={(e) => setContent({ ...content, status_id: e.target.value })}
+              className={`w-full border rounded-lg px-3 py-2 ${
+                !content.status_id && isEditing ? 'border-red-500' : 'border-gray-300'
+              }`}
+              required
+              disabled={!isEditing}
+            >
+              <option value="">選択してください</option>
+              {contentStatuses.map((status) => (
+                <option key={status.id} value={status.id}>
+                  {status.name === 'draft' ? '下書き' :
+                   status.name === 'published' ? '公開' :
+                   status.name === 'archived' ? 'アーカイブ' : status.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Title */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              タイトル *
+              {!content.title && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
+            </label>
             {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={content.title}
-                  onChange={e => setContent({ ...content, title: e.target.value })}
-                  className="w-full text-2xl font-bold mb-4 bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-0"
-                />
-                <textarea
-                  value={content.content}
-                  onChange={e => setContent({ ...content, content: e.target.value })}
-                  className="w-full h-64 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg p-4 focus:border-blue-500 focus:ring-0"
-                />
-              </>
+              <input
+                type="text"
+                value={content.title}
+                onChange={(e) => setContent({ ...content, title: e.target.value })}
+                className={`w-full border rounded-lg px-3 py-2 ${
+                  !content.title && isEditing ? 'border-red-500' : 'border-gray-300'
+                }`}
+                required
+              />
             ) : (
-              <>
-                <h2 className="text-2xl font-bold mb-4">{content.title}</h2>
-                <p className="text-gray-600 dark:text-gray-400">{content.content}</p>
-              </>
+              <h1 className="text-2xl font-bold">{content.title}</h1>
             )}
           </div>
 
-          {/* Tags */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">タグ</h3>
-            <div className="flex flex-wrap gap-2">
-              {content.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Status */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">ステータス</h3>
-            <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(content.status)}`}>
-              {getStatusText(content.status)}
-            </span>
+          {/* Content */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              コンテンツ
+            </label>
+            {isEditing ? (
+              <textarea
+                value={content.content || ''}
+                onChange={(e) => setContent({ ...content, content: e.target.value })}
+                className="w-full border rounded-lg px-3 py-2 min-h-[200px] border-gray-300"
+              />
+            ) : (
+              <div className="prose max-w-none">
+                {content.content}
+              </div>
+            )}
           </div>
 
           {/* Metadata */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">メタデータ</h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <User size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">作成者</p>
-                  <p className="font-medium">{content.author}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Calendar size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">作成日</p>
-                  <p className="font-medium">{content.createdAt}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">最終更新日</p>
-                  <p className="font-medium">{content.updatedAt}</p>
-                </div>
-              </div>
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center">
+              <Calendar className="w-4 h-4 mr-1" />
+              {new Date(content.created_at).toLocaleDateString()}
+            </div>
+            <div className="flex items-center">
+              <Clock className="w-4 h-4 mr-1" />
+              最終更新: {new Date(content.updated_at || content.created_at).toLocaleDateString()}
+            </div>
+            <div className={`px-3 py-1 rounded-full ${content.status?.color || 'bg-gray-100'}`}>
+              {content.status?.name === 'draft' ? '下書き' :
+               content.status?.name === 'published' ? '公開' :
+               content.status?.name === 'archived' ? 'アーカイブ' :
+               content.status?.name || 'ステータスなし'}
             </div>
           </div>
         </div>
