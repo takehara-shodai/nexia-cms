@@ -14,6 +14,9 @@ const ContentDetail: React.FC = () => {
   const [contentTypes, setContentTypes] = useState<Array<{ id: string, name: string }>>([]);
   const [contentStatuses, setContentStatuses] = useState<Array<{ id: string, name: string }>>([]);
 
+  // 必須項目のバリデーション
+  const isValid = content && content.title && content.type_id && content.status_id;
+
   useEffect(() => {
     const fetchContentTypes = async () => {
       try {
@@ -89,7 +92,7 @@ const ContentDetail: React.FC = () => {
   }, [id, contentTypes, contentStatuses]);
 
   const handleSave = async () => {
-    if (!content) return;
+    if (!content || !isValid) return;
 
     try {
       if (id === 'new' || id === 'create') {
@@ -147,7 +150,13 @@ const ContentDetail: React.FC = () => {
           ) : (
             <button
               onClick={handleSave}
-              className="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              disabled={!isValid}
+              className={`flex items-center px-4 py-2 text-white rounded ${
+                isValid 
+                  ? 'bg-green-500 hover:bg-green-600' 
+                  : 'bg-gray-400 cursor-not-allowed'
+              }`}
+              title={!isValid ? '必須項目を入力してください' : undefined}
             >
               <Save className="w-4 h-4 mr-2" />
               保存
@@ -171,11 +180,16 @@ const ContentDetail: React.FC = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               コンテンツタイプ *
+              {!content.type_id && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
             </label>
             <select
               value={content.type_id || ''}
               onChange={(e) => setContent({ ...content, type_id: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2"
+              className={`w-full border rounded-lg px-3 py-2 ${
+                !content.type_id && isEditing ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
               disabled={!isEditing}
             >
@@ -192,11 +206,16 @@ const ContentDetail: React.FC = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               ステータス *
+              {!content.status_id && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
             </label>
             <select
               value={content.status_id || ''}
               onChange={(e) => setContent({ ...content, status_id: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2"
+              className={`w-full border rounded-lg px-3 py-2 ${
+                !content.status_id && isEditing ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
               disabled={!isEditing}
             >
@@ -215,13 +234,18 @@ const ContentDetail: React.FC = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               タイトル *
+              {!content.title && isEditing && (
+                <span className="text-red-500 ml-1">必須</span>
+              )}
             </label>
             {isEditing ? (
               <input
                 type="text"
                 value={content.title}
                 onChange={(e) => setContent({ ...content, title: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2"
+                className={`w-full border rounded-lg px-3 py-2 ${
+                  !content.title && isEditing ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
             ) : (
@@ -238,7 +262,7 @@ const ContentDetail: React.FC = () => {
               <textarea
                 value={content.content || ''}
                 onChange={(e) => setContent({ ...content, content: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 min-h-[200px]"
+                className="w-full border rounded-lg px-3 py-2 min-h-[200px] border-gray-300"
               />
             ) : (
               <div className="prose max-w-none">
