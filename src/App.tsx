@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { Toaster } from 'react-hot-toast';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Signup from '@/pages/Signup';
@@ -49,27 +48,6 @@ function App() {
             <Route path="localization" element={<LocalizationManagement />} />
           </Route>
         </Routes>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-            success: {
-              style: {
-                background: '#059669',
-              },
-            },
-            error: {
-              style: {
-                background: '#DC2626',
-              },
-              duration: 4000,
-            },
-          }}
-        />
       </BrowserRouter>
     </ThemeProvider>
   );

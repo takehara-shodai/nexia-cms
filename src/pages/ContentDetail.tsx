@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Eye, Trash, Clock, User, Calendar } from 'lucide-react';
 import { contentApi, Content } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
-import { contentSchema, type ContentFormData } from '@/lib/validation';
-import toast from 'react-hot-toast';
 
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
@@ -27,7 +25,6 @@ const ContentDetail: React.FC = () => {
         setContentTypes(data || []);
       } catch (err) {
         console.error('コンテンツタイプの取得に失敗しました:', err);
-        toast.error('コンテンツタイプの取得に失敗しました');
       }
     };
 
@@ -41,7 +38,6 @@ const ContentDetail: React.FC = () => {
         setContentStatuses(data || []);
       } catch (err) {
         console.error('ステータスの取得に失敗しました:', err);
-        toast.error('ステータスの取得に失敗しました');
       }
     };
 
@@ -58,6 +54,7 @@ const ContentDetail: React.FC = () => {
         
         // Get default status (draft)
         const defaultStatus = contentStatuses.find(status => status.name === 'draft');
+        const defaultType = contentTypes.length > 0 ? contentTypes[0].id : null;
         
         setContent({
           title: '',
@@ -65,7 +62,7 @@ const ContentDetail: React.FC = () => {
           created_at: new Date().toISOString(),
           status_id: defaultStatus?.id || null,
           author_id: user?.id || null,
-          type_id: null,
+          type_id: defaultType,
           slug: '',
           excerpt: null,
           featured_image: null,
@@ -83,65 +80,37 @@ const ContentDetail: React.FC = () => {
         setContent(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : '取得に失敗しました');
-        toast.error('コンテンツの取得に失敗しました');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchContent();
-  }, [id, contentStatuses]);
-
-  const validateContent = (data: ContentFormData) => {
-    try {
-      contentSchema.parse(data);
-      return true;
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      }
-      return false;
-    }
-  };
+  }, [id, contentTypes, contentStatuses]);
 
   const handleSave = async () => {
     if (!content) return;
 
-    // バリデーション
-    if (!validateContent(content)) {
-      return;
-    }
-
     try {
       if (id === 'new' || id === 'create') {
         const newContent = await contentApi.createContent(content);
-        toast.success('コンテンツを作成しました');
         navigate(`/content/${newContent.id}`);
       } else {
         await contentApi.updateContent(id!, content);
-        toast.success('コンテンツを更新しました');
         setIsEditing(false);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : '更新に失敗しました');
-      toast.error('保存に失敗しました');
     }
   };
 
   const handleDelete = async () => {
     if (!id || id === 'new' || id === 'create') return;
-
-    if (!window.confirm('このコンテンツを削除してもよろしいですか？')) {
-      return;
-    }
-
     try {
       await contentApi.deleteContent(id);
-      toast.success('コンテンツを削除しました');
       navigate('/content');
     } catch (err) {
       setError(err instanceof Error ? err.message : '削除に失敗しました');
-      toast.error('削除に失敗しました');
     }
   };
 
@@ -206,9 +175,7 @@ const ContentDetail: React.FC = () => {
             <select
               value={content.type_id || ''}
               onChange={(e) => setContent({ ...content, type_id: e.target.value })}
-              className={`w-full border rounded-lg px-3 py-2 ${
-                !content.type_id && 'border-red-500'
-              }`}
+              className="w-full border rounded-lg px-3 py-2"
               required
               disabled={!isEditing}
             >
@@ -219,9 +186,6 @@ const ContentDetail: React.FC = () => {
                 </option>
               ))}
             </select>
-            {!content.type_id && (
-              <p className="mt-1 text-sm text-red-500">コンテンツタイプを選択してください</p>
-            )}
           </div>
 
           {/* Status Selection */}
@@ -232,9 +196,7 @@ const ContentDetail: React.FC = () => {
             <select
               value={content.status_id || ''}
               onChange={(e) => setContent({ ...content, status_id: e.target.value })}
-              className={`w-full border rounded-lg px-3 py-2 ${
-                !content.status_id && 'border-red-500'
-              }`}
+              className="w-full border rounded-lg px-3 py-2"
               required
               disabled={!isEditing}
             >
@@ -247,9 +209,6 @@ const ContentDetail: React.FC = () => {
                 </option>
               ))}
             </select>
-            {!content.status_id && (
-              <p className="mt-1 text-sm text-red-500">ステータスを選択してください</p>
-            )}
           </div>
 
           {/* Title */}
@@ -262,16 +221,11 @@ const ContentDetail: React.FC = () => {
                 type="text"
                 value={content.title}
                 onChange={(e) => setContent({ ...content, title: e.target.value })}
-                className={`w-full border rounded-lg px-3 py-2 ${
-                  !content.title && 'border-red-500'
-                }`}
+                className="w-full border rounded-lg px-3 py-2"
                 required
               />
             ) : (
               <h1 className="text-2xl font-bold">{content.title}</h1>
-            )}
-            {!content.title && (
-              <p className="mt-1 text-sm text-red-500">タイトルを入力してください</p>
             )}
           </div>
 
