@@ -36,9 +36,13 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
-              <Route path="content" element={<ContentList />} />
-              <Route path="content/drafts" element={<ContentDrafts />} />
-              <Route path="content/:id" element={<ContentDetail />} />
+              <Route path="content">
+                <Route index element={<ContentList />} />
+                <Route path="drafts" element={<ContentDrafts />} />
+                {/* Place specific routes before the :id route */}
+                <Route path="trash" element={<ContentList status="trash" />} />
+                <Route path=":id" element={<ContentDetail />} />
+              </Route>
               <Route path="models" element={<ContentModels />} />
               <Route path="models/fields" element={<FieldSettings />} />
               <Route path="models/relations" element={<RelationSettings />} />

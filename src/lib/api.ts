@@ -27,8 +27,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .order('created_at', { ascending: false });
 
@@ -41,8 +41,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .eq('id', id)
       .single();
@@ -65,8 +65,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
@@ -89,8 +89,8 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
@@ -105,8 +105,8 @@ export const contentApi = {
       .insert([content])
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .single();
 
@@ -121,8 +121,8 @@ export const contentApi = {
       .eq('id', id)
       .select(`
         *,
-        type:nexia_cms_content_types(id, name),
-        status:nexia_cms_content_statuses(id, name, color)
+        type:type_id(id, name),
+        status:status_id(id, name, color)
       `)
       .single();
 
