@@ -12,6 +12,7 @@ const ContentDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [contentTypes, setContentTypes] = useState<Array<{ id: string, name: string }>>([]);
+  const [contentStatuses, setContentStatuses] = useState<Array<{ id: string, name: string }>>([]);
 
   useEffect(() => {
     const fetchContentTypes = async () => {
@@ -27,27 +28,41 @@ const ContentDetail: React.FC = () => {
       }
     };
 
+    const fetchContentStatuses = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('nexia_cms_content_statuses')
+          .select('id, name');
+        
+        if (error) throw error;
+        setContentStatuses(data || []);
+      } catch (err) {
+        console.error('ステータスの取得に失敗しました:', err);
+      }
+    };
+
     fetchContentTypes();
+    fetchContentStatuses();
   }, []);
 
   useEffect(() => {
     const fetchContent = async () => {
       if (!id) return;
 
-      // Handle new content creation
       if (id === 'new' || id === 'create') {
         const { data: { user } } = await supabase.auth.getUser();
         
-        // Get the first content type as default if available
-        const defaultTypeId = contentTypes.length > 0 ? contentTypes[0].id : null;
+        // Get default status (draft)
+        const defaultStatus = contentStatuses.find(status => status.name === 'draft');
+        const defaultType = contentTypes.length > 0 ? contentTypes[0].id : null;
         
         setContent({
           title: '',
           content: '',
           created_at: new Date().toISOString(),
-          status_id: null,
+          status_id: defaultStatus?.id || null,
           author_id: user?.id || null,
-          type_id: defaultTypeId, // Set default type_id
+          type_id: defaultType,
           slug: '',
           excerpt: null,
           featured_image: null,
@@ -56,14 +71,6 @@ const ContentDetail: React.FC = () => {
           metadata: {}
         } as Content);
         setIsEditing(true);
-        setIsLoading(false);
-        return;
-      }
-
-      // Validate UUID format before making the API call
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(id)) {
-        setError('無効なコンテンツIDです');
         setIsLoading(false);
         return;
       }
@@ -79,31 +86,14 @@ const ContentDetail: React.FC = () => {
     };
 
     fetchContent();
-  }, [id, contentTypes]);
+  }, [id, contentTypes, contentStatuses]);
 
   const handleSave = async () => {
     if (!content) return;
 
-    // Validate required fields
-    if (!content.type_id) {
-      setError('コンテンツタイプを選択してください');
-      return;
-    }
-
     try {
       if (id === 'new' || id === 'create') {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          throw new Error('ユーザーが認証されていません');
-        }
-        
-        const contentWithAuthor = {
-          ...content,
-          author_id: user.id,
-          slug: content.slug || content.title.toLowerCase().replace(/\s+/g, '-')
-        };
-        
-        const newContent = await contentApi.createContent(contentWithAuthor);
+        const newContent = await contentApi.createContent(content);
         navigate(`/content/${newContent.id}`);
       } else {
         await contentApi.updateContent(id!, content);
@@ -187,11 +177,35 @@ const ContentDetail: React.FC = () => {
               onChange={(e) => setContent({ ...content, type_id: e.target.value })}
               className="w-full border rounded-lg px-3 py-2"
               required
+              disabled={!isEditing}
             >
               <option value="">選択してください</option>
               {contentTypes.map((type) => (
                 <option key={type.id} value={type.id}>
                   {type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Status Selection */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ステータス *
+            </label>
+            <select
+              value={content.status_id || ''}
+              onChange={(e) => setContent({ ...content, status_id: e.target.value })}
+              className="w-full border rounded-lg px-3 py-2"
+              required
+              disabled={!isEditing}
+            >
+              <option value="">選択してください</option>
+              {contentStatuses.map((status) => (
+                <option key={status.id} value={status.id}>
+                  {status.name === 'draft' ? '下書き' :
+                   status.name === 'published' ? '公開' :
+                   status.name === 'archived' ? 'アーカイブ' : status.name}
                 </option>
               ))}
             </select>
@@ -240,11 +254,14 @@ const ContentDetail: React.FC = () => {
               {new Date(content.created_at).toLocaleDateString()}
             </div>
             <div className="flex items-center">
-              <User className="w-4 h-4 mr-1" />
-              {content.author_id || '不明'}
+              <Clock className="w-4 h-4 mr-1" />
+              最終更新: {new Date(content.updated_at || content.created_at).toLocaleDateString()}
             </div>
             <div className={`px-3 py-1 rounded-full ${content.status?.color || 'bg-gray-100'}`}>
-              {content.status?.name || 'ステータスなし'}
+              {content.status?.name === 'draft' ? '下書き' :
+               content.status?.name === 'published' ? '公開' :
+               content.status?.name === 'archived' ? 'アーカイブ' :
+               content.status?.name || 'ステータスなし'}
             </div>
           </div>
         </div>
