@@ -17,11 +17,11 @@ import {
 } from 'lucide-react';
 import { contentApi, Content } from '@/lib/api';
 
-const ContentList: React.FC = () => {
+const ContentList: React.FC<{ status?: string }> = ({ status: propStatus }) => {
   const navigate = useNavigate();
   const { status: urlStatus } = useParams<{ status?: string }>();
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [filterStatus, setFilterStatus] = useState<string>(urlStatus || 'all');
+  const [filterStatus, setFilterStatus] = useState<string>(urlStatus || propStatus || 'all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [contents, setContents] = useState<Content[]>([]);
