@@ -10,12 +10,17 @@ import {
   Moon,
   ChevronDown,
   Building,
+  Menu as MenuIcon,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTenantStore } from '@/store/tenantStore';
 import { supabase } from '@/lib/supabase';
 
-const TopBar = () => {
+interface TopBarProps {
+  onMenuClick: () => void;
+}
+
+const TopBar = ({ onMenuClick }: TopBarProps) => {
   const { theme, toggleTheme } = useTheme();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -58,8 +63,15 @@ const TopBar = () => {
 
   return (
     <header className="sticky top-0 z-10 h-16 flex items-center px-4 md:px-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-      <div className="flex-1 max-w-lg ml-12 lg:ml-0">
-        <div className="relative">
+      <button
+        onClick={onMenuClick}
+        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors lg:hidden"
+      >
+        <MenuIcon size={24} />
+      </button>
+
+      <div className="flex-1 max-w-lg ml-4 lg:ml-12">
+        <div className="relative hidden md:block">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search size={18} className="text-gray-400" />
           </div>
@@ -71,7 +83,7 @@ const TopBar = () => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 ml-auto">
+      <div className="flex items-center space-x-2 md:space-x-4 ml-auto">
         <button
           onClick={toggleTheme}
           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -132,7 +144,7 @@ const TopBar = () => {
         </div>
 
         <button
-          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors hidden md:block"
           aria-label="Help"
         >
           <HelpCircle size={20} />
@@ -148,7 +160,7 @@ const TopBar = () => {
               A
             </div>
             <span className="hidden md:block font-medium">Admin</span>
-            <ChevronDown size={16} />
+            <ChevronDown size={16} className="hidden md:block" />
           </button>
 
           {userMenuOpen && (
