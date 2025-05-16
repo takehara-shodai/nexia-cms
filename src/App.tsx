@@ -7,6 +7,7 @@ import Signup from '@/pages/Signup';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
+import ContentDrafts from '@/pages/ContentDrafts'; // New import for drafts page
 import ContentModels from '@/pages/ContentModels';
 import FieldSettings from '@/pages/FieldSettings';
 import RelationSettings from '@/pages/RelationSettings';
@@ -32,6 +33,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="content" element={<ContentList />} />
+            <Route path="content/drafts" element={<ContentDrafts />} />
             <Route path="content/:id" element={<ContentDetail />} />
             <Route path="models" element={<ContentModels />} />
             <Route path="models/fields" element={<FieldSettings />} />

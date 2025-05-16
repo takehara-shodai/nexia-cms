@@ -18,7 +18,6 @@ export interface Content {
   // Joined table information
   type?: { name: string };
   status?: { name: string; color: string };
-  category?: { name: string };
 }
 
 export const contentApi = {
@@ -28,8 +27,7 @@ export const contentApi = {
       .select(`
         *,
         type:nexia_cms_content_types(name),
-        status:nexia_cms_content_statuses(name, color),
-        category:nexia_cms_categories!nexia_cms_contents_category_id_fkey(name)
+        status:nexia_cms_content_statuses(name, color)
       `)
       .order('created_at', { ascending: false });
 
@@ -43,11 +41,25 @@ export const contentApi = {
       .select(`
         *,
         type:nexia_cms_content_types(name),
-        status:nexia_cms_content_statuses(name, color),
-        category:nexia_cms_categories!nexia_cms_contents_category_id_fkey(name)
+        status:nexia_cms_content_statuses(name, color)
       `)
       .eq('id', id)
       .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getDrafts() {
+    const { data, error } = await supabase
+      .from('nexia_cms_contents')
+      .select(`
+        *,
+        type:nexia_cms_content_types(name),
+        status:nexia_cms_content_statuses(name, color)
+      `)
+      .eq('status_id', 'draft') // Assuming 'draft' is a valid status_id
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
     return data;
