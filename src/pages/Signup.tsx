@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 const Signup: React.FC = () => {
@@ -10,6 +10,49 @@ const Signup: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // パスワード強度の計算
+  const calculatePasswordStrength = (password: string): {
+    score: number;
+    feedback: string;
+    color: string;
+  } => {
+    let score = 0;
+    let feedback = '';
+
+    // 長さチェック
+    if (password.length >= 8) score += 1;
+    if (password.length >= 12) score += 1;
+
+    // 文字種チェック
+    if (/[A-Z]/.test(password)) score += 1; // 大文字
+    if (/[a-z]/.test(password)) score += 1; // 小文字
+    if (/[0-9]/.test(password)) score += 1; // 数字
+    if (/[^A-Za-z0-9]/.test(password)) score += 1; // 特殊文字
+
+    // スコアに基づくフィードバック
+    switch (true) {
+      case score === 0:
+        feedback = 'とても弱い';
+        return { score: 0, feedback, color: 'bg-red-500' };
+      case score <= 2:
+        feedback = '弱い';
+        return { score: 25, feedback, color: 'bg-red-500' };
+      case score <= 3:
+        feedback = '普通';
+        return { score: 50, feedback, color: 'bg-yellow-500' };
+      case score <= 4:
+        feedback = '強い';
+        return { score: 75, feedback, color: 'bg-green-500' };
+      default:
+        feedback = 'とても強い';
+        return { score: 100, feedback, color: 'bg-green-500' };
+    }
+  };
+
+  const passwordStrength = calculatePasswordStrength(password);
 
   const validateForm = () => {
     if (!email) {
@@ -58,7 +101,6 @@ const Signup: React.FC = () => {
 
       if (signUpError) throw signUpError;
 
-      // サインアップ成功後、ログインページに遷移
       navigate('/login', { 
         state: { 
           message: 'アカウントを作成しました。ログインしてください。' 
@@ -136,15 +178,61 @@ const Signup: React.FC = () => {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} className="text-gray-400 hover:text-gray-500" />
+                  ) : (
+                    <Eye size={20} className="text-gray-400 hover:text-gray-500" />
+                  )}
+                </button>
               </div>
+              {password && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      パスワード強度: {passwordStrength.feedback}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {passwordStrength.score}%
+                    </div>
+                  </div>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${passwordStrength.color} transition-all duration-300`}
+                      style={{ width: `${passwordStrength.score}%` }}
+                    ></div>
+                  </div>
+                  <ul className="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                    <li className={password.length >= 8 ? 'text-green-500' : ''}>
+                      • 8文字以上
+                    </li>
+                    <li className={/[A-Z]/.test(password) ? 'text-green-500' : ''}>
+                      • 大文字を含む
+                    </li>
+                    <li className={/[a-z]/.test(password) ? 'text-green-500' : ''}>
+                      • 小文字を含む
+                    </li>
+                    <li className={/[0-9]/.test(password) ? 'text-green-500' : ''}>
+                      • 数字を含む
+                    </li>
+                    <li className={/[^A-Za-z0-9]/.test(password) ? 'text-green-500' : ''}>
+                      • 特殊文字を含む
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div>
@@ -161,15 +249,35 @@ const Signup: React.FC = () => {
                 <input
                   id="confirm-password"
                   name="confirm-password"
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} className="text-gray-400 hover:text-gray-500" />
+                  ) : (
+                    <Eye size={20} className="text-gray-400 hover:text-gray-500" />
+                  )}
+                </button>
               </div>
+              {confirmPassword && (
+                <div className="mt-1 text-sm">
+                  {password === confirmPassword ? (
+                    <span className="text-green-500">パスワードが一致しています</span>
+                  ) : (
+                    <span className="text-red-500">パスワードが一致していません</span>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
