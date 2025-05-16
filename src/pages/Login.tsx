@@ -15,17 +15,29 @@ const Login: React.FC = () => {
     setError(null);
     setIsLoading(true);
 
+    // Basic validation
+    if (!email.includes('@') || password.length < 6) {
+      setError('メールアドレスまたはパスワードが正しくありません');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (authError) {
+        if (authError.message === 'Invalid login credentials') {
+          throw new Error('メールアドレスまたはパスワードが正しくありません');
+        }
+        throw authError;
+      }
 
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'ログインに失敗しました');
+      setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました。もう一度お試しください。');
     } finally {
       setIsLoading(false);
     }
