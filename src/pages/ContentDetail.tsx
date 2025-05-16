@@ -21,8 +21,15 @@ const ContentDetail: React.FC = () => {
           title: '',
           content: '',
           created_at: new Date().toISOString(),
-          status: null,
-          author: null
+          status_id: null,
+          author_id: null,
+          type_id: null,
+          slug: '',
+          excerpt: null,
+          featured_image: null,
+          category_id: null,
+          published_at: null,
+          metadata: {}
         } as Content);
         setIsEditing(true);
         setIsLoading(false);
@@ -147,10 +154,10 @@ const ContentDetail: React.FC = () => {
             </div>
             <div className="flex items-center text-gray-600">
               <User className="w-4 h-4 mr-1" />
-              {content.author?.name || '不明'}
+              {content.author_id || '不明'}
             </div>
-            <div className={`px-3 py-1 rounded-full ${content.status?.color || 'bg-gray-100'}`}>
-              {content.status?.name || 'ステータスなし'}
+            <div className={`px-3 py-1 rounded-full ${content.status_id ? 'bg-blue-100' : 'bg-gray-100'}`}>
+              {content.status_id || 'ステータスなし'}
             </div>
           </div>
         </div>
