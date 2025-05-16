@@ -10,17 +10,39 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const validateForm = () => {
+    if (!email) {
+      setError('メールアドレスを入力してください');
+      return false;
+    }
+    
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setError('有効なメールアドレスを入力してください');
+      return false;
+    }
+
+    if (!password) {
+      setError('パスワードを入力してください');
+      return false;
+    }
+
+    if (password.length < 6) {
+      setError('パスワードは6文字以上で入力してください');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(true);
 
-    // Basic validation
-    if (!email.includes('@') || password.length < 6) {
-      setError('メールアドレスまたはパスワードが正しくありません');
-      setIsLoading(false);
+    if (!validateForm()) {
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const { error: authError } = await supabase.auth.signInWithPassword({
@@ -29,10 +51,16 @@ const Login: React.FC = () => {
       });
 
       if (authError) {
-        if (authError.message === 'Invalid login credentials') {
-          throw new Error('メールアドレスまたはパスワードが正しくありません');
+        switch (authError.message) {
+          case 'Invalid login credentials':
+            throw new Error('メールアドレスまたはパスワードが正しくありません');
+          case 'Email not confirmed':
+            throw new Error('メールアドレスの確認が完了していません。メールをご確認ください');
+          case 'Too many requests':
+            throw new Error('ログイン試行回数が多すぎます。しばらく時間をおいてから再度お試しください');
+          default:
+            throw new Error('ログインに失敗しました。もう一度お試しください');
         }
-        throw authError;
       }
 
       navigate('/');
@@ -156,6 +184,28 @@ const Login: React.FC = () => {
               </button>
             </div>
           </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                  アカウントをお持ちでない方
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <a
+                href="/signup"
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                新規登録
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
