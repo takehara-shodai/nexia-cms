@@ -25,9 +25,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:nexia_cms_content_types(name),
-        status:nexia_cms_content_statuses(name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
       `)
       .order('created_at', { ascending: false });
 
@@ -39,9 +52,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:nexia_cms_content_types(name),
-        status:nexia_cms_content_statuses(name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
       `)
       .eq('id', id)
       .single();
@@ -65,9 +91,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:nexia_cms_content_types(name),
-        status:nexia_cms_content_statuses(name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
