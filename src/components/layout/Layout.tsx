@@ -7,9 +7,10 @@ import { MenuIcon } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const Layout = () => {
-  const [navMode, setNavMode] = useState<'compact' | 'full'>('full'); // PC用: full=Sidebar表示、compact=SideMenu表示
+  const [navMode, setNavMode] = useState<'compact' | 'full'>('full');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { theme } = useTheme();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleNavMode = () => {
     setNavMode(prev => (prev === 'full' ? 'compact' : 'full'));
@@ -21,8 +22,15 @@ const Layout = () => {
       style={{ backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}
     >
       {/* PC（lg以上）: 常に表示 */}
-      <div className="hidden lg:block fixed left-0 top-0 h-full z-30 w-[280px]">
-        <SideNav mode={navMode} onToggleMode={toggleNavMode} />
+      <div className={`hidden lg:block fixed left-0 top-0 h-full z-30 transition-all duration-300 ${
+        isCollapsed ? 'w-[72px]' : 'w-[280px]'
+      }`}>
+        <SideNav 
+          mode={navMode} 
+          onToggleMode={toggleNavMode} 
+          isCollapsed={isCollapsed}
+          onCollapsedChange={setIsCollapsed}
+        />
       </div>
 
       {/* モバイル/タブレット用（stateで開閉） */}
@@ -34,6 +42,8 @@ const Layout = () => {
               isOpen={true}
               onClose={() => setMobileNavOpen(false)}
               onToggleMode={toggleNavMode}
+              isCollapsed={false}
+              onCollapsedChange={setIsCollapsed}
             />
           </div>
           <div
@@ -56,7 +66,9 @@ const Layout = () => {
 
       {/* メインコンテンツ */}
       <div
-        className="flex flex-col flex-1 w-full overflow-hidden lg:ml-[280px]"
+        className={`flex flex-col flex-1 w-full overflow-hidden transition-all duration-300 ${
+          isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[280px]'
+        }`}
         style={{ minHeight: '100vh' }}
       >
         <TopBar />

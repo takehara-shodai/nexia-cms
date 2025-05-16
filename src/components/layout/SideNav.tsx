@@ -19,6 +19,8 @@ type SideNavProps = {
   isOpen?: boolean;
   onClose?: () => void;
   onToggleMode: () => void;
+  isCollapsed: boolean;
+  onCollapsedChange: (collapsed: boolean) => void;
 };
 
 const SideNav = ({
@@ -26,12 +28,13 @@ const SideNav = ({
   isOpen = true,
   onClose,
   onToggleMode: _onToggleMode,
+  isCollapsed,
+  onCollapsedChange,
 }: SideNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleItem = (key: string) => {
     setExpandedItems(prev => ({ ...prev, [key]: !prev[key] }));
@@ -77,7 +80,7 @@ const SideNav = ({
               <span className="ml-2 text-lg font-semibold">日報アプリ</span>
             </div>
             <button
-              onClick={() => setIsCollapsed(true)}
+              onClick={() => onCollapsedChange(true)}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
               <ChevronLeft size={20} className="text-white/80" />
@@ -85,7 +88,7 @@ const SideNav = ({
           </>
         ) : (
           <button
-            onClick={() => setIsCollapsed(false)}
+            onClick={() => onCollapsedChange(false)}
             className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
             <Menu size={20} className="text-white/80" />
@@ -125,7 +128,7 @@ const SideNav = ({
               key={item.key}
               onClick={() => {
                 if (isCollapsed) {
-                  setIsCollapsed(false);
+                  onCollapsedChange(false);
                 } else if (item.children) {
                   toggleItem(item.key);
                 } else if (item.path) {
