@@ -19,7 +19,6 @@ import IntegrationsManagement from '@/pages/IntegrationsManagement';
 import AnalyticsManagement from '@/pages/AnalyticsManagement';
 import SettingsManagement from '@/pages/SettingsManagement';
 import LocalizationManagement from '@/pages/LocalizationManagement';
-import './App.css';
 
 function App() {
   return (
