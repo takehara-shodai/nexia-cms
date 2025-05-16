@@ -26,9 +26,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .order('created_at', { ascending: false });
 
@@ -40,9 +53,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .eq('id', id)
       .single();
@@ -64,9 +90,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
@@ -88,9 +127,22 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .eq('status_id', statusData.id)
       .order('created_at', { ascending: false });
@@ -104,9 +156,22 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .insert([content])
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .single();
 
@@ -120,9 +185,22 @@ export const contentApi = {
       .update(content)
       .eq('id', id)
       .select(`
-        *,
-        type:type_id(id, name),
-        status:status_id(id, name, color)
+        id,
+        title,
+        slug,
+        content,
+        excerpt,
+        featured_image,
+        type_id,
+        status_id,
+        category_id,
+        author_id,
+        published_at,
+        created_at,
+        updated_at,
+        metadata,
+        type:nexia_cms_content_types!type_id(id, name),
+        status:nexia_cms_content_statuses!status_id(id, name, color)
       `)
       .single();
 
