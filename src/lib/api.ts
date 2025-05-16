@@ -16,8 +16,9 @@ export interface Content {
   updated_at: string;
   metadata: Record<string, any>;
   // Joined table information
-  type?: { name: string };
-  status?: { name: string; color: string };
+  type?: { id: string; name: string };
+  status?: { id: string; name: string; color: string };
+  url?: string;
 }
 
 export const contentApi = {
@@ -25,20 +26,7 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        id,
-        title,
-        slug,
-        content,
-        excerpt,
-        featured_image,
-        type_id,
-        status_id,
-        category_id,
-        author_id,
-        published_at,
-        created_at,
-        updated_at,
-        metadata,
+        *,
         type:nexia_cms_content_types(id, name),
         status:nexia_cms_content_statuses(id, name, color)
       `)
@@ -52,20 +40,7 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        id,
-        title,
-        slug,
-        content,
-        excerpt,
-        featured_image,
-        type_id,
-        status_id,
-        category_id,
-        author_id,
-        published_at,
-        created_at,
-        updated_at,
-        metadata,
+        *,
         type:nexia_cms_content_types(id, name),
         status:nexia_cms_content_statuses(id, name, color)
       `)
@@ -77,7 +52,6 @@ export const contentApi = {
   },
 
   async getDrafts() {
-    // First, get the draft status ID
     const { data: statusData, error: statusError } = await supabase
       .from('nexia_cms_content_statuses')
       .select('id')
@@ -87,24 +61,34 @@ export const contentApi = {
     if (statusError) throw statusError;
     if (!statusData) throw new Error('Draft status not found');
 
-    // Then use the draft status ID to query contents
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .select(`
-        id,
-        title,
-        slug,
-        content,
-        excerpt,
-        featured_image,
-        type_id,
-        status_id,
-        category_id,
-        author_id,
-        published_at,
-        created_at,
-        updated_at,
-        metadata,
+        *,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
+      `)
+      .eq('status_id', statusData.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getContentsByStatus(statusName: string) {
+    const { data: statusData, error: statusError } = await supabase
+      .from('nexia_cms_content_statuses')
+      .select('id')
+      .eq('name', statusName)
+      .single();
+
+    if (statusError) throw statusError;
+    if (!statusData) throw new Error(`Status "${statusName}" not found`);
+
+    const { data, error } = await supabase
+      .from('nexia_cms_contents')
+      .select(`
+        *,
         type:nexia_cms_content_types(id, name),
         status:nexia_cms_content_statuses(id, name, color)
       `)
@@ -119,7 +103,11 @@ export const contentApi = {
     const { data, error } = await supabase
       .from('nexia_cms_contents')
       .insert([content])
-      .select()
+      .select(`
+        *,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
+      `)
       .single();
 
     if (error) throw error;
@@ -131,7 +119,11 @@ export const contentApi = {
       .from('nexia_cms_contents')
       .update(content)
       .eq('id', id)
-      .select()
+      .select(`
+        *,
+        type:nexia_cms_content_types(id, name),
+        status:nexia_cms_content_statuses(id, name, color)
+      `)
       .single();
 
     if (error) throw error;
