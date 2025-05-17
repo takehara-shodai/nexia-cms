@@ -7,8 +7,6 @@ import {
   User as UserIcon,
   Moon,
   Sun,
-  Menu,
-  ChevronLeft,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -28,8 +26,8 @@ const SideNav = ({
   isOpen = true,
   onClose,
   onToggleMode: _onToggleMode,
-  isCollapsed,
-  onCollapsedChange,
+  isCollapsed: _isCollapsed,
+  onCollapsedChange: _onCollapsedChange,
 }: SideNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,7 +64,7 @@ const SideNav = ({
   return (
     <div className="h-full flex flex-col bg-[#3B4992] text-white">
       {/* Header */}
-      <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7]">
+      <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
         <div className="flex items-center">
           <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
             <span className="text-white font-bold">V</span>
@@ -89,7 +87,7 @@ const SideNav = ({
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto py-2">
+      <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#4B5AA7] scrollbar-track-transparent">
         <div className="px-2">
           {navigationItems.map(item => (
             <button
@@ -109,25 +107,25 @@ const SideNav = ({
                   : 'hover:bg-white/5'
               } rounded-lg mb-1`}
             >
-              <div className="px-4 py-3 flex items-center justify-between">
+              <div className="px-4 py-2.5 flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="text-white/80">{item.icon}</span>
-                  <span className="ml-3 text-sm lg:text-base font-medium">{item.label}</span>
+                  <span className="ml-3 text-sm font-medium">{item.label}</span>
                 </div>
                 {item.children &&
                   (expandedItems[item.key] ? (
-                    <ChevronDown size={18} className="text-white/60" />
+                    <ChevronDown size={16} className="text-white/60" />
                   ) : (
-                    <ChevronRight size={18} className="text-white/60" />
+                    <ChevronRight size={16} className="text-white/60" />
                   ))}
               </div>
               {item.children && expandedItems[item.key] && (
-                <div className="pb-2">
+                <div className="pb-1">
                   {item.children.map(child => (
                     <button
                       key={child.key}
                       onClick={() => handleNavigation(child.path)}
-                      className={`w-full px-11 py-2 text-left text-sm ${
+                      className={`w-full px-11 py-2 text-left text-xs ${
                         location.pathname === child.path
                           ? 'bg-white/10'
                           : 'hover:bg-white/5'
@@ -144,20 +142,20 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#4B5AA7]">
+      <div className="p-4 border-t border-[#4B5AA7] mt-auto">
         <button
           onClick={toggleTheme}
           className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 w-full"
         >
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          <span className="text-sm">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          <span className="text-xs">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
         </button>
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors w-full"
         >
-          <LogOut size={20} />
-          <span className="text-sm">ログアウト</span>
+          <LogOut size={18} />
+          <span className="text-xs">ログアウト</span>
         </button>
       </div>
     </div>

@@ -20,25 +20,27 @@ function Layout() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 
+        className={`fixed top-0 left-0 h-screen z-40 transition-all duration-300 
           w-1/2 lg:w-64
           lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          lg:relative
+          lg:relative lg:h-auto
         `}
       >
-        <SideNav
-          mode="full"
-          isCollapsed={false}
-          onCollapsedChange={setIsCollapsed}
-          onToggleMode={() => {}}
-          isOpen={true}
-          onClose={() => setIsMobileMenuOpen(false)}
-        />
+        <div className="h-full flex flex-col">
+          <SideNav
+            mode="full"
+            isCollapsed={false}
+            onCollapsedChange={setIsCollapsed}
+            onToggleMode={() => {}}
+            isOpen={true}
+            onClose={() => setIsMobileMenuOpen(false)}
+          />
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 min-h-screen flex flex-col transition-all duration-300">
+      <div className="flex-1 min-h-screen flex flex-col">
         <TopBar onMenuClick={() => setIsMobileMenuOpen(true)} />
         <main className="flex-1 p-4 md:p-6 bg-gray-50 dark:bg-gray-900">
           <Outlet />
