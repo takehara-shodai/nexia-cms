@@ -8,7 +8,6 @@ import {
   Moon,
   Sun,
   Menu,
-  ChevronLeft,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -71,26 +70,20 @@ const SideNav = ({
     >
       {/* Header */}
       <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7] flex-shrink-0">
-        <div className={`flex items-center ${isCollapsed ? 'w-full justify-center' : ''}`}>
-          <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold">V</span>
-          </div>
-          <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-2'}`}>
+        {!isCollapsed ? (
+          <>
             <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
-          </div>
-        </div>
-        {!isCollapsed && (
-          <button
-            onClick={() => onCollapsedChange(true)}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ChevronLeft size={20} className="text-white/80" />
-          </button>
-        )}
-        {isCollapsed && (
+            <button
+              onClick={() => onCollapsedChange(true)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <Menu size={20} className="text-white/80" />
+            </button>
+          </>
+        ) : (
           <button
             onClick={() => onCollapsedChange(false)}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors flex justify-center"
           >
             <Menu size={20} className="text-white/80" />
           </button>
