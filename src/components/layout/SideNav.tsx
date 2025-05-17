@@ -169,7 +169,7 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className={`p-4 border-t border-[#4B5AA7] flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
         <button
           onClick={toggleTheme}
           className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
