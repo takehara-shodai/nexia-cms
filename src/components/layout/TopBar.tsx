@@ -135,14 +135,14 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
                 <p className="text-xs text-gray-500 dark:text-gray-400">admin@example.com</p>
               </div>
               <a
-                href="#"
+                href="/profile"
                 className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
               >
                 <User size={16} className="mr-2" />
                 プロフィール
               </a>
               <a
-                href="#"
+                href="/settings"
                 className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
               >
                 <Settings size={16} className="mr-2" />
