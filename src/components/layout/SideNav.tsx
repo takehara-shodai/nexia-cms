@@ -126,15 +126,9 @@ const SideNav = ({
       </div>
 
       {/* User Info */}
-      <div className={`h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7] flex-shrink-0 overflow-hidden transition-all duration-300 ${isCollapsed ? 'h-0 min-h-0 border-b-0' : ''}`}>
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <UserIcon size={20} className="text-white" />
-          </div>
-          <div className="ml-2 overflow-hidden">
-            <div className="text-sm lg:text-base font-medium whitespace-nowrap">武原将大</div>
-            <div className="text-xs lg:text-sm text-white/70 whitespace-nowrap">開発部</div>
-          </div>
+      <div className="h-16 min-h-[64px] flex items-center justify-center border-y border-[#4B5AA7] flex-shrink-0">
+        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <UserIcon size={24} className="text-white" />
         </div>
       </div>
 
