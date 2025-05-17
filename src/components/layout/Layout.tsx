@@ -21,22 +21,20 @@ function Layout() {
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-screen z-40 transition-all duration-300 
-          w-1/2 lg:w-auto
+          w-3/4 md:w-1/2 lg:w-auto
           lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          lg:relative lg:h-auto
+          lg:relative
         `}
       >
-        <div className="h-full flex flex-col">
-          <SideNav
-            mode="full"
-            isCollapsed={isCollapsed}
-            onCollapsedChange={setIsCollapsed}
-            onToggleMode={() => {}}
-            isOpen={true}
-            onClose={() => setIsMobileMenuOpen(false)}
-          />
-        </div>
+        <SideNav
+          mode="full"
+          isCollapsed={isCollapsed}
+          onCollapsedChange={setIsCollapsed}
+          onToggleMode={() => {}}
+          isOpen={true}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
       </div>
 
       {/* Main Content */}

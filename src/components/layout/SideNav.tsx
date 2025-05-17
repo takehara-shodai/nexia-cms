@@ -7,8 +7,8 @@ import {
   User as UserIcon,
   Moon,
   Sun,
-  ChevronLeft,
   Menu,
+  ChevronLeft,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -65,12 +65,12 @@ const SideNav = ({
 
   return (
     <div 
-      className={`h-full flex flex-col bg-[#3B4992] text-white transition-all duration-300 ${
+      className={`h-screen flex flex-col bg-[#3B4992] text-white transition-all duration-300 ${
         isCollapsed ? 'w-[72px]' : 'w-64'
       }`}
     >
       {/* Header */}
-      <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7]">
+      <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7] flex-shrink-0">
         {!isCollapsed ? (
           <>
             <div className="flex items-center">
@@ -98,7 +98,7 @@ const SideNav = ({
 
       {/* User Info */}
       {!isCollapsed && (
-        <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
+        <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7] flex-shrink-0">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
               <UserIcon size={20} className="text-white" />
@@ -169,7 +169,7 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className={`p-4 border-t border-[#4B5AA7] mt-auto ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
         <button
           onClick={toggleTheme}
           className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
