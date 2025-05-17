@@ -115,62 +115,76 @@ const SideNav = ({
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#4B5AA7] scrollbar-track-transparent">
         <div className="px-2">
-          {navigationItems.map(item => (
-            <button
-              key={item.key}
-              onClick={() => {
-                if (isCollapsed) {
-                  onCollapsedChange(false);
-                } else if (item.children) {
-                  toggleItem(item.key);
-                } else if (item.path) {
-                  handleNavigation(item.path);
-                }
-              }}
-              className={`w-full text-left transition-colors outline-none ${
-                isItemActive(item)
-                  ? 'bg-white/10'
-                  : expandedItems[item.key]
-                  ? 'bg-white/5'
-                  : 'hover:bg-white/5'
-              } rounded-lg mb-1`}
-            >
-              <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-                <div className="flex items-center min-w-0">
-                  <span className="text-white/80 flex-shrink-0">{item.icon}</span>
-                  <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}>
-                    <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+          {navigationItems.map(item => {
+            const isActive = isItemActive(item);
+            const isExpanded = expandedItems[item.key];
+            
+            return (
+              <button
+                key={item.key}
+                onClick={() => {
+                  if (isCollapsed) {
+                    onCollapsedChange(false);
+                  } else if (item.children) {
+                    toggleItem(item.key);
+                  } else if (item.path) {
+                    handleNavigation(item.path);
+                  }
+                }}
+                className={`w-full text-left transition-colors outline-none rounded-lg mb-1 ${
+                  isActive
+                    ? 'bg-white/15'
+                    : isExpanded
+                    ? 'bg-white/10'
+                    : 'hover:bg-white/5'
+                }`}
+              >
+                <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                  <div className="flex items-center min-w-0">
+                    <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-white/70'}`}>
+                      {item.icon}
+                    </span>
+                    <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}>
+                      <span className={`text-sm font-medium whitespace-nowrap transition-colors ${
+                        isActive ? 'text-white' : 'text-white/90'
+                      }`}>
+                        {item.label}
+                      </span>
+                    </div>
                   </div>
+                  {!isCollapsed && item.children && (
+                    <span className="flex-shrink-0 ml-2">
+                      {isExpanded ? (
+                        <ChevronDown size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                      ) : (
+                        <ChevronRight size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                      )}
+                    </span>
+                  )}
                 </div>
-                {!isCollapsed && item.children && (
-                  <span className="flex-shrink-0 ml-2">
-                    {expandedItems[item.key] ? (
-                      <ChevronDown size={16} className="text-white/60" />
-                    ) : (
-                      <ChevronRight size={16} className="text-white/60" />
-                    )}
-                  </span>
+                {!isCollapsed && item.children && isExpanded && (
+                  <div className="pb-1 bg-white/5">
+                    {item.children.map(child => {
+                      const isChildActive = location.pathname === child.path;
+                      return (
+                        <button
+                          key={child.key}
+                          onClick={() => handleNavigation(child.path)}
+                          className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap ${
+                            isChildActive
+                              ? 'bg-white/15 text-white'
+                              : 'text-white/80 hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          {child.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 )}
-              </div>
-              {!isCollapsed && item.children && expandedItems[item.key] && (
-                <div className="pb-1">
-                  {item.children.map(child => (
-                    <button
-                      key={child.key}
-                      onClick={() => handleNavigation(child.path)}
-                      className={`w-full px-11 py-2 text-left text-xs ${
-                        location.pathname === child.path
-                          ? 'bg-white/10'
-                          : 'hover:bg-white/5'
-                      } transition-colors whitespace-nowrap`}
-                    >
-                      {child.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </div>
 
