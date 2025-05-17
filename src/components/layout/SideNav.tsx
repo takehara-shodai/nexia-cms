@@ -37,11 +37,37 @@ const SideNav = ({
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
   const toggleItem = (key: string) => {
-    setExpandedItems(prev => ({ ...prev, [key]: !prev[key] }));
+    setExpandedItems(prev => {
+      const newState = { ...prev };
+      
+      // 他のメニューが展開されている場合は閉じる
+      if (!prev[key]) {
+        Object.keys(prev).forEach(k => {
+          if (k !== key) newState[k] = false;
+        });
+      }
+      
+      // クリックしたメニューの状態を切り替え
+      newState[key] = !prev[key];
+      
+      return newState;
+    });
   };
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, parentKey?: string) => {
     navigate(path);
+    
+    // 親メニューが指定されている場合は展開状態を維持
+    if (parentKey) {
+      setExpandedItems(prev => ({
+        ...Object.keys(prev).reduce((acc, key) => ({
+          ...acc,
+          [key]: key === parentKey ? true : false
+        }), {}),
+        [parentKey]: true
+      }));
+    }
+
     if (window.innerWidth < 1024 && onClose) {
       onClose();
     }
@@ -169,7 +195,10 @@ const SideNav = ({
                       return (
                         <button
                           key={child.key}
-                          onClick={() => handleNavigation(child.path)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavigation(child.path, item.key);
+                          }}
                           className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap ${
                             isChildActive
                               ? 'bg-white/15 text-white'
