@@ -33,14 +33,14 @@
 @keyframes modalFade {
   from {
     opacity: 0;
-    transform: translate3d(0, -20px, 0);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: scale(1);
   }
 }
 
 .animate-modal {
-  animation: modalFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: modalFade 0.2s ease-out;
 }
