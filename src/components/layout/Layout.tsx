@@ -29,7 +29,12 @@ function Layout() {
         <SideNav
           mode="full"
           isCollapsed={isCollapsed}
-          onCollapsedChange={setIsCollapsed}
+          onCollapsedChange={collapsed => {
+            // Only allow collapse on desktop
+            if (window.innerWidth >= 1024) {
+              setIsCollapsed(collapsed);
+            }
+          }}
           onToggleMode={() => {}}
           isOpen={true}
           onClose={() => setIsMobileMenuOpen(false)}
