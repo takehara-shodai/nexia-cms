@@ -7,6 +7,8 @@ import {
   User as UserIcon,
   Moon,
   Sun,
+  ChevronLeft,
+  Menu,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -26,8 +28,8 @@ const SideNav = ({
   isOpen = true,
   onClose,
   onToggleMode: _onToggleMode,
-  isCollapsed: _isCollapsed,
-  onCollapsedChange: _onCollapsedChange,
+  isCollapsed,
+  onCollapsedChange,
 }: SideNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,29 +64,52 @@ const SideNav = ({
   }
 
   return (
-    <div className="h-full flex flex-col bg-[#3B4992] text-white">
+    <div 
+      className={`h-full flex flex-col bg-[#3B4992] text-white transition-all duration-300 ${
+        isCollapsed ? 'w-[72px]' : 'w-64'
+      }`}
+    >
       {/* Header */}
-      <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
-            <span className="text-white font-bold">V</span>
-          </div>
-          <span className="ml-2 text-base lg:text-lg font-semibold">VAREAL.CMS.APP</span>
-        </div>
+      <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7]">
+        {!isCollapsed ? (
+          <>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
+                <span className="text-white font-bold">V</span>
+              </div>
+              <span className="ml-2 text-base lg:text-lg font-semibold">VAREAL.CMS.APP</span>
+            </div>
+            <button
+              onClick={() => onCollapsedChange(true)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <ChevronLeft size={20} className="text-white/80" />
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => onCollapsedChange(false)}
+            className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <Menu size={20} className="text-white/80" />
+          </button>
+        )}
       </div>
 
       {/* User Info */}
-      <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <UserIcon size={20} className="text-white" />
-          </div>
-          <div className="ml-2">
-            <div className="text-sm lg:text-base font-medium">武原将大</div>
-            <div className="text-xs lg:text-sm text-white/70">開発部</div>
+      {!isCollapsed && (
+        <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+              <UserIcon size={20} className="text-white" />
+            </div>
+            <div className="ml-2">
+              <div className="text-sm lg:text-base font-medium">武原将大</div>
+              <div className="text-xs lg:text-sm text-white/70">開発部</div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#4B5AA7] scrollbar-track-transparent">
@@ -93,7 +118,9 @@ const SideNav = ({
             <button
               key={item.key}
               onClick={() => {
-                if (item.children) {
+                if (isCollapsed) {
+                  onCollapsedChange(false);
+                } else if (item.children) {
                   toggleItem(item.key);
                 } else if (item.path) {
                   handleNavigation(item.path);
@@ -107,19 +134,19 @@ const SideNav = ({
                   : 'hover:bg-white/5'
               } rounded-lg mb-1`}
             >
-              <div className="px-4 py-2.5 flex items-center justify-between">
+              <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                 <div className="flex items-center">
                   <span className="text-white/80">{item.icon}</span>
-                  <span className="ml-3 text-sm font-medium">{item.label}</span>
+                  {!isCollapsed && <span className="ml-3 text-sm font-medium">{item.label}</span>}
                 </div>
-                {item.children &&
+                {!isCollapsed && item.children &&
                   (expandedItems[item.key] ? (
                     <ChevronDown size={16} className="text-white/60" />
                   ) : (
                     <ChevronRight size={16} className="text-white/60" />
                   ))}
               </div>
-              {item.children && expandedItems[item.key] && (
+              {!isCollapsed && item.children && expandedItems[item.key] && (
                 <div className="pb-1">
                   {item.children.map(child => (
                     <button
@@ -142,20 +169,24 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#4B5AA7] mt-auto">
+      <div className={`p-4 border-t border-[#4B5AA7] mt-auto ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 w-full"
+          className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
+            isCollapsed ? 'w-10 justify-center' : 'w-full'
+          }`}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          <span className="text-xs">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
+          {!isCollapsed && <span className="text-xs">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>}
         </button>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors w-full"
+          className={`flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors ${
+            isCollapsed ? 'w-10 justify-center' : 'w-full'
+          }`}
         >
           <LogOut size={18} />
-          <span className="text-xs">ログアウト</span>
+          {!isCollapsed && <span className="text-xs">ログアウト</span>}
         </button>
       </div>
     </div>
