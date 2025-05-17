@@ -1,3 +1,4 @@
+```tsx
 import React, { useState, useEffect } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -67,9 +68,8 @@ const Profile = () => {
     if (!file || !profile) return;
 
     const fileExt = file.name.split('.').pop();
-    const profileId = profile.id;
-    const fileName = profileId + '.' + fileExt;
-    const filePath = 'avatars/' + fileName;
+    const fileName = `${profile.id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
 
     try {
       // Upload avatar
@@ -233,3 +233,4 @@ const Profile = () => {
 };
 
 export default Profile;
+```
