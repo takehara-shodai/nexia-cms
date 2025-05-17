@@ -79,12 +79,22 @@ const SideNav = ({
             <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
           </div>
         </div>
-        <button
-          onClick={() => onCollapsedChange(!isCollapsed)}
-          className={`p-2 hover:bg-white/10 rounded-lg transition-colors ${isCollapsed ? 'hidden' : 'block'}`}
-        >
-          <ChevronLeft size={20} className="text-white/80" />
-        </button>
+        {!isCollapsed && (
+          <button
+            onClick={() => onCollapsedChange(true)}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <ChevronLeft size={20} className="text-white/80" />
+          </button>
+        )}
+        {isCollapsed && (
+          <button
+            onClick={() => onCollapsedChange(false)}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <Menu size={20} className="text-white/80" />
+          </button>
+        )}
       </div>
 
       {/* User Info */}
