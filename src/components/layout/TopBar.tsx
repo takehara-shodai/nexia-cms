@@ -121,7 +121,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+            <div className="w-8 h-8 bg-[#3B4992] rounded-full flex items-center justify-center text-white">
               A
             </div>
           </button>
