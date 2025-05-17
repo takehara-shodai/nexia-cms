@@ -8,6 +8,7 @@ import {
   Moon,
   Sun,
   Menu,
+  X,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
@@ -73,12 +74,20 @@ const SideNav = ({
         {!isCollapsed ? (
           <>
             <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
-            <button
-              onClick={() => onCollapsedChange(true)}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <Menu size={20} className="text-white/80" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onCollapsedChange(true)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:block hidden"
+              >
+                <Menu size={20} className="text-white/80" />
+              </button>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:hidden"
+              >
+                <X size={20} className="text-white/80" />
+              </button>
+            </div>
           </>
         ) : (
           <button
