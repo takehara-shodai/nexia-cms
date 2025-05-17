@@ -1,7 +1,8 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ModalProvider } from '@/contexts/ModalContext';
+import { supabase } from '@/lib/supabase';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Profile from '@/pages/Profile';
@@ -24,13 +25,31 @@ import LocalizationManagement from '@/pages/LocalizationManagement';
 import './App.css';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider>
       <ModalProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Layout />}>
+            <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" replace />} />
+            <Route path="/" element={isAuthenticated ? <Layout /> : <Navigate to="/login" replace />}>
               <Route index element={<Dashboard />} />
               <Route path="profile" element={<Profile />} />
               <Route path="content" element={<ContentList />} />
