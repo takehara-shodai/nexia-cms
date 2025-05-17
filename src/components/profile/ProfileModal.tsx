@@ -37,6 +37,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setIsLoading(true);
       setError(null);
 
+      // First check if we have a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) throw sessionError;
+      if (!session) {
+        navigate('/login');
+        return;
+      }
+
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       
       if (authError) throw authError;
@@ -56,7 +65,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     } catch (err) {
       setError('プロフィールの読み込みに失敗しました');
       console.error(err);
-      if (err.message === 'User not found') {
+      if (err.message === 'User not found' || err.message === 'Auth session missing!') {
         navigate('/login');
       }
     } finally {
@@ -70,6 +79,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     try {
       setIsSaving(true);
       setError(null);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login');
+        return;
+      }
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -101,6 +116,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     try {
       setIsSaving(true);
       setError(null);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login');
+        return;
+      }
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
