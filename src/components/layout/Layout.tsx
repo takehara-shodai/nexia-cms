@@ -24,7 +24,6 @@ function Layout() {
           w-3/4 md:w-1/2 lg:w-auto
           lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          lg:relative
         `}
       >
         <SideNav
@@ -38,9 +37,9 @@ function Layout() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 min-h-screen flex flex-col">
+      <div className={`flex-1 min-h-screen flex flex-col ${isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'}`}>
         <TopBar onMenuClick={() => setIsMobileMenuOpen(true)} />
-        <main className="flex-1 p-4 md:p-6 bg-gray-50 dark:bg-gray-900">
+        <main className="flex-1 p-4 md:p-6 bg-gray-50 dark:bg-gray-900 overflow-auto">
           <Outlet />
         </main>
         <Footer />
