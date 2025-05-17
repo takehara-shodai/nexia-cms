@@ -1,10 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { ModalProvider } from '@/contexts/ModalContext';
+import { ModalProvider } from '@/contexts/ModalContext.tsx';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
-import Profile from '@/pages/Profile';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
@@ -32,7 +31,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
-              <Route path="profile" element={<Profile />} />
               <Route path="content" element={<ContentList />} />
               <Route path="content/:id" element={<ContentDetail />} />
               <Route path="models" element={<ContentModels />} />
