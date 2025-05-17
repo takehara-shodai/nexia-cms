@@ -183,8 +183,15 @@ const SideNav = ({
             const isExpanded = expandedItems[item.key];
             
             return (
-              <button
+              <div
                 key={item.key}
+                className={`w-full text-left transition-colors outline-none rounded-lg mb-1 cursor-pointer ${
+                  isActive
+                    ? 'bg-white/15'
+                    : isExpanded
+                    ? 'bg-white/10'
+                    : 'hover:bg-white/5'
+                }`}
                 onClick={() => {
                   if (isCollapsed) {
                     onCollapsedChange(false);
@@ -194,13 +201,6 @@ const SideNav = ({
                     handleNavigation(item.path);
                   }
                 }}
-                className={`w-full text-left transition-colors outline-none rounded-lg mb-1 ${
-                  isActive
-                    ? 'bg-white/15'
-                    : isExpanded
-                    ? 'bg-white/10'
-                    : 'hover:bg-white/5'
-                }`}
               >
                 <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                   <div className="flex items-center min-w-0">
@@ -230,25 +230,25 @@ const SideNav = ({
                     {item.children.map(child => {
                       const isChildActive = location.pathname === child.path;
                       return (
-                        <button
+                        <div
                           key={child.key}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleNavigation(child.path, item.key);
                           }}
-                          className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap ${
+                          className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap cursor-pointer ${
                             isChildActive
                               ? 'bg-white/15 text-white'
                               : 'text-white/80 hover:bg-white/10 hover:text-white'
                           }`}
                         >
                           {child.label}
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
