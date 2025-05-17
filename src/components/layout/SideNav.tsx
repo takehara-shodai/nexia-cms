@@ -105,13 +105,13 @@ const SideNav = ({
                 onClick={() => onCollapsedChange(true)}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:block hidden"
               >
-                <Menu size={20} className="text-white/80" />
+                <Menu size={18} className="text-white/80" />
               </button>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:hidden"
               >
-                <X size={20} className="text-white/80" />
+                <X size={18} className="text-white/80" />
               </button>
             </div>
           </>
@@ -120,7 +120,7 @@ const SideNav = ({
             onClick={() => onCollapsedChange(false)}
             className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors flex justify-center"
           >
-            <Menu size={20} className="text-white/80" />
+            <Menu size={18} className="text-white/80" />
           </button>
         )}
       </div>
@@ -130,7 +130,7 @@ const SideNav = ({
         {!isCollapsed ? (
           <div className="flex items-center">
             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <UserIcon size={20} className="text-white" />
+              <UserIcon size={18} className="text-white" />
             </div>
             <div className="ml-2">
               <div className="font-medium">武原将大</div>
@@ -139,8 +139,8 @@ const SideNav = ({
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <UserIcon size={24} className="text-white" />
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+              <UserIcon size={18} className="text-white" />
             </div>
           </div>
         )}
