@@ -64,52 +64,29 @@ const SideNav = ({
   }
 
   return (
-    <div 
-      className={`h-full flex flex-col bg-[#3B4992] text-white transition-all duration-300 ${
-        isCollapsed ? 'w-[72px]' : 'w-full'
-      }`}
-    >
+    <div className="h-full flex flex-col bg-[#3B4992] text-white">
       {/* Header */}
       <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7]">
-        {!isCollapsed ? (
-          <>
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold">V</span>
-              </div>
-              <span className="ml-2 text-lg font-semibold">VAREAL.CMS.APP</span>
-            </div>
-            <button
-              onClick={() => onCollapsedChange(true)}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <ChevronLeft size={20} className="text-white/80" />
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => onCollapsedChange(false)}
-            className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <Menu size={20} className="text-white/80" />
-          </button>
-        )}
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center">
+            <span className="text-white font-bold">V</span>
+          </div>
+          <span className="ml-2 text-base lg:text-lg font-semibold">VAREAL.CMS.APP</span>
+        </div>
       </div>
 
       {/* User Info */}
-      {!isCollapsed && (
-        <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <UserIcon size={20} className="text-white" />
-            </div>
-            <div className="ml-2">
-              <div className="font-medium">武原将大</div>
-              <div className="text-sm text-white/70">開発部</div>
-            </div>
+      <div className="h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7]">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+            <UserIcon size={20} className="text-white" />
+          </div>
+          <div className="ml-2">
+            <div className="text-sm lg:text-base font-medium">武原将大</div>
+            <div className="text-xs lg:text-sm text-white/70">開発部</div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-2">
@@ -118,9 +95,7 @@ const SideNav = ({
             <button
               key={item.key}
               onClick={() => {
-                if (isCollapsed) {
-                  onCollapsedChange(false);
-                } else if (item.children) {
+                if (item.children) {
                   toggleItem(item.key);
                 } else if (item.path) {
                   handleNavigation(item.path);
@@ -134,25 +109,25 @@ const SideNav = ({
                   : 'hover:bg-white/5'
               } rounded-lg mb-1`}
             >
-              <div className={`px-4 py-3 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+              <div className="px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="text-white/80">{item.icon}</span>
-                  {!isCollapsed && <span className="ml-3 font-medium">{item.label}</span>}
+                  <span className="ml-3 text-sm lg:text-base font-medium">{item.label}</span>
                 </div>
-                {!isCollapsed && item.children &&
+                {item.children &&
                   (expandedItems[item.key] ? (
                     <ChevronDown size={18} className="text-white/60" />
                   ) : (
                     <ChevronRight size={18} className="text-white/60" />
                   ))}
               </div>
-              {!isCollapsed && item.children && expandedItems[item.key] && (
+              {item.children && expandedItems[item.key] && (
                 <div className="pb-2">
                   {item.children.map(child => (
                     <button
                       key={child.key}
                       onClick={() => handleNavigation(child.path)}
-                      className={`w-full px-11 py-2 text-left ${
+                      className={`w-full px-11 py-2 text-left text-sm ${
                         location.pathname === child.path
                           ? 'bg-white/10'
                           : 'hover:bg-white/5'
@@ -169,24 +144,20 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className={`p-4 border-t border-[#4B5AA7] ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <div className="p-4 border-t border-[#4B5AA7]">
         <button
           onClick={toggleTheme}
-          className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
-            isCollapsed ? 'w-10 justify-center' : 'w-full'
-          }`}
+          className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 w-full"
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          {!isCollapsed && <span>{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>}
+          <span className="text-sm">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
         </button>
         <button
           onClick={handleLogout}
-          className={`flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors ${
-            isCollapsed ? 'w-10 justify-center' : 'w-full'
-          }`}
+          className="flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors w-full"
         >
           <LogOut size={20} />
-          {!isCollapsed && <span>ログアウト</span>}
+          <span className="text-sm">ログアウト</span>
         </button>
       </div>
     </div>

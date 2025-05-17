@@ -18,10 +18,10 @@ function Layout() {
         />
       )}
 
-      {/* Sidebar - Hidden on mobile, visible on desktop */}
+      {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 
-          ${isCollapsed ? 'w-[72px]' : 'w-64'} 
+          w-1/2 lg:w-64
           lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           lg:relative
@@ -29,7 +29,7 @@ function Layout() {
       >
         <SideNav
           mode="full"
-          isCollapsed={isCollapsed}
+          isCollapsed={false}
           onCollapsedChange={setIsCollapsed}
           onToggleMode={() => {}}
           isOpen={true}
@@ -38,9 +38,7 @@ function Layout() {
       </div>
 
       {/* Main Content */}
-      <div
-        className={`flex-1 min-h-screen flex flex-col transition-all duration-300`}
-      >
+      <div className="flex-1 min-h-screen flex flex-col transition-all duration-300">
         <TopBar onMenuClick={() => setIsMobileMenuOpen(true)} />
         <main className="flex-1 p-4 md:p-6 bg-gray-50 dark:bg-gray-900">
           <Outlet />
