@@ -13,6 +13,7 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/lib/supabase';
 import { navigationItems } from '@/data/navigation';
+import Modal from '@/components/common/Modal';
 
 type SideNavProps = {
   mode: 'compact' | 'full';
@@ -35,6 +36,7 @@ const SideNav = ({
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const toggleItem = (key: string) => {
     setExpandedItems(prev => {
@@ -76,6 +78,7 @@ const SideNav = ({
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
+    setShowLogoutModal(false);
   };
 
   const isItemActive = (item: { path: string; key: string }): boolean => {
@@ -90,159 +93,188 @@ const SideNav = ({
   }
 
   return (
-    <div 
-      className={`h-screen flex flex-col bg-[#3B4992] text-white ${
-        isCollapsed ? 'w-[72px]' : 'w-64'
-      }`}
-    >
-      {/* Header */}
-      <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7] flex-shrink-0">
-        {!isCollapsed ? (
-          <>
-            <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => onCollapsedChange(true)}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:block hidden"
-              >
-                <Menu size={20} className="text-white/80" />
-              </button>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:hidden"
-              >
-                <X size={20} className="text-white/80" />
-              </button>
+    <>
+      <div 
+        className={`h-screen flex flex-col bg-[#3B4992] text-white ${
+          isCollapsed ? 'w-[72px]' : 'w-64'
+        }`}
+      >
+        {/* Header */}
+        <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7] flex-shrink-0">
+          {!isCollapsed ? (
+            <>
+              <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onCollapsedChange(true)}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:block hidden"
+                >
+                  <Menu size={20} className="text-white/80" />
+                </button>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors lg:hidden"
+                >
+                  <X size={20} className="text-white/80" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              onClick={() => onCollapsedChange(false)}
+              className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors flex justify-center"
+            >
+              <Menu size={20} className="text-white/80" />
+            </button>
+          )}
+        </div>
+
+        {/* User Info */}
+        <div className={`h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7] flex-shrink-0 overflow-hidden transition-all duration-300 ${isCollapsed ? 'h-0 min-h-0 border-b-0' : ''}`}>
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <UserIcon size={20} className="text-white" />
             </div>
-          </>
-        ) : (
-          <button
-            onClick={() => onCollapsedChange(false)}
-            className="w-full p-2 hover:bg-white/10 rounded-lg transition-colors flex justify-center"
-          >
-            <Menu size={20} className="text-white/80" />
-          </button>
-        )}
-      </div>
-
-      {/* User Info */}
-      <div className={`h-16 min-h-[64px] px-4 flex items-center border-b border-[#4B5AA7] flex-shrink-0 overflow-hidden transition-all duration-300 ${isCollapsed ? 'h-0 min-h-0 border-b-0' : ''}`}>
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <UserIcon size={20} className="text-white" />
-          </div>
-          <div className="ml-2 overflow-hidden">
-            <div className="text-sm lg:text-base font-medium whitespace-nowrap">武原将大</div>
-            <div className="text-xs lg:text-sm text-white/70 whitespace-nowrap">開発部</div>
+            <div className="ml-2 overflow-hidden">
+              <div className="text-sm lg:text-base font-medium whitespace-nowrap">武原将大</div>
+              <div className="text-xs lg:text-sm text-white/70 whitespace-nowrap">開発部</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#4B5AA7] scrollbar-track-transparent">
-        <div className="px-2">
-          {navigationItems.map(item => {
-            const isActive = isItemActive(item);
-            const isExpanded = expandedItems[item.key];
-            
-            return (
-              <button
-                key={item.key}
-                onClick={() => {
-                  if (isCollapsed) {
-                    onCollapsedChange(false);
-                  } else if (item.children) {
-                    toggleItem(item.key);
-                  } else if (item.path) {
-                    handleNavigation(item.path);
-                  }
-                }}
-                className={`w-full text-left transition-colors outline-none rounded-lg mb-1 ${
-                  isActive
-                    ? 'bg-white/15'
-                    : isExpanded
-                    ? 'bg-white/10'
-                    : 'hover:bg-white/5'
-                }`}
-              >
-                <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-                  <div className="flex items-center min-w-0">
-                    <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-white/70'}`}>
-                      {item.icon}
-                    </span>
-                    <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}>
-                      <span className={`text-sm font-medium whitespace-nowrap transition-colors ${
-                        isActive ? 'text-white' : 'text-white/90'
-                      }`}>
-                        {item.label}
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#4B5AA7] scrollbar-track-transparent">
+          <div className="px-2">
+            {navigationItems.map(item => {
+              const isActive = isItemActive(item);
+              const isExpanded = expandedItems[item.key];
+              
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => {
+                    if (isCollapsed) {
+                      onCollapsedChange(false);
+                    } else if (item.children) {
+                      toggleItem(item.key);
+                    } else if (item.path) {
+                      handleNavigation(item.path);
+                    }
+                  }}
+                  className={`w-full text-left transition-colors outline-none rounded-lg mb-1 ${
+                    isActive
+                      ? 'bg-white/15'
+                      : isExpanded
+                      ? 'bg-white/10'
+                      : 'hover:bg-white/5'
+                  }`}
+                >
+                  <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                    <div className="flex items-center min-w-0">
+                      <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-white/70'}`}>
+                        {item.icon}
                       </span>
+                      <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}>
+                        <span className={`text-sm font-medium whitespace-nowrap transition-colors ${
+                          isActive ? 'text-white' : 'text-white/90'
+                        }`}>
+                          {item.label}
+                        </span>
+                      </div>
                     </div>
+                    {!isCollapsed && item.children && (
+                      <span className="flex-shrink-0 ml-2">
+                        {isExpanded ? (
+                          <ChevronDown size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                        ) : (
+                          <ChevronRight size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                        )}
+                      </span>
+                    )}
                   </div>
-                  {!isCollapsed && item.children && (
-                    <span className="flex-shrink-0 ml-2">
-                      {isExpanded ? (
-                        <ChevronDown size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
-                      ) : (
-                        <ChevronRight size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
-                      )}
-                    </span>
+                  {!isCollapsed && item.children && isExpanded && (
+                    <div className="pb-1 bg-white/5">
+                      {item.children.map(child => {
+                        const isChildActive = location.pathname === child.path;
+                        return (
+                          <button
+                            key={child.key}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleNavigation(child.path, item.key);
+                            }}
+                            className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap ${
+                              isChildActive
+                                ? 'bg-white/15 text-white'
+                                : 'text-white/80 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            {child.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                </div>
-                {!isCollapsed && item.children && isExpanded && (
-                  <div className="pb-1 bg-white/5">
-                    {item.children.map(child => {
-                      const isChildActive = location.pathname === child.path;
-                      return (
-                        <button
-                          key={child.key}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleNavigation(child.path, item.key);
-                          }}
-                          className={`w-full px-11 py-2 text-left text-xs transition-colors whitespace-nowrap ${
-                            isChildActive
-                              ? 'bg-white/15 text-white'
-                              : 'text-white/80 hover:bg-white/10 hover:text-white'
-                          }`}
-                        >
-                          {child.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </button>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+          <button
+            onClick={toggleTheme}
+            className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
+              isCollapsed ? 'w-10 justify-center' : 'w-full'
+            }`}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
+              <span className="text-xs whitespace-nowrap">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className={`flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors ${
+              isCollapsed ? 'w-10 justify-center' : 'w-full'
+            }`}
+          >
+            <LogOut size={18} />
+            <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
+              <span className="text-xs whitespace-nowrap">ログアウト</span>
+            </div>
+          </button>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
-        <button
-          onClick={toggleTheme}
-          className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
-            isCollapsed ? 'w-10 justify-center' : 'w-full'
-          }`}
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
-            <span className="text-xs whitespace-nowrap">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
-          </div>
-        </button>
-        <button
-          onClick={handleLogout}
-          className={`flex items-center gap-2 p-2 text-white/90 hover:bg-white/5 rounded-lg transition-colors ${
-            isCollapsed ? 'w-10 justify-center' : 'w-full'
-          }`}
-        >
-          <LogOut size={18} />
-          <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
-            <span className="text-xs whitespace-nowrap">ログアウト</span>
-          </div>
-        </button>
-      </div>
-    </div>
+      {/* Logout Confirmation Modal */}
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="ログアウト確認"
+        footer={
+          <>
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              ログアウト
+            </button>
+          </>
+        }
+      >
+        <p className="text-gray-600 dark:text-gray-400">
+          ログアウトしてもよろしいですか？
+        </p>
+      </Modal>
+    </>
   );
 };
 
