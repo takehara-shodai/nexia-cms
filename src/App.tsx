@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ModalProvider } from '@/contexts/ModalContext.tsx';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
@@ -24,29 +25,31 @@ import './App.css';
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="content" element={<ContentList />} />
-            <Route path="content/:id" element={<ContentDetail />} />
-            <Route path="models" element={<ContentModels />} />
-            <Route path="models/fields" element={<FieldSettings />} />
-            <Route path="models/relations" element={<RelationSettings />} />
-            <Route path="models/validation" element={<ValidationRules />} />
-            <Route path="models/components" element={<ComponentManagement />} />
-            <Route path="api" element={<ApiManagement />} />
-            <Route path="website" element={<WebsiteManagement />} />
-            <Route path="workflow" element={<WorkflowManagement />} />
-            <Route path="media" element={<MediaManagement />} />
-            <Route path="integrations" element={<IntegrationsManagement />} />
-            <Route path="analytics" element={<AnalyticsManagement />} />
-            <Route path="settings" element={<SettingsManagement />} />
-            <Route path="localization" element={<LocalizationManagement />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <ModalProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="content" element={<ContentList />} />
+              <Route path="content/:id" element={<ContentDetail />} />
+              <Route path="models" element={<ContentModels />} />
+              <Route path="models/fields" element={<FieldSettings />} />
+              <Route path="models/relations" element={<RelationSettings />} />
+              <Route path="models/validation" element={<ValidationRules />} />
+              <Route path="models/components" element={<ComponentManagement />} />
+              <Route path="api" element={<ApiManagement />} />
+              <Route path="website" element={<WebsiteManagement />} />
+              <Route path="workflow" element={<WorkflowManagement />} />
+              <Route path="media" element={<MediaManagement />} />
+              <Route path="integrations" element={<IntegrationsManagement />} />
+              <Route path="analytics" element={<AnalyticsManagement />} />
+              <Route path="settings" element={<SettingsManagement />} />
+              <Route path="localization" element={<LocalizationManagement />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ModalProvider>
     </ThemeProvider>
   );
 }
