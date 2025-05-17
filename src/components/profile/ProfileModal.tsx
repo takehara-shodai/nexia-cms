@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
 import Modal from '@/components/common/Modal';
-import { supabase } from '@/lib/supabase';
-import { useNavigate } from 'react-router-dom';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -19,8 +17,17 @@ interface Profile {
   bio?: string;
 }
 
+const mockProfile: Profile = {
+  id: '1',
+  name: '武原将大',
+  email: 'takehara@example.com',
+  department: '開発部',
+  title: 'シニアエンジニア',
+  bio: 'フルスタックエンジニアとして、新しい技術の習得と実装に取り組んでいます。',
+  avatar_url: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+};
+
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -28,50 +35,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      loadProfile();
+      // Simulate loading
+      setIsLoading(true);
+      setTimeout(() => {
+        setProfile(mockProfile);
+        setIsLoading(false);
+      }, 1000);
     }
   }, [isOpen]);
-
-  const loadProfile = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      // First check if we have a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) throw sessionError;
-      if (!session) {
-        navigate('/login');
-        return;
-      }
-
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
-      if (authError) throw authError;
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (error) throw error;
-      setProfile(data);
-    } catch (err) {
-      setError('プロフィールの読み込みに失敗しました');
-      console.error(err);
-      if (err.message === 'User not found' || err.message === 'Auth session missing!') {
-        navigate('/login');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleSave = async () => {
     if (!profile) return;
@@ -80,26 +51,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setIsSaving(true);
       setError(null);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/login');
-        return;
-      }
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          ...profile,
-          updated_at: new Date().toISOString(),
-        });
-
-      if (error) throw error;
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      console.log('Saved profile:', profile);
       onClose();
     } catch (err) {
       setError('プロフィールの保存に失敗しました');
@@ -117,32 +72,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setIsSaving(true);
       setError(null);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/login');
-        return;
-      }
+      // Simulate file upload
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${profile.id}/avatar.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : null);
+      // Create a temporary URL for the selected file
+      const tempUrl = URL.createObjectURL(file);
+      setProfile(prev => prev ? { ...prev, avatar_url: tempUrl } : null);
     } catch (err) {
       setError('アバターの更新に失敗しました');
       console.error(err);
