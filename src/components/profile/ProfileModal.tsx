@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
 import Modal from '@/components/common/Modal';
 import { supabase } from '@/lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface Profile {
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,8 +37,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setIsLoading(true);
       setError(null);
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not found');
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError) throw authError;
+      if (!user) {
+        navigate('/login');
+        return;
+      }
 
       const { data, error } = await supabase
         .from('profiles')
@@ -49,6 +56,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     } catch (err) {
       setError('プロフィールの読み込みに失敗しました');
       console.error(err);
+      if (err.message === 'User not found') {
+        navigate('/login');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +70,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     try {
       setIsSaving(true);
       setError(null);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/login');
+        return;
+      }
 
       const { error } = await supabase
         .from('profiles')
@@ -85,6 +101,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     try {
       setIsSaving(true);
       setError(null);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/login');
+        return;
+      }
 
       const fileExt = file.name.split('.').pop();
       const filePath = `${profile.id}/avatar.${fileExt}`;
