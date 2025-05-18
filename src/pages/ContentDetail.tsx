@@ -18,6 +18,16 @@ import {
   Globe,
   BarChart,
   ChevronDown,
+  Image,
+  Link,
+  FileText,
+  Table,
+  List,
+  Quote,
+  Code,
+  History,
+  Users,
+  Bell,
 } from 'lucide-react';
 
 interface ContentData {
@@ -57,6 +67,22 @@ interface AIAssistant {
   };
 }
 
+interface ReviewComment {
+  id: string;
+  userId: string;
+  userName: string;
+  comment: string;
+  createdAt: string;
+  type: 'general' | 'suggestion' | 'approval' | 'rejection';
+}
+
+interface ContentVersion {
+  id: string;
+  createdAt: string;
+  author: string;
+  changes: string[];
+}
+
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -89,6 +115,44 @@ const ContentDetail: React.FC = () => {
       },
     },
   });
+
+  const [reviewComments, setReviewComments] = useState<ReviewComment[]>([
+    {
+      id: '1',
+      userId: '1',
+      userName: '佐藤花子',
+      comment: '導入部分をもう少し具体的にした方が良いと思います。',
+      createdAt: '2024-03-15 14:30',
+      type: 'suggestion',
+    },
+    {
+      id: '2',
+      userId: '2',
+      userName: '鈴木一郎',
+      comment: '全体的によくまとまっています。いくつか細かい修正点があります。',
+      createdAt: '2024-03-15 15:45',
+      type: 'general',
+    },
+  ]);
+
+  const [contentVersions, setContentVersions] = useState<ContentVersion[]>([
+    {
+      id: '1',
+      createdAt: '2024-03-15 14:30',
+      author: '山田健一',
+      changes: ['タイトルの修正', '導入部分の追加', 'キーワードの最適化'],
+    },
+    {
+      id: '2',
+      createdAt: '2024-03-15 15:45',
+      author: '山田健一',
+      changes: ['画像の追加', '結論部分の強化'],
+    },
+  ]);
+
+  const [selectedReviewers, setSelectedReviewers] = useState<string[]>([]);
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -158,9 +222,28 @@ const ContentDetail: React.FC = () => {
     }
   };
 
+  const handleAddComment = (comment: string, type: ReviewComment['type'] = 'general') => {
+    const newComment: ReviewComment = {
+      id: Date.now().toString(),
+      userId: '1',
+      userName: '山田健一',
+      comment,
+      createdAt: new Date().toISOString(),
+      type,
+    };
+    setReviewComments([...reviewComments, newComment]);
+  };
+
+  const handleReviewerSelect = (reviewer: string) => {
+    setSelectedReviewers(prev => 
+      prev.includes(reviewer)
+        ? prev.filter(r => r !== reviewer)
+        : [...prev, reviewer]
+    );
+  };
+
   return (
     <div className="fade-in">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <button
@@ -201,17 +284,50 @@ const ContentDetail: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Editor */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Title and Content */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <input
-              type="text"
-              value={content.title}
-              onChange={e => setContent({ ...content, title: e.target.value })}
-              placeholder="タイトルを入力..."
-              className="w-full text-2xl font-bold mb-4 bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-0 px-0"
-            />
+            <div className="flex items-center justify-between mb-4">
+              <input
+                type="text"
+                value={content.title}
+                onChange={e => setContent({ ...content, title: e.target.value })}
+                placeholder="タイトルを入力..."
+                className="w-full text-2xl font-bold bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-0 px-0"
+              />
+              <div className="flex items-center gap-2">
+                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <History size={20} onClick={() => setShowVersionHistory(true)} />
+                </button>
+                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <MessageSquare size={20} onClick={() => setShowComments(true)} />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mb-4 p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <Image size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <Link size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <FileText size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <Table size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <List size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <Quote size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                <Code size={18} />
+              </button>
+            </div>
+
             <textarea
               value={content.content}
               onChange={e => setContent({ ...content, content: e.target.value })}
@@ -220,7 +336,6 @@ const ContentDetail: React.FC = () => {
             />
           </div>
 
-          {/* SEO Settings */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="text-lg font-medium mb-4">SEO設定</h3>
             <div className="space-y-4">
@@ -258,9 +373,7 @@ const ContentDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Status */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="text-lg font-medium mb-4">ステータス</h3>
             <div className="space-y-4">
@@ -295,7 +408,6 @@ const ContentDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* Workflow */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="text-lg font-medium mb-4">ワークフロー</h3>
             <div className="space-y-4">
@@ -323,7 +435,6 @@ const ContentDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* Tags */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="text-lg font-medium mb-4">タグ</h3>
             <input
@@ -342,10 +453,58 @@ const ContentDetail: React.FC = () => {
               ))}
             </div>
           </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium">レビュアー</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {selectedReviewers.length}名選択中
+              </span>
+            </div>
+            <div className="space-y-2">
+              {content.reviewers?.map(reviewer => (
+                <label key={reviewer} className="flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedReviewers.includes(reviewer)}
+                    onChange={() => handleReviewerSelect(reviewer)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2">{reviewer}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-medium mb-4">通知設定</h3>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm">メール通知</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm">Slack通知</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm">ブラウザ通知</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* AI Assistant Panel */}
       {showAIPanel && (
         <div className="fixed right-6 bottom-6 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
           <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -412,7 +571,96 @@ const ContentDetail: React.FC = () => {
         </div>
       )}
 
-      {/* Workflow Modal */}
+      {showVersionHistory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowVersionHistory(false)}
+          />
+          <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl m-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium mb-4">バージョン履歴</h3>
+              <div className="space-y-4">
+                {contentVersions.map(version => (
+                  <div
+                    key={version.id}
+                    className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <History size={16} />
+                        <span className="font-medium">{version.author}</span>
+                      </div>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {version.createdAt}
+                      </span>
+                    </div>
+                    <ul className="space-y-1 text-sm">
+                      {version.changes.map((change, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <CheckCircle size={14} className="text-green-500" />
+                          <span>{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showComments && (
+        <div className="fixed right-6 bottom-6 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h3 className="font-medium">コメント</h3>
+            <button
+              onClick={() => setShowComments(false)}
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            >
+              <XCircle size={20} />
+            </button>
+          </div>
+          <div className="p-4 max-h-[500px] overflow-y-auto">
+            <div className="space-y-4">
+              {reviewComments.map(comment => (
+                <div
+                  key={comment.id}
+                  className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <User size={16} />
+                      <span className="font-medium">{comment.userName}</span>
+                    </div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {comment.createdAt}
+                    </span>
+                  </div>
+                  <p className="text-sm">{comment.comment}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4">
+              <textarea
+                placeholder="コメントを入力..."
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
+                rows={3}
+              />
+              <div className="mt-2 flex justify-end">
+                <button
+                  onClick={() => handleAddComment('新しいコメント')}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  送信
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showWorkflowModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -451,7 +699,8 @@ const ContentDetail: React.FC = () => {
                   <textarea
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                     rows={3}
-                    placeholder="レビュアーへのメッセージを入力..."
+                    placeholder="レビュアーへのメッ
+                    セージを入力..."
                   />
                 </div>
               </div>
