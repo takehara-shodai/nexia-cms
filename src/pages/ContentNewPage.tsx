@@ -28,7 +28,7 @@ export default function ContentNewPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 max-w-7xl">
+    <div className="fade-in container mx-auto py-6 max-w-7xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <Button
@@ -77,7 +77,9 @@ export default function ContentNewPage() {
           </Button>
         </div>
       </div>
-      <ContentForm isPreview={isPreview} />
+      <div className="slide-in">
+        <ContentForm isPreview={isPreview} />
+      </div>
     </div>
   );
 }
