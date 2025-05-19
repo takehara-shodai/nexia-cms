@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ModalProvider } from '@/contexts/ModalContext.tsx';
@@ -7,7 +6,7 @@ import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
-import NewContentPage from '@/app/content/new/page';
+import NewContentPage from '@/pages/ContentNewPage';
 import ContentModels from '@/pages/ContentModels';
 import FieldSettings from '@/pages/FieldSettings';
 import RelationSettings from '@/pages/RelationSettings';
