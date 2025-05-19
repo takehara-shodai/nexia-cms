@@ -1,26 +1,12 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { Button } from "@/shared/ui/atoms/Button"
 import { Input } from "@/shared/ui/atoms/Input"
 import { Textarea } from "@/shared/ui/atoms/Textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/atoms/Select"
-import { Card, CardHeader, CardContent } from "@/shared/ui/molecules/Card"
+import { Card, CardContent } from "@/shared/ui/molecules/Card"
 import { Badge } from "@/shared/ui/atoms/Badge"
 import { Label } from "@/shared/ui/atoms/Label"
 import { supabase } from "@/lib/supabase"
-import { Eye, Trash2, Send } from "lucide-react"
-
-// 簡易的な通知機能
-const notify = {
-  success: (message: string) => {
-    console.log(`✅ ${message}`)
-    alert(`✅ ${message}`)
-  },
-  error: (message: string) => {
-    console.error(`❌ ${message}`)
-    alert(`❌ ${message}`)
-  }
-}
 
 interface ContentType {
   id?: string;
@@ -33,8 +19,6 @@ interface ContentType {
 }
 
 export function ContentForm({ content = null }: { content?: ContentType | null }) {
-  const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(content ? false : true)
   const [formData, setFormData] = useState({
     title: content?.title || "",
@@ -43,12 +27,6 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
     tags: content?.tags || [],
   })
   const [newTag, setNewTag] = useState("")
-
-  const statusLabels: Record<string, string> = {
-    draft: "下書き",
-    published: "公開中",
-    archived: "アーカイブ"
-  }
 
   const handleAddTag = () => {
     if (newTag && !formData.tags.includes(newTag)) {
@@ -67,89 +45,52 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
     })
   }
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    console.log('フォーム送信:', formData)
-
-    try {
-      const { data, error } = await supabase
-        .from('nexia-cms-contents')
-        .insert([
-          {
-            title: formData.title,
-            content: formData.content,
-            status: formData.status,
-            tags: formData.tags
-          },
-        ])
-        .select()
-
-      if (error) {
-        console.error('Supabaseエラー:', error)
-        throw new Error(`コンテンツの作成に失敗しました: ${error.message}`)
-      }
-
-      console.log('作成成功:', data)
-      notify.success("コンテンツを作成しました")
-      navigate("/content")
-    } catch (error) {
-      notify.error(`エラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
-      console.error('詳細エラー:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
-    <Card className="max-w-5xl mx-auto mt-4">
-      <CardContent className="py-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 space-y-4">
+    <Card className="bg-white">
+      <CardContent className="p-6">
+        <div className="grid grid-cols-3 gap-6">
+          <div className="col-span-2 space-y-6">
             <div>
-              <Label htmlFor="title" className="mb-1">タイトル</Label>
+              <Label htmlFor="title" className="mb-2 block">タイトル</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="タイトルを入力"
-                disabled={!isEditing && !!content}
-                className="text-2xl font-bold bg-white"
+                className="text-lg font-medium bg-white"
               />
             </div>
             <div>
-              <Label htmlFor="content" className="mb-1">本文</Label>
+              <Label htmlFor="content" className="mb-2 block">本文</Label>
               <Textarea
                 id="content"
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 placeholder="ここに記事の本文が入ります..."
-                rows={6}
-                disabled={!isEditing && !!content}
-                className="bg-white"
+                rows={12}
+                className="bg-white resize-none"
               />
             </div>
           </div>
-          <div className="space-y-4">
-            <div className="bg-muted rounded-lg p-3">
-              <Label className="mb-2 block">ステータス</Label>
+          <div className="space-y-6">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <Label className="mb-3 block">ステータス</Label>
               {isEditing || !content ? (
                 <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="ステータスを選択" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="published">公開中</SelectItem>
+                    <SelectItem value="published">公開</SelectItem>
                     <SelectItem value="draft">下書き</SelectItem>
-                    <SelectItem value="archived">アーカイブ</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
-                <Badge variant="success">{statusLabels[formData.status]}</Badge>
+                <Badge variant="success">{formData.status === 'published' ? '公開' : '下書き'}</Badge>
               )}
             </div>
-            <div className="bg-muted rounded-lg p-3">
-              <Label className="mb-2 block">タグ</Label>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <Label className="mb-3 block">タグ</Label>
               <div className="flex flex-wrap gap-2 mb-4">
                 {formData.tags.map((tag: string) => (
                   <Badge key={tag} variant="secondary" className="flex items-center gap-1">
@@ -172,11 +113,10 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
                     onChange={(e) => setNewTag(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                     placeholder="新しいタグ"
-                    className="h-8"
+                    className="flex-1"
                   />
                   <Button 
                     onClick={handleAddTag} 
-                    className="h-8" 
                     variant="outline"
                   >
                     追加
@@ -184,18 +124,26 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
                 </div>
               )}
             </div>
-            <div className="bg-muted rounded-lg p-3">
-              <Label className="mb-2 block">メタデータ</Label>
-              <div className="text-sm text-muted-foreground">作成者</div>
-              <div className="mb-2">山田太郎</div>
-              <div className="text-sm text-muted-foreground">作成日</div>
-              <div className="mb-2">2024-03-01</div>
-              <div className="text-sm text-muted-foreground">最終更新日</div>
-              <div>2024-03-10</div>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <Label className="mb-3 block">メタデータ</Label>
+              <div className="space-y-3">
+                <div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">作成者</div>
+                  <div className="font-medium">山田太郎</div>
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">作成日</div>
+                  <div className="font-medium">2024-03-01</div>
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">最終更新日</div>
+                  <div className="font-medium">2024-03-10</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
   )
-} 
+}
