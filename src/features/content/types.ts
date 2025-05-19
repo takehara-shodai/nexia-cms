@@ -1,14 +1,28 @@
 export type ContentStatus = 'draft' | 'published' | 'archived';
 export type ContentType = 'article' | 'report' | 'guide';
 
-export interface Content {
+export interface Tag {
   id: string;
+  name: string;
+  color?: string;
+  created_at?: string;
+}
+
+export interface ContentTag {
+  content_id: string;
+  tag_id: string;
+}
+
+export interface Content {
+  id?: string;
   title: string;
-  type: ContentType;
+  content: string;
   status: ContentStatus;
-  author: string;
-  updatedAt: string;
-  createdAt: string;
+  tags?: Tag[];
+  created_at?: string;
+  updated_at?: string;
+  author_id?: string;
+  type?: ContentType;
   publishedAt?: string;
   dueDate?: string;
   description?: string;
