@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Coding Style
+
+## 1. Lint & Format
+- ESLint + Prettier + lint-staged を必須とする
+- コードは常に自動整形し、コミット前にlint/formatを通す
+
+## 2. 依存方向の静的検査
+- `eslint-plugin-fsd` で依存方向を強制
+  - `shared/ui` ➜ "下位" **←依存されるだけ**
+  - `features/*` ↔ `features/*` の直接 import は禁止
+
+## 3. CI
+- GitHub Actions で **build / test / storybook build** を強制
+- mainブランチへのマージはCIパス必須
+
+# 参照ルール
+- このルールを参照した際は【frontend-coding-style参照】と出力すること

@@ -10,6 +10,9 @@ alwaysApply: true
 > 機能ごとに整理されたコードベースを維持するためのガイドラインです。
 > UIにはshadcn/uiを採用しています。
 
+# 参照ルール
+- このルールを参照する際は【frontend-coding-rule参照】と出力すること
+
 ---
 
 ## 1. ディレクトリ構造の基本方針
@@ -27,7 +30,7 @@ alwaysApply: true
 ## 2. ディレクトリ構成の詳細
 
 src/
-├─ app/                                            # ❶ “一度だけ読み込まれる” アプリの土台
+├─ app/                                            # ❶ "一度だけ読み込まれる" アプリの土台
 │   ├─ index.tsx                                   #    ReactDOM.createRoot → <App/> を mount
 │   └─ providers/                                  #    全体を包む Context 群
 │       ├─ ThemeProvider.tsx                       #      ダーク/ライト切替
@@ -35,7 +38,7 @@ src/
 │       ├─ QueryProvider.tsx                       #      React-Query クライアント
 │       └─ I18nProvider.tsx                        #      i18next 初期化
 │
-├─ pages/                                          # ❷ “URL = フォルダ” のページ層
+├─ pages/                                          # ❷ "URL = フォルダ" のページ層
 │   ├─ Dashboard/                                  #    /dashboard
 │   │   ├─ index.tsx                               #      ページ UI（データは features へ委譲）
 │   │   └─ __tests__/Dashboard.test.tsx            #      ページ単体のレンダーテスト
@@ -46,7 +49,7 @@ src/
 │       ├─ model.ts                                #      ステップ管理 (state machine)
 │       └─ ui.tsx                                  #      進捗ウィザード UI
 │
-├─ widgets/                                        # ❹ レイアウト用シェル (Header / Sidebar …)
+├─ widgets/                                        # ❹ レイアウト用シェル (Header / Sidebar ...)
 │   ├─ Header/
 │   │   ├─ ui.tsx
 │   │   └─ __tests__/Header.test.tsx
@@ -75,15 +78,15 @@ src/
 │
 ├─ shared/                                         # ❼ アプリ横断で再利用する純粋資産
 │   ├─ ui/                                         #      **Design System (Atomic)**
-│   │   ├─ atoms/                                  #        Button.tsx, Input.tsx …
-│   │   ├─ molecules/                              #        FormField.tsx …
-│   │   ├─ organisms/                              #        DataTable.tsx …
+│   │   ├─ atoms/                                  #        Button.tsx, Input.tsx ...
+│   │   ├─ molecules/                              #        FormField.tsx ...
+│   │   ├─ organisms/                              #        DataTable.tsx ...
 │   │   └─ templates/                              #        AppShell.tsx, AuthLayout.tsx
 │   ├─ hooks/                                      #      useDebounce.ts など横串 hooks
 │   ├─ lib/                                        #      date-fns ラッパ、string helpers
 │   ├─ api/                                        #      共通 ky インスタンス + interceptor
 │   ├─ constants/                                  #      ルート定義・メッセージ定数
-│   ├─ contexts/                                   #      ToastContext.tsx など “横串” Context
+│   ├─ contexts/                                   #      ToastContext.tsx など "横串" Context
 │   └─ i18n/                                       #      🌐 多言語リソース
 │       ├─ locales/                                #        JSON 辞書
 │       │   ├─ en.json
@@ -128,7 +131,7 @@ src/
 
 ### 2.3 共通ロジック `shared/*`
 
-- **hooks/** : `useDebounce`, `useMediaQuery` …  
+- **hooks/** : `useDebounce`, `useMediaQuery` ...  
 - **lib/**   : date-fns ラッパなど純 util  
 - **api/**   : 共通 `ky` インスタンス・エラーハンドラ  
 - **constants/** : エラーメッセージ・ルート定義  
@@ -249,19 +252,3 @@ src/
 - ユーザーへ出す文言は `shared/constants/errorMessage.ts` に列挙  
 - API エラーは `shared/api` で分類し、toast もここでトリガー  
 - ページ単位で **ErrorBoundary** を設置
-
----
-
-## 11. コードスタイル & CI
-1. ESLint + Prettier + lint-staged  
-2. `eslint-plugin-fsd` で **依存方向** を静的検査  
-   - `shared/ui` ➜ “下位”　**←依存されるだけ**  
-   - `features/*` ↔ `features/*` の直接 import は禁止  
-3. GitHub Actions で **build / test / storybook build** を強制
-
----
-
-## 12. ドキュメント
-- 各フォルダに **README.md** で目的・使い方・依存を書き残す  
-- ADR(Architecture Decision Record) を `/docs/adr/NNN-title.md` 形式で更新  
-- 大きなリファクタ前後で “Why, What, How” を Notion + PR description に記録
