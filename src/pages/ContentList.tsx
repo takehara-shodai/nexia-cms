@@ -144,7 +144,7 @@ const ContentList: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400">すべてのコンテンツを管理します</p>
         </div>
         <button
-          onClick={() => navigate('/content/create')}
+          onClick={() => navigate('/content/new')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />

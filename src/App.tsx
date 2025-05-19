@@ -7,6 +7,7 @@ import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
+import NewContentPage from '@/app/content/new/page';
 import ContentModels from '@/pages/ContentModels';
 import FieldSettings from '@/pages/FieldSettings';
 import RelationSettings from '@/pages/RelationSettings';
@@ -33,6 +34,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="content" element={<ContentList />} />
               <Route path="content/:id" element={<ContentDetail />} />
+              <Route path="content/new" element={<NewContentPage />} />
               <Route path="models" element={<ContentModels />} />
               <Route path="models/fields" element={<FieldSettings />} />
               <Route path="models/relations" element={<RelationSettings />} />
