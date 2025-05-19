@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/shared/ui/atoms/Button";
-import { Eye, Trash2, Send, ArrowLeft } from "lucide-react";
+import { Eye, Pencil, Trash2, Send, ArrowLeft } from "lucide-react";
 import { ContentForm } from "@/features/content/ui/ContentForm";
 
 export default function ContentNewPage() {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(true);
+  const [isPreview, setIsPreview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
@@ -43,16 +43,24 @@ export default function ContentNewPage() {
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            onClick={() => setIsEditing(true)}
-            disabled={isEditing}
+            onClick={() => setIsPreview(!isPreview)}
             className="flex items-center gap-2"
           >
-            <Eye size={18} />
-            <span>プレビュー</span>
+            {isPreview ? (
+              <>
+                <Pencil size={18} />
+                <span>編集</span>
+              </>
+            ) : (
+              <>
+                <Eye size={18} />
+                <span>プレビュー</span>
+              </>
+            )}
           </Button>
           <Button
             onClick={handleSave}
-            disabled={!isEditing || isLoading}
+            disabled={isLoading}
             variant="primaryFilled"
             className="flex items-center gap-2"
           >
@@ -69,7 +77,7 @@ export default function ContentNewPage() {
           </Button>
         </div>
       </div>
-      <ContentForm />
+      <ContentForm isPreview={isPreview} />
     </div>
   );
 }

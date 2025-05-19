@@ -18,8 +18,12 @@ interface ContentType {
   updated_at?: string;
 }
 
-export function ContentForm({ content = null }: { content?: ContentType | null }) {
-  const [isEditing, setIsEditing] = useState(content ? false : true)
+interface ContentFormProps {
+  content?: ContentType | null;
+  isPreview?: boolean;
+}
+
+export function ContentForm({ content = null, isPreview = false }: ContentFormProps) {
   const [formData, setFormData] = useState({
     title: content?.title || "",
     content: content?.content || "",
@@ -43,6 +47,62 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
       ...formData,
       tags: formData.tags.filter(tag => tag !== tagToRemove)
     })
+  }
+
+  if (isPreview) {
+    return (
+      <Card className="bg-white">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="col-span-2 space-y-6">
+              <div>
+                <h1 className="text-3xl font-bold mb-4">{formData.title}</h1>
+                <div className="prose dark:prose-invert max-w-none">
+                  {formData.content.split('\n').map((paragraph, index) => (
+                    <p key={index} className="mb-4">{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <h3 className="font-medium mb-3">ステータス</h3>
+                <Badge variant="success">
+                  {formData.status === 'published' ? '公開' : '下書き'}
+                </Badge>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <h3 className="font-medium mb-3">タグ</h3>
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map((tag: string) => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <h3 className="font-medium mb-3">メタデータ</h3>
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">作成者</div>
+                    <div className="font-medium">山田太郎</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">作成日</div>
+                    <div className="font-medium">2024-03-01</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">最終更新日</div>
+                    <div className="font-medium">2024-03-10</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -75,19 +135,15 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
           <div className="space-y-6">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <Label className="mb-3 block">ステータス</Label>
-              {isEditing || !content ? (
-                <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="ステータスを選択" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="published">公開</SelectItem>
-                    <SelectItem value="draft">下書き</SelectItem>
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Badge variant="success">{formData.status === 'published' ? '公開' : '下書き'}</Badge>
-              )}
+              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="ステータスを選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="published">公開</SelectItem>
+                  <SelectItem value="draft">下書き</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <Label className="mb-3 block">タグ</Label>
@@ -95,34 +151,30 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
                 {formData.tags.map((tag: string) => (
                   <Badge key={tag} variant="secondary" className="flex items-center gap-1">
                     {tag}
-                    {(isEditing || !content) && (
-                      <button 
-                        onClick={() => handleRemoveTag(tag)} 
-                        className="ml-1 text-gray-500 hover:text-red-500"
-                      >
-                        ×
-                      </button>
-                    )}
+                    <button 
+                      onClick={() => handleRemoveTag(tag)} 
+                      className="ml-1 text-gray-500 hover:text-red-500"
+                    >
+                      ×
+                    </button>
                   </Badge>
                 ))}
               </div>
-              {(isEditing || !content) && (
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                    placeholder="新しいタグ"
-                    className="flex-1"
-                  />
-                  <Button 
-                    onClick={handleAddTag} 
-                    variant="outline"
-                  >
-                    追加
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Input
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                  placeholder="新しいタグ"
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleAddTag} 
+                  variant="outline"
+                >
+                  追加
+                </Button>
+              </div>
             </div>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <Label className="mb-3 block">メタデータ</Label>
