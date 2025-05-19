@@ -61,7 +61,6 @@ export default function ContentNewPage() {
             icon={Trash2}
             variant="destructive"
             onClick={handleDelete}
-            className="border-2 border-red-600 dark:border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
           >
             削除
           </ActionButton>

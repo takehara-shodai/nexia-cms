@@ -18,12 +18,18 @@ export function ActionButton({
   disabled,
   className,
 }: ActionButtonProps) {
+  const isDestructive = variant === 'destructive';
+  
   return (
     <Button
       variant={variant}
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center gap-2 ${className}`}
+      className={`
+        flex items-center gap-2
+        ${isDestructive ? 'bg-red-600 hover:bg-red-700 text-white border-0' : ''}
+        ${className}
+      `}
     >
       <Icon size={18} />
       <span>{children}</span>
