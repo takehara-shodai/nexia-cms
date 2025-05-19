@@ -1,4 +1,3 @@
-```sql
 /*
   # Create profiles table
 
@@ -51,4 +50,3 @@ CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON profiles
   FOR EACH ROW
   EXECUTE FUNCTION update_timestamp();
-```
