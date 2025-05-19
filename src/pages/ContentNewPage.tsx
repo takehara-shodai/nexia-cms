@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/shared/ui/atoms/Button";
 import { Eye, Pencil, Trash2, Send, ArrowLeft } from "lucide-react";
+import { ActionButton } from "@/shared/ui/molecules/ActionButton";
 import { ContentForm } from "@/features/content/ui/ContentForm";
 
 export default function ContentNewPage() {
@@ -31,50 +31,40 @@ export default function ContentNewPage() {
     <div className="fade-in container mx-auto py-6 max-w-7xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Button
+          <ActionButton
+            icon={ArrowLeft}
             variant="ghost"
             onClick={() => navigate(-1)}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
           >
-            <ArrowLeft size={20} />
-          </Button>
+            戻る
+          </ActionButton>
           <h1 className="text-2xl font-bold">新規コンテンツ作成</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button
+          <ActionButton
+            icon={isPreview ? Pencil : Eye}
             variant="outline"
             onClick={() => setIsPreview(!isPreview)}
-            className="flex items-center gap-2"
           >
-            {isPreview ? (
-              <>
-                <Pencil size={18} />
-                <span>編集</span>
-              </>
-            ) : (
-              <>
-                <Eye size={18} />
-                <span>プレビュー</span>
-              </>
-            )}
-          </Button>
-          <Button
+            {isPreview ? '編集' : 'プレビュー'}
+          </ActionButton>
+          <ActionButton
+            icon={Send}
+            variant="primaryFilled"
             onClick={handleSave}
             disabled={isLoading}
-            variant="primaryFilled"
-            className="flex items-center gap-2"
           >
-            <Send size={18} />
-            <span>保存</span>
-          </Button>
-          <Button
+            保存
+          </ActionButton>
+          <ActionButton
+            icon={Trash2}
             variant="destructive"
             onClick={handleDelete}
-            className="flex items-center gap-2"
+            className="border-2 border-red-600 dark:border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
           >
-            <Trash2 size={18} />
-            <span>削除</span>
-          </Button>
+            削除
+          </ActionButton>
         </div>
       </div>
       <div className="slide-in">
