@@ -1,5 +1,5 @@
 import { Button } from "@/shared/ui/atoms/Button"
-import { LucideIcon } from "lucide-react"
+import { DivideIcon as LucideIcon } from "lucide-react"
 
 interface ActionButtonProps {
   icon: LucideIcon;
