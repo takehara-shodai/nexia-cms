@@ -66,7 +66,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
 
   if (isPreview) {
     return (
-      <Card className="bg-white">
+      <Card className="bg-white dark:bg-gray-800">
         <CardContent className="p-6">
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2 space-y-6">
@@ -80,13 +80,13 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
               </div>
             </div>
             <div className="space-y-6">
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <h3 className="font-medium mb-3">ステータス</h3>
                 <Badge className={getStatusColor(formData.status)}>
                   {getStatusLabel(formData.status)}
                 </Badge>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <h3 className="font-medium mb-3">タグ</h3>
                 <div className="flex flex-wrap gap-2">
                   {formData.tags.map((tag: string) => (
@@ -96,7 +96,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                   ))}
                 </div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <h3 className="font-medium mb-3">メタデータ</h3>
                 <div className="space-y-3">
                   <div>
@@ -121,7 +121,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
   }
 
   return (
-    <Card className="bg-white">
+    <Card className="bg-white dark:bg-gray-800">
       <CardContent className="p-6">
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 space-y-6">
@@ -132,7 +132,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="タイトルを入力"
-                className="text-lg font-medium bg-white"
+                className="text-lg font-medium bg-white dark:bg-gray-700"
               />
             </div>
             <div>
@@ -143,21 +143,25 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 placeholder="ここに記事の本文が入ります..."
                 rows={12}
-                className="bg-white resize-none"
+                className="bg-white dark:bg-gray-700 resize-none"
               />
             </div>
           </div>
           <div className="space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <Label className="mb-3 block">ステータス</Label>
               <Select 
                 value={formData.status} 
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="w-full bg-white dark:bg-gray-700">
-                  <SelectValue placeholder="ステータスを選択" />
+                  <SelectValue placeholder="ステータスを選択">
+                    <span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(formData.status)}`}>
+                      {getStatusLabel(formData.status)}
+                    </span>
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-700">
                   {statusOptions.map(option => (
                     <SelectItem 
                       key={option.value} 
@@ -172,7 +176,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                 </SelectContent>
               </Select>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <Label className="mb-3 block">タグ</Label>
               <div className="flex flex-wrap gap-2 mb-4">
                 {formData.tags.map((tag: string) => (
@@ -198,12 +202,13 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                 <Button 
                   onClick={handleAddTag} 
                   variant="outline"
+                  className="bg-white dark:bg-gray-700"
                 >
                   追加
                 </Button>
               </div>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <Label className="mb-3 block">メタデータ</Label>
               <div className="space-y-3">
                 <div>
