@@ -23,6 +23,13 @@ interface ContentFormProps {
   isPreview?: boolean;
 }
 
+const statusOptions = [
+  { value: 'draft', label: '下書き', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
+  { value: 'review', label: 'レビュー中', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
+  { value: 'published', label: '公開', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
+  { value: 'archived', label: 'アーカイブ', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' },
+];
+
 export function ContentForm({ content = null, isPreview = false }: ContentFormProps) {
   const [formData, setFormData] = useState({
     title: content?.title || "",
@@ -49,6 +56,14 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
     })
   }
 
+  const getStatusColor = (status: string) => {
+    return statusOptions.find(option => option.value === status)?.color || statusOptions[0].color;
+  }
+
+  const getStatusLabel = (status: string) => {
+    return statusOptions.find(option => option.value === status)?.label || status;
+  }
+
   if (isPreview) {
     return (
       <Card className="bg-white">
@@ -67,8 +82,8 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
             <div className="space-y-6">
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
                 <h3 className="font-medium mb-3">ステータス</h3>
-                <Badge variant="success">
-                  {formData.status === 'published' ? '公開' : '下書き'}
+                <Badge className={getStatusColor(formData.status)}>
+                  {getStatusLabel(formData.status)}
                 </Badge>
               </div>
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
@@ -135,13 +150,25 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
           <div className="space-y-6">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <Label className="mb-3 block">ステータス</Label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                <SelectTrigger className="w-full">
+              <Select 
+                value={formData.status} 
+                onValueChange={(value) => setFormData({ ...formData, status: value })}
+              >
+                <SelectTrigger className="w-full bg-white dark:bg-gray-700">
                   <SelectValue placeholder="ステータスを選択" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="published">公開</SelectItem>
-                  <SelectItem value="draft">下書き</SelectItem>
+                  {statusOptions.map(option => (
+                    <SelectItem 
+                      key={option.value} 
+                      value={option.value}
+                      className="flex items-center gap-2"
+                    >
+                      <span className={`px-2 py-0.5 rounded text-xs ${option.color}`}>
+                        {option.label}
+                      </span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -166,7 +193,7 @@ export function ContentForm({ content = null, isPreview = false }: ContentFormPr
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                   placeholder="新しいタグ"
-                  className="flex-1"
+                  className="flex-1 bg-white dark:bg-gray-700"
                 />
                 <Button 
                   onClick={handleAddTag} 
