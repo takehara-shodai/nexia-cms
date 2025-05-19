@@ -102,10 +102,36 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
   }
 
   return (
-    <Card className="max-w-5xl mx-auto mt-4">
-      <CardContent className="py-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 space-y-4">
+    <Card className="max-w-5xl mx-auto mt-8">
+      <CardHeader className="flex flex-row items-center justify-between pb-4 border-b">
+        <div className="flex items-center gap-2">
+          {content && <span className="ml-4 text-xs text-muted-foreground">ID: {content.id || "create"}</span>}
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setIsEditing(true)}
+            disabled={isEditing}
+            className="flex items-center gap-2 text-base font-medium h-12 px-8 rounded-lg"
+          >
+            <Eye className="w-5 h-5" /> 編集
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={!isEditing || isLoading}
+            variant="primaryFilled"
+            className="flex items-center gap-2 text-base font-medium h-12 px-8 rounded-lg"
+          >
+            <Send className="w-5 h-5" /> 保存
+          </Button>
+          <Button variant="destructive" size="icon" className="w-12 h-12 rounded-lg flex items-center justify-center">
+            <Trash2 className="w-5 h-5" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="py-8">
+        <div className="grid grid-cols-3 gap-8">
+          <div className="col-span-2 space-y-6">
             <div>
               <Label htmlFor="title" className="mb-1">タイトル</Label>
               <Input
@@ -130,8 +156,8 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
               />
             </div>
           </div>
-          <div className="space-y-4">
-            <div className="bg-muted rounded-lg p-3">
+          <div className="space-y-6">
+            <div className="bg-muted rounded-lg p-4">
               <Label className="mb-2 block">ステータス</Label>
               {isEditing || !content ? (
                 <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
@@ -148,7 +174,7 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
                 <Badge variant="success">{statusLabels[formData.status]}</Badge>
               )}
             </div>
-            <div className="bg-muted rounded-lg p-3">
+            <div className="bg-muted rounded-lg p-4">
               <Label className="mb-2 block">タグ</Label>
               <div className="flex flex-wrap gap-2 mb-4">
                 {formData.tags.map((tag: string) => (
@@ -184,7 +210,7 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
                 </div>
               )}
             </div>
-            <div className="bg-muted rounded-lg p-3">
+            <div className="bg-muted rounded-lg p-4">
               <Label className="mb-2 block">メタデータ</Label>
               <div className="text-sm text-muted-foreground">作成者</div>
               <div className="mb-2">山田太郎</div>
@@ -198,4 +224,4 @@ export function ContentForm({ content = null }: { content?: ContentType | null }
       </CardContent>
     </Card>
   )
-} 
+}
