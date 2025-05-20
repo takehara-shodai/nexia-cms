@@ -41,29 +41,49 @@ export function TagSelect({ value, onChange, tenant_id }: TagSelectProps) {
     <div>
       <div className="flex flex-wrap gap-2 mb-2">
         {value.map(tag => (
-          <span key={tag.id} className="inline-flex items-center px-2 py-1 bg-gray-200 rounded text-sm">
+          <span key={tag.id} className="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
             {tag.name}
-            <button type="button" className="ml-1 text-gray-500 hover:text-red-500" onClick={() => handleRemove(tag)}>×</button>
+            <button 
+              type="button" 
+              className="ml-2 text-gray-500 hover:text-red-500 transition-colors" 
+              onClick={() => handleRemove(tag)}
+            >
+              ×
+            </button>
           </span>
         ))}
       </div>
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-3">
         <Input
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="新しいタグ"
-          className="h-8"
+          className="flex-1"
           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
         />
-        <Button type="button" onClick={handleAdd} className="h-8" variant="outline" disabled={adding || !tenant_id}>追加</Button>
+        <Button 
+          type="button" 
+          onClick={handleAdd} 
+          variant="primaryFilled"
+          disabled={adding || !tenant_id || !input.trim()}
+          className="px-4"
+        >
+          追加
+        </Button>
       </div>
       <div className="flex flex-wrap gap-2">
         {tags.filter(tag => !value.find(t => t.id === tag.id)).map(tag => (
-          <Button key={tag.id} type="button" size="sm" variant="secondary" onClick={() => handleSelect(tag)}>
+          <Button
+            key={tag.id}
+            type="button"
+            variant="outline"
+            onClick={() => handleSelect(tag)}
+            className="px-3 py-1 h-auto text-sm bg-white dark:bg-gray-800"
+          >
             {tag.name}
           </Button>
         ))}
       </div>
     </div>
   );
-} 
+}
