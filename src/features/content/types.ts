@@ -19,6 +19,8 @@ export interface Content {
   content: string;
   status: ContentStatus;
   slug: string;
+  type_id: string;
+  tenant_id: string;
   tags?: Tag[];
   created_at?: string;
   updated_at?: string;

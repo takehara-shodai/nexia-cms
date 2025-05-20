@@ -36,7 +36,11 @@ async function ensureTags(tags: Tag[]): Promise<string[]> {
         // 新規タグ追加
         const { data: created, error: createError } = await supabase
           .from('nexia_cms_tags')
-          .insert([{ name: tag.name, color: tag.color }])
+          .insert([{ 
+            name: tag.name, 
+            color: tag.color,
+            tenant_id: tag.tenant_id 
+          }])
           .select('id')
           .single();
         if (createError) throw createError;
@@ -56,7 +60,7 @@ function generateSlug(title: string): string {
     .replace(/-+/g, '-');
 }
 
-export async function createContentWithTags(content: Omit<Content, 'id' | 'created_at' | 'updated_at' | 'author_id'>, tags: Tag[]) {
+export async function createContentWithTags(content: Omit<Content, 'id' | 'created_at' | 'updated_at'>, tags: Tag[]) {
   const slug = generateSlug(content.title);
 
   // 1. コンテンツ本体をinsert
@@ -67,13 +71,19 @@ export async function createContentWithTags(content: Omit<Content, 'id' | 'creat
       content: content.content,
       status: content.status,
       slug: slug,
+      type_id: content.type_id,
+      tenant_id: content.tenant_id,
+      author_id: content.author_id
     }])
     .select('id')
     .single();
   if (contentError) throw contentError;
 
   // 2. タグIDを確定
-  const tagIds = await ensureTags(tags);
+  const tagIds = await ensureTags(tags.map(tag => ({
+    ...tag,
+    tenant_id: content.tenant_id
+  })));
 
   // 3. 中間テーブルにinsert
   const contentTags = tagIds.map(tag_id => ({
