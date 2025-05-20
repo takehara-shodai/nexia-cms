@@ -4,7 +4,7 @@ import { demoContents } from '../data/demo';
 
 export const fetchContents = async (): Promise<Content[]> => {
   const { data, error } = await supabase
-    .from('nexia_cms_contents')
+    .from('nexia-cms-contents')
     .select(`
       *,
       tags:nexia_cms_content_tags(
@@ -31,13 +31,13 @@ export const createContentWithTags = async (
 ) => {
   // 1. コンテンツ本体をinsert
   const { data: contentData, error: contentError } = await supabase
-    .from('nexia_cms_contents')
+    .from('nexia-cms-contents')
     .insert([{
       title: content.title,
       content: content.content,
-      status: content.status,
+      status: content.status || 'draft' // Ensure status is either 'draft' or 'published'
     }])
-    .select('id')
+    .select('*')
     .single();
 
   if (contentError) throw contentError;
