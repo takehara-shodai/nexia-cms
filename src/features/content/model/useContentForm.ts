@@ -8,7 +8,7 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
   const [form, setForm] = useState<Omit<Content, 'id' | 'created_at' | 'updated_at'>>({
     title: '',
     content: '',
-    status: 'draft',
+    status: 'draft', // This will be mapped to status_id in the API
     slug: '',
     type_id: '00000000-0000-0000-0000-000000000001', // Default type_id
     tenant_id: user?.app_metadata?.tenant_id,
