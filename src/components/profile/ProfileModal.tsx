@@ -27,51 +27,51 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+  
+        // First check if we have a valid session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) throw sessionError;
+        if (!session) {
+          navigate('/login');
+          return;
+        }
+  
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError) throw authError;
+        if (!user) {
+          navigate('/login');
+          return;
+        }
+  
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+  
+        if (error) throw error;
+        setProfile(data);
+      } catch (err) {
+        setError('プロフィールの読み込みに失敗しました');
+        console.error(err);
+        if (err instanceof Error && (err.message === 'User not found' || err.message === 'Auth session missing!')) {
+          navigate('/login');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
     if (isOpen) {
       loadProfile();
     }
-  }, [isOpen]);
-
-  const loadProfile = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      // First check if we have a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) throw sessionError;
-      if (!session) {
-        navigate('/login');
-        return;
-      }
-
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
-      if (authError) throw authError;
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (error) throw error;
-      setProfile(data);
-    } catch (err) {
-      setError('プロフィールの読み込みに失敗しました');
-      console.error(err);
-      if (err instanceof Error && (err.message === 'User not found' || err.message === 'Auth session missing!')) {
-        navigate('/login');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [isOpen, navigate]);
 
   const handleSave = async () => {
     if (!profile) return;

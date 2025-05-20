@@ -306,7 +306,9 @@ const ContentList: React.FC = () => {
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          handlePreview(content.url!);
+                          if (content.url) {
+                            handlePreview(content.url);
+                          }
                         }}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center gap-1 text-blue-600 dark:text-blue-400"
                       >
@@ -343,7 +345,9 @@ const ContentList: React.FC = () => {
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          handlePreview(content.url!);
+                          if (content.url) {
+                            handlePreview(content.url);
+                          }
                         }}
                         className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center gap-1 text-blue-600 dark:text-blue-400"
                       >

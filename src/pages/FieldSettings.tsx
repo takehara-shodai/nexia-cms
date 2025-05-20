@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Database,
   Search,
   Filter,
   Plus,
@@ -8,10 +7,7 @@ import {
   Settings,
   Copy,
   Trash,
-  Save,
   X,
-  Check,
-  ChevronDown,
 } from 'lucide-react';
 
 interface Field {
@@ -20,7 +16,7 @@ interface Field {
   type: FieldType;
   required: boolean;
   description?: string;
-  defaultValue?: any;
+  defaultValue?: unknown;
   settings: FieldSettings;
 }
 
@@ -48,6 +44,7 @@ interface FieldSettings {
   allowedTypes?: string[];
   relationModel?: string;
   format?: string;
+  [key: string]: unknown;
 }
 
 const FieldSettings: React.FC = () => {

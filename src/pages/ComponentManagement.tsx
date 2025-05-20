@@ -17,7 +17,7 @@ interface ComponentField {
   name: string;
   type: string;
   required: boolean;
-  settings?: Record<string, any>;
+  settings?: Record<string, unknown>;
 }
 
 const ComponentManagement: React.FC = () => {

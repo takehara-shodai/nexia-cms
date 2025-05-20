@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
+import { UserPlus, Mail, Lock, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { AuthError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -9,9 +9,10 @@ import { Input } from '@/shared/ui/atoms/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/molecules/Card';
 import { Label } from '@/shared/ui/atoms/Label';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,13 +27,19 @@ const Login: React.FC = () => {
     checkSession();
   }, [navigate]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (password !== confirmPassword) {
+      setError('パスワードが一致しません');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
       });
@@ -41,8 +48,8 @@ const Login: React.FC = () => {
         throw error;
       }
 
-      toast.success('ログインに成功しました');
-      navigate('/');
+      toast.success('アカウントを作成しました');
+      navigate('/login');
     } catch (error: unknown) {
       if (error instanceof AuthError) {
         setError(error.message);
@@ -51,7 +58,7 @@ const Login: React.FC = () => {
       } else {
         setError('不明なエラーが発生しました');
       }
-      toast.error('ログインに失敗しました');
+      toast.error('アカウントの作成に失敗しました');
     } finally {
       setIsLoading(false);
     }
@@ -61,13 +68,13 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">ログイン</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">アカウント作成</CardTitle>
           <CardDescription className="text-center">
-            アカウントにログインしてください
+            新しいアカウントを作成してください
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <div className="relative">
@@ -98,6 +105,21 @@ const Login: React.FC = () => {
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">パスワード（確認）</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
             {error && (
               <div className="flex items-center gap-2 text-red-500 text-sm">
                 <AlertCircle size={16} />
@@ -112,12 +134,12 @@ const Login: React.FC = () => {
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="animate-spin">⚪</span>
-                  ログイン中...
+                  作成中...
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <LogIn size={16} />
-                  ログイン
+                  <UserPlus size={16} />
+                  アカウントを作成
                 </span>
               )}
             </Button>
@@ -126,10 +148,10 @@ const Login: React.FC = () => {
         <CardFooter className="flex justify-center">
           <Button
             variant="link"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/login')}
             className="text-sm"
           >
-            アカウントをお持ちでない方はこちら
+            すでにアカウントをお持ちの方はこちら
           </Button>
         </CardFooter>
       </Card>
@@ -137,4 +159,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Register; 

@@ -11,7 +11,7 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (key: keyof typeof form, value: any) => {
+  const handleChange = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 

@@ -106,7 +106,10 @@ const FileUpload = ({
     setFiles(prev => {
       const newFiles = [...prev];
       if (newFiles[index].preview) {
-        URL.revokeObjectURL(newFiles[index].preview!);
+        const previewUrl = newFiles[index].preview;
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+        }
       }
       newFiles.splice(index, 1);
       return newFiles;

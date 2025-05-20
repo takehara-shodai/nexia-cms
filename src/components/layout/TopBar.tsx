@@ -10,8 +10,8 @@ import {
   Sun,
   Menu as MenuIcon,
 } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useModal } from '@/contexts/ModalContext';
+import { useTheme } from '@/shared/contexts/theme';
+import { useModal } from '@/shared/contexts/modal';
 import { supabase } from '@/lib/supabase';
 import ProfileModal from '@/components/profile/ProfileModal';
 

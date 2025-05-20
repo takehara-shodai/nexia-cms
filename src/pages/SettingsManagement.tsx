@@ -6,11 +6,7 @@ import {
   Globe,
   Database,
   Shield,
-  Bell,
-  Trash,
   Archive,
-  Clock,
-  Server,
   RefreshCw,
 } from 'lucide-react';
 

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { ModalProvider } from '@/contexts/ModalContext.tsx';
+import { ThemeProvider } from '@/shared/contexts/theme';
+import { ModalProvider } from '@/shared/contexts/modal';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';

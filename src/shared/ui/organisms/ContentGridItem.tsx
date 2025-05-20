@@ -62,7 +62,9 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
             <button
               onClick={e => {
                 e.stopPropagation();
-                onPreviewClick(content.url!);
+                if (typeof content.url === 'string') {
+                  onPreviewClick(content.url);
+                }
               }}
               className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center gap-1 text-blue-600 dark:text-blue-400"
             >
@@ -74,7 +76,9 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             onClick={e => {
               e.stopPropagation();
-              content.id && onMenuClick(content.id);
+              if (content.id) {
+                onMenuClick(content.id);
+              }
             }}
           >
             <MoreVertical size={18} />

@@ -3,13 +3,10 @@ import {
   Search,
   Filter,
   Printer,
-  ExternalLink,
   BarChart,
-  FileText,
   PieChart,
 } from 'lucide-react';
 import {
-  Download,
   Calendar,
   ArrowUpRight,
   ArrowDownRight,

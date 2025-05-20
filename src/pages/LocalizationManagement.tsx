@@ -7,10 +7,8 @@ import {
   Globe,
   Check,
   X,
-  ChevronDown,
   Edit2,
   Trash,
-  RefreshCw,
   Upload,
   Download,
 } from 'lucide-react';

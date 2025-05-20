@@ -1,22 +1,21 @@
-import { useState, forwardRef, useImperativeHandle } from "react"
-import { Button } from "@/shared/ui/atoms/Button"
+import { forwardRef, useImperativeHandle } from "react"
 import { Input } from "@/shared/ui/atoms/Input"
 import { Textarea } from "@/shared/ui/atoms/Textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/atoms/Select"
 import { Card, CardContent } from "@/shared/ui/molecules/Card"
 import { Badge } from "@/shared/ui/atoms/Badge"
 import { Label } from "@/shared/ui/atoms/Label"
-import { supabase } from "@/lib/supabase"
 import { useContentForm } from '@/features/content/model/useContentForm'
 import { TagSelect } from '@/shared/ui/molecules/TagSelect'
 import { useAuth } from '@/shared/hooks/useAuth'
+import type { ContentStatus, Tag } from '@/features/content/types';
 
 interface ContentType {
   id?: string;
   title?: string;
   content?: string;
-  status?: string;
-  tags?: string[];
+  status?: ContentStatus;
+  tags?: Tag[];
   created_at?: string;
   updated_at?: string;
 }
@@ -24,18 +23,18 @@ interface ContentType {
 interface ContentFormProps {
   content?: ContentType | null;
   isPreview?: boolean;
-  onSuccess?: (content: any) => void;
+  onSuccess?: (content: ContentType) => void;
 }
 
-const statusOptions = [
-  { value: 'draft', label: '下書き', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
-  { value: 'review', label: 'レビュー中', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
-  { value: 'published', label: '公開', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
-  { value: 'archived', label: 'アーカイブ', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' },
+const statusOptions: { value: ContentStatus; label: string; color: string }[] = [
+  { value: 'draft' as ContentStatus, label: '下書き', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
+  { value: 'review' as ContentStatus, label: 'レビュー中', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
+  { value: 'published' as ContentStatus, label: '公開', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
+  { value: 'archived' as ContentStatus, label: 'アーカイブ', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' },
 ];
 
-export const ContentForm = forwardRef(function ContentForm({ content = null, isPreview = false, onSuccess }: ContentFormProps, ref) {
-  const { form, handleChange, handleSubmit, loading } = useContentForm(onSuccess);
+export const ContentForm = forwardRef(function ContentForm({ isPreview = false, onSuccess }: ContentFormProps, ref) {
+  const { form, handleChange, handleSubmit } = useContentForm(onSuccess);
   const { user } = useAuth();
   const tenant_id = user?.tenant_id || '';
 
@@ -139,8 +138,7 @@ export const ContentForm = forwardRef(function ContentForm({ content = null, isP
               <Label className="mb-3 block">ステータス</Label>
               <Select 
                 value={form.status} 
-                onValueChange={(value) => handleChange('status', value)}
-              >
+                onValueChange={(value) => handleChange('status', value as ContentStatus)}              >
                 <SelectTrigger className="w-full bg-white dark:bg-gray-700">
                   <SelectValue placeholder="ステータスを選択">
                     <span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(form.status)}`}>

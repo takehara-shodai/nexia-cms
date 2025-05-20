@@ -8,7 +8,6 @@ import {
   Languages,
   Users,
   Settings,
-  Activity,
   PieChart,
   Package,
   Apple as Api,

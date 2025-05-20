@@ -7,7 +7,6 @@ import {
   Globe,
   Code,
   Puzzle,
-  ArrowRight,
   Power,
   CheckCircle,
   AlertTriangle,
@@ -25,7 +24,7 @@ interface Integration {
   version: string;
   lastUpdated: string;
   author: string;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 const IntegrationsManagement: React.FC = () => {

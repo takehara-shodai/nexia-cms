@@ -11,7 +11,7 @@ interface TagSelectProps {
 }
 
 export function TagSelect({ value, onChange, tenant_id }: TagSelectProps) {
-  const { tags, loading, addTag } = useTagSelect(tenant_id);
+  const { tags, addTag } = useTagSelect(tenant_id);
   const [input, setInput] = useState('');
   const [adding, setAdding] = useState(false);
 
