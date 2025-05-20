@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Cursor Project Rules (auth-app)
+# Cursor Project Rules
 
 > **目的**  
 > React + Vite アプリで「**Design System = Atomic**」と「**アプリ機能 = FSD**」を両立しながら、  
