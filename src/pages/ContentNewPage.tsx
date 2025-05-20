@@ -44,12 +44,12 @@ export default function ContentNewPage() {
             <Send className="w-5 h-5" /> 保存
           </Button>
           <Button
+            type="button"
             variant="destructive"
-            size="icon"
-            className="w-12 h-12 flex items-center justify-center"
+            className="flex items-center gap-2 px-4"
             onClick={() => {/* 削除処理 */}}
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 className="w-5 h-5" /> 削除
           </Button>
         </div>
       </div>
