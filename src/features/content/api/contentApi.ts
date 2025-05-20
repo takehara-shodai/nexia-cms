@@ -47,7 +47,18 @@ async function ensureTags(tags: Tag[]): Promise<string[]> {
   return tagIds;
 }
 
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export async function createContentWithTags(content: Omit<Content, 'id' | 'created_at' | 'updated_at' | 'author_id'>, tags: Tag[]) {
+  const slug = generateSlug(content.title);
+
   // 1. コンテンツ本体をinsert
   const { data: contentData, error: contentError } = await supabase
     .from('nexia_cms_contents')
@@ -55,6 +66,7 @@ export async function createContentWithTags(content: Omit<Content, 'id' | 'creat
       title: content.title,
       content: content.content,
       status: content.status,
+      slug: slug,
     }])
     .select('id')
     .single();

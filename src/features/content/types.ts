@@ -18,6 +18,7 @@ export interface Content {
   title: string;
   content: string;
   status: ContentStatus;
+  slug: string;
   tags?: Tag[];
   created_at?: string;
   updated_at?: string;
@@ -36,4 +37,4 @@ export interface ContentListFilters {
   status: ContentStatus | 'all';
   searchTerm: string;
   viewMode: 'list' | 'grid';
-} 
+}

@@ -7,6 +7,7 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
     title: '',
     content: '',
     status: 'draft',
+    slug: '',
     tags: [],
   });
   const [loading, setLoading] = useState(false);
@@ -26,4 +27,4 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
   };
 
   return { form, handleChange, handleSubmit, loading };
-} 
+}
