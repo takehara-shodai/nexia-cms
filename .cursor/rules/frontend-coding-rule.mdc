@@ -29,80 +29,83 @@ alwaysApply: true
 
 ## 2. ディレクトリ構成の詳細
 
-src/
-├─ app/                                            # ❶ "一度だけ読み込まれる" アプリの土台
-│   ├─ index.tsx                                   #    ReactDOM.createRoot → <App/> を mount
-│   └─ providers/                                  #    全体を包む Context 群
-│       ├─ ThemeProvider.tsx                       #      ダーク/ライト切替
-│       ├─ AuthProvider.tsx                        #      ログインユーザー状態
-│       ├─ QueryProvider.tsx                       #      React-Query クライアント
-│       └─ I18nProvider.tsx                        #      i18next 初期化
+app/
+├─ src/
+│   ├─ app/
+│   │   ├─ index.tsx         # ReactDOM.createRootで<App/>をマウント
+│   │   └─ providers/        # ThemeProvider, AuthProvider, etc.
+│   │
+│   ├─ pages/                # ファイルベースルーティング
+│   │   ├─ Dashboard/        #    /dashboard
+│   │   │   ├─ index.tsx     #      ページ UI（データは features へ委譲）
+│   │   │   └─ __tests__/    #      ページ単体のレンダーテスト
+│   │   └─ [...].tsx         #    動的ルート例
+│   │
+│   ├─ features/             # FSD: ビジネス機能ごと
+│   │   ├─ auth/
+│   │   │   ├─ ui/           #      SignInForm.tsx, ResetPasswordDialog.tsx
+│   │   │   ├─ model/        #      Zustand store・React-Query hooks
+│   │   │   ├─ api/          #      /login, /refresh 等 ky 呼び出し
+│   │   │   ├─ hooks/        #      usePasswordStrength.ts
+│   │   │   ├─ types.ts      #      DTO & ドメイン型
+│   │   │   └─ __tests__/    #      単体テスト (logic / api)
+│   │   └─ customers/        #      顧客管理機能も同パターンで配置
+│   │       ├─ ui/
+│   │       ├─ model/
+│   │       ├─ api/
+│   │       └─ __tests__/
+│   │
+│   ├─ entities/             # ドメインモデル
+│   │   ├─ user/
+│   │   │   ├─ model.ts      #      User 型・factory・helper
+│   │   │   ├─ ui/           #      Avatar.tsx, UserTag.tsx
+│   │   │   └─ __tests__/    #      user.test.ts
+│   │   └─ ...
+│   │
+│   ├─ widgets/               # レイアウト用シェル
+│   │   ├─ Header/
+│   │   │   ├─ ui.tsx
+│   │   │   └─ __tests__/
+│   │   └─ ...
+│   │
+│   ├─ processes/             # 業務フロー
+│   │   └─ authOnboarding/
+│   │       ├─ model.ts       #      ステップ管理 (state machine)
+│   │       └─ ui.tsx         #      進捗ウィザード UI
+│   │
+│   ├─ shared/
+│   │   ├─ ui/
+│   │   │   ├─ atoms/         #      **Design System (Atomic)** 基本UI
+│   │   │   │   ├─ Button.tsx
+│   │   │   │   ├─ Input.tsx
+│   │   │   │   └─ ...
+│   │   │   │
+│   │   │   │   ├─ molecules/ #      複合UIコンポーネント
+│   │   │   │   ├─ organisms/ #      機能単位のコンポーネント
+│   │   │   │   └─ templates/ #      ページレイアウト
+│   │   │   │
+│   │   │   ├─ hooks/         #      useDebounce.ts など横串 hooks
+│   │   │   ├─ lib/           #      date-fns ラッパ、string helpers
+│   │   │   ├─ api/           #      共通 ky インスタンス + interceptor
+│   │   │   ├─ constants/     #      ルート定義・メッセージ定数
+│   │   │   ├─ contexts/      #      ToastContext.tsx など "横串" Context
+│   │   │   └─ i18n/          #      多言語リソース
+│   │   │       ├─ locales/   #      JSON 辞書
+│   │   │       │   ├─ en.json
+│   │   │       │   └─ ja.json
+│   │   │       └─ index.ts   #      i18n 設定 & helper
+│   │   │
+│   │   └─ styles/            # ❽ Tailwind のベース CSS / token
+│   │       ├─ index.css
+│   │       └─ tailwind.generated.css
+│   │
+│   └─ tests/                 # ❾ グローバル設定 & E2E
+│       ├─ setupTests.ts      #      Jest & RTL セットアップ
+│       └─ e2e/               #      Playwright/Cypress シナリオ
+│           └─ login.cy.ts
 │
-├─ pages/                                          # ❷ "URL = フォルダ" のページ層
-│   ├─ Dashboard/                                  #    /dashboard
-│   │   ├─ index.tsx                               #      ページ UI（データは features へ委譲）
-│   │   └─ __tests__/Dashboard.test.tsx            #      ページ単体のレンダーテスト
-│   └─ [...].tsx                                   #    動的ルート例
-│
-├─ processes/                                      # ❸ 複数 feature を束ねる業務フロー
-│   └─ authOnboarding/
-│       ├─ model.ts                                #      ステップ管理 (state machine)
-│       └─ ui.tsx                                  #      進捗ウィザード UI
-│
-├─ widgets/                                        # ❹ レイアウト用シェル (Header / Sidebar ...)
-│   ├─ Header/
-│   │   ├─ ui.tsx
-│   │   └─ __tests__/Header.test.tsx
-│   └─ ...
-│
-├─ features/                                       # ❺ ビジネス機能スライス (FSD: UI+state+API)
-│   ├─ auth/
-│   │   ├─ ui/                                     #      SignInForm.tsx, ResetPasswordDialog.tsx
-│   │   ├─ model/                                  #      Zustand store・React-Query hooks
-│   │   ├─ api/                                    #      /login, /refresh 等 ky 呼び出し
-│   │   ├─ hooks/                                  #      usePasswordStrength.ts
-│   │   ├─ types.ts                                #      DTO & ドメイン型
-│   │   └─ __tests__/                              #      単体テスト (logic / api)
-│   └─ customers/                                  #    顧客管理機能も同パターンで配置
-│       ├─ ui/
-│       ├─ model/
-│       ├─ api/
-│       └─ __tests__/
-│
-├─ entities/                                       # ❻ ドメインモデル（データ構造の核心）
-│   ├─ user/
-│   │   ├─ model.ts                                #      User 型・factory・helper
-│   │   ├─ ui/                                     #      Avatar.tsx, UserTag.tsx
-│   │   └─ __tests__/user.test.ts
-│   └─ ...
-│
-├─ shared/                                         # ❼ アプリ横断で再利用する純粋資産
-│   ├─ ui/                                         #      **Design System (Atomic)**
-│   │   ├─ atoms/                                  #        Button.tsx, Input.tsx ...
-│   │   ├─ molecules/                              #        FormField.tsx ...
-│   │   ├─ organisms/                              #        DataTable.tsx ...
-│   │   └─ templates/                              #        AppShell.tsx, AuthLayout.tsx
-│   ├─ hooks/                                      #      useDebounce.ts など横串 hooks
-│   ├─ lib/                                        #      date-fns ラッパ、string helpers
-│   ├─ api/                                        #      共通 ky インスタンス + interceptor
-│   ├─ constants/                                  #      ルート定義・メッセージ定数
-│   ├─ contexts/                                   #      ToastContext.tsx など "横串" Context
-│   └─ i18n/                                       #      🌐 多言語リソース
-│       ├─ locales/                                #        JSON 辞書
-│       │   ├─ en.json
-│       │   └─ ja.json
-│       └─ index.ts                                #        i18next 設定 & helper
-│
-├─ styles/                                         # ❽ Tailwind のベース CSS / token
-│   ├─ index.css                                   #      @tailwind base components utilities
-│   └─ tailwind.generated.css                      #      CLI で生成された出力 (git ignore)
-│
-├─ tests/                                          # ❾ グローバル設定 & E2E
-│   ├─ setupTests.ts                               #      Jest & RTL セットアップ
-│   └─ e2e/                                        #      Playwright/Cypress シナリオ
-│       └─ login.cy.ts
-│
-└─ routes.tsx                                      # ➓ ファイルルーティングを使わない場合の中央ルート表
+└─ routes.tsx                  # ➓ ファイルルーティングを使わない場合の中央ルート表
+└─ index.html                # Vite/Reactの標準的な配置
 
 
 ---
