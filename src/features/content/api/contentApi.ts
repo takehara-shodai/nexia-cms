@@ -16,18 +16,13 @@ export const fetchContents = async (): Promise<Content[]> => {
   return data as Content[];
 };
 
-// Get status ID from status name
-async function getStatusId(status: string): Promise<string> {
-  const { data, error } = await supabase
-    .from('nexia_cms_content_statuses')
-    .select('id')
-    .eq('name', status)
-    .single();
-  
-  if (error) throw error;
-  if (!data) throw new Error(`Status "${status}" not found`);
-  
-  return data.id;
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
 }
 
 // タグが未登録なら追加し、全てのタグIDを返す
@@ -65,18 +60,8 @@ async function ensureTags(tags: Tag[]): Promise<string[]> {
   return tagIds;
 }
 
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-}
-
 export async function createContentWithTags(content: Omit<Content, 'id' | 'created_at' | 'updated_at'>, tags: Tag[]) {
   const slug = generateSlug(content.title);
-  const status_id = await getStatusId(content.status);
 
   // 1. コンテンツ本体をinsert
   const { data: contentData, error: contentError } = await supabase
@@ -85,8 +70,8 @@ export async function createContentWithTags(content: Omit<Content, 'id' | 'creat
       title: content.title,
       content: content.content,
       status: content.status,
-      status_id: status_id, // Add status_id
-      slug: slug,
+      status_id: content.status_id,
+      slug,
       type_id: content.type_id,
       tenant_id: content.tenant_id,
       author_id: content.author_id

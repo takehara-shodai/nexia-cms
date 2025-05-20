@@ -5,6 +5,7 @@ export interface Tag {
   id: string;
   name: string;
   color?: string;
+  tenant_id?: string;
   created_at?: string;
 }
 
@@ -18,13 +19,14 @@ export interface Content {
   title: string;
   content: string;
   status: ContentStatus;
+  status_id: string;
   slug: string;
   type_id: string;
   tenant_id: string;
+  author_id?: string;
   tags?: Tag[];
   created_at?: string;
   updated_at?: string;
-  author_id?: string;
   type?: ContentType;
   publishedAt?: string;
   dueDate?: string;

@@ -9,12 +9,14 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
     title: '',
     content: '',
     status: 'draft',
+    status_id: 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb', // Default draft status
     slug: '',
-    type_id: 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb', // Updated to use the new default content type ID
-    tenant_id: user?.app_metadata?.tenant_id,
+    type_id: 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb', // Default article type
+    tenant_id: user?.tenant_id || '',
     author_id: user?.id,
     tags: [],
   });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
