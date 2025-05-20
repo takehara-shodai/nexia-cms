@@ -118,7 +118,7 @@ const ContentModels: React.FC = () => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-medium mb-1">{model.name}</h3>
+                  <h2 className="text-lg font-medium mb-1">{model.name}</h2>
                   <p className="text-gray-600 dark:text-gray-400 text-sm">{model.description}</p>
                 </div>
                 <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">

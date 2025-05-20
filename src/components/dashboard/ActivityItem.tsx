@@ -25,6 +25,8 @@ const ActivityItem = ({ user, action, target, time, status }: ActivityItemProps)
           src={user.avatar}
           alt={user.name}
           className="h-8 w-8 rounded-full"
+          width={32}
+          height={32}
         />
       ) : (
         <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">

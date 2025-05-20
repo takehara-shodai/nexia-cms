@@ -10,7 +10,7 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  _ArrowRight,
+  ArrowRight,
   ChevronDown,
   Settings,
 } from 'lucide-react';
@@ -264,7 +264,7 @@ const WorkflowManagement: React.FC = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-medium">{task.title}</h3>
+                      <h2 className="text-lg font-medium">{task.title}</h2>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${getPriorityColor(task.priority)}`}
                       >
@@ -313,7 +313,7 @@ const WorkflowManagement: React.FC = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-medium">{approval.contentTitle}</h3>
+                      <h2 className="text-lg font-medium">{approval.contentTitle}</h2>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${getStatusColor(approval.status)}`}
                       >
@@ -328,10 +328,10 @@ const WorkflowManagement: React.FC = () => {
                   {approval.status === 'pending' && (
                     <div className="flex gap-2">
                       <button className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
-                        承認
+                        <span>承認</span>
                       </button>
                       <button className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
-                        却下
+                        <span>却下</span>
                       </button>
                     </div>
                   )}
@@ -372,46 +372,27 @@ const WorkflowManagement: React.FC = () => {
                 <h3 className="text-lg font-medium mb-4">承認フロー設定</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      デフォルトの承認者
-                    </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="default-approver">デフォルトの承認者</label>
+                    <select id="default-approver" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
                       <option>管理者グループ</option>
                       <option>編集者グループ</option>
                       <option>承認者グループ</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      承認必要なアクション
-                    </label>
-                    <div className="space-y-2">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          コンテンツの公開
-                        </span>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="approval-actions">承認必要なアクション</label>
+                    <div className="space-y-2" id="approval-actions">
+                      <label className="flex items-center" htmlFor="approve-publish">
+                        <input id="approve-publish" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの公開</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          コンテンツの更新
-                        </span>
+                      <label className="flex items-center" htmlFor="approve-update">
+                        <input id="approve-update" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの更新</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          コンテンツの削除
-                        </span>
+                      <label className="flex items-center" htmlFor="approve-delete">
+                        <input id="approve-delete" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">コンテンツの削除</span>
                       </label>
                     </div>
                   </div>
@@ -421,70 +402,36 @@ const WorkflowManagement: React.FC = () => {
                 <h3 className="text-lg font-medium mb-4">通知設定</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      通知方法
-                    </label>
-                    <div className="space-y-2">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          メール通知
-                        </span>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="notification-method">通知方法</label>
+                    <div className="space-y-2" id="notification-method">
+                      <label className="flex items-center" htmlFor="notify-email">
+                        <input id="notify-email" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">メール通知</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          システム内通知
-                        </span>
+                      <label className="flex items-center" htmlFor="notify-system">
+                        <input id="notify-system" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">システム内通知</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          Slack通知
-                        </span>
+                      <label className="flex items-center" htmlFor="notify-slack">
+                        <input id="notify-slack" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Slack通知</span>
                       </label>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      通知タイミング
-                    </label>
-                    <div className="space-y-2">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          タスク割り当て時
-                        </span>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="notification-timing">通知タイミング</label>
+                    <div className="space-y-2" id="notification-timing">
+                      <label className="flex items-center" htmlFor="timing-assign">
+                        <input id="timing-assign" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">タスク割り当て時</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          期限前日
-                        </span>
+                      <label className="flex items-center" htmlFor="timing-before-deadline">
+                        <input id="timing-before-deadline" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">期限前日</span>
                       </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          期限切れ時
-                        </span>
+                      <label className="flex items-center" htmlFor="timing-expired">
+                        <input id="timing-expired" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">期限切れ時</span>
                       </label>
                     </div>
                   </div>

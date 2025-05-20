@@ -238,7 +238,7 @@ const WebsiteManagement: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <h3 className="text-lg font-medium">{page.title}</h3>
+                    <h2 className="text-lg font-medium">{page.title}</h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{page.slug}</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -280,6 +280,8 @@ const WebsiteManagement: React.FC = () => {
                 src={template.thumbnail}
                 alt={template.name}
                 className="w-full h-48 object-cover"
+                width="400"
+                height="192"
               />
               <div className="p-4">
                 <h3 className="text-lg font-medium mb-1">{template.name}</h3>
@@ -342,24 +344,12 @@ const WebsiteManagement: React.FC = () => {
                 <h3 className="text-lg font-medium mb-4">一般設定</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      サイトタイトル
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
-                      placeholder="サイトのタイトル"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="site-title">サイトタイトル</label>
+                    <input id="site-title" type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700" placeholder="サイトのタイトル" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      サイトの説明
-                    </label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
-                      rows={3}
-                      placeholder="サイトの説明"
-                    ></textarea>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="site-description">サイトの説明</label>
+                    <textarea id="site-description" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700" rows={3} placeholder="サイトの説明"></textarea>
                   </div>
                 </div>
               </div>
@@ -367,24 +357,12 @@ const WebsiteManagement: React.FC = () => {
                 <h3 className="text-lg font-medium mb-4">SEO設定</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      デフォルトのメタタイトル
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
-                      placeholder="メタタイトル"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="meta-title">デフォルトのメタタイトル</label>
+                    <input id="meta-title" type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700" placeholder="メタタイトル" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      デフォルトのメタ説明
-                    </label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
-                      rows={3}
-                      placeholder="メタ説明"
-                    ></textarea>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="meta-description">デフォルトのメタ説明</label>
+                    <textarea id="meta-description" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700" rows={3} placeholder="メタ説明"></textarea>
                   </div>
                 </div>
               </div>

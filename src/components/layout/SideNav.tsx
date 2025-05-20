@@ -263,9 +263,9 @@ const SideNav = ({
           }`}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
+          <span className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
             <span className="text-xs whitespace-nowrap">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
-          </div>
+          </span>
         </button>
         <button
           onClick={showLogoutConfirmation}
@@ -274,9 +274,9 @@ const SideNav = ({
           }`}
         >
           <LogOut size={18} />
-          <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
+          <span className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
             <span className="text-xs whitespace-nowrap">ログアウト</span>
-          </div>
+          </span>
         </button>
       </div>
     </div>

@@ -65,7 +65,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     } catch (err) {
       setError('プロフィールの読み込みに失敗しました');
       console.error(err);
-      if (err.message === 'User not found' || err.message === 'Auth session missing!') {
+      if (err instanceof Error && (err.message === 'User not found' || err.message === 'Auth session missing!')) {
         navigate('/login');
       }
     } finally {
@@ -103,7 +103,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       onClose();
     } catch (err) {
       setError('プロフィールの保存に失敗しました');
-      console.error(err);
+      if (err instanceof Error) {
+        console.error(err);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -145,7 +147,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : null);
     } catch (err) {
       setError('アバターの更新に失敗しました');
-      console.error(err);
+      if (err instanceof Error) {
+        console.error(err);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -195,6 +199,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                     src={profile.avatar_url}
                     alt={profile.name}
                     className="w-full h-full object-cover"
+                    width="96"
+                    height="96"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-3xl font-medium text-gray-400">
@@ -202,9 +208,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   </div>
                 )}
               </div>
-              <label className="absolute bottom-0 right-0 p-1 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <label htmlFor="profile-avatar" className="absolute bottom-0 right-0 p-1 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <Camera size={16} />
                 <input
+                  id="profile-avatar"
                   type="file"
                   accept="image/*"
                   className="hidden"
@@ -218,10 +225,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           {/* Form Fields */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="profile-name">
                 名前
               </label>
               <input
+                id="profile-name"
                 type="text"
                 value={profile.name}
                 onChange={e => setProfile({ ...profile, name: e.target.value })}
@@ -230,10 +238,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="profile-email">
                 メールアドレス
               </label>
               <input
+                id="profile-email"
                 type="email"
                 value={profile.email}
                 onChange={e => setProfile({ ...profile, email: e.target.value })}
@@ -242,10 +251,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="profile-department">
                 部署
               </label>
               <input
+                id="profile-department"
                 type="text"
                 value={profile.department || ''}
                 onChange={e => setProfile({ ...profile, department: e.target.value })}
@@ -254,10 +264,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="profile-title">
                 役職
               </label>
               <input
+                id="profile-title"
                 type="text"
                 value={profile.title || ''}
                 onChange={e => setProfile({ ...profile, title: e.target.value })}
@@ -266,10 +277,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="profile-bio">
                 自己紹介
               </label>
               <textarea
+                id="profile-bio"
                 value={profile.bio || ''}
                 onChange={e => setProfile({ ...profile, bio: e.target.value })}
                 rows={3}

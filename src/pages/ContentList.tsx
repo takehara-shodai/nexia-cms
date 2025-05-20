@@ -256,7 +256,7 @@ const ContentList: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-medium">{content.title}</h3>
+                      <h2 className="text-lg font-medium">{content.title}</h2>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
                       >
@@ -337,7 +337,7 @@ const ContentList: React.FC = () => {
                 className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-medium">{content.title}</h3>
+                  <h2 className="text-lg font-medium">{content.title}</h2>
                   <div className="flex items-center gap-2">
                     {content.status === 'published' && content.url && (
                       <button

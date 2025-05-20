@@ -6,11 +6,11 @@ import {
   Globe,
   Database,
   Shield,
-  _Bell,
-  _Trash,
+  Bell,
+  Trash,
   Archive,
-  _Clock,
-  _Server,
+  Clock,
+  Server,
   RefreshCw,
 } from 'lucide-react';
 
@@ -258,12 +258,12 @@ const SettingsManagement: React.FC = () => {
                   }`}
                 >
                   {section.icon}
-                  <div>
-                    <h3 className="font-medium">{section.title}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <span>
+                    <span className="font-medium block">{section.title}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 block">
                       {section.description}
-                    </p>
-                  </div>
+                    </span>
+                  </span>
                 </button>
               ))}
             </div>
@@ -272,7 +272,7 @@ const SettingsManagement: React.FC = () => {
           {/* Quick Actions */}
           <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="font-medium">クイックアクション</h3>
+              <h2 className="font-medium">クイックアクション</h2>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               <button
@@ -315,33 +315,36 @@ const SettingsManagement: React.FC = () => {
                   <div className="space-y-6">
                     {section.fields.map(field => (
                       <div key={field.id}>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor={`field-${field.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           {field.label}
                         </label>
                         {field.type === 'text' ||
                         field.type === 'email' ||
                         field.type === 'number' ? (
                           <input
+                            id={`field-${field.id}`}
                             type={field.type}
-                            _value={field._value}
-                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
+                            value={field._value as string}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           />
                         ) : field.type === 'select' ? (
                           <select
-                            _value={field._value}
-                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
+                            id={`field-${field.id}`}
+                            value={field._value as string}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           >
                             {field.options?.map(option => (
-                              <option key={option._value} _value={option._value}>
+                              <option key={option._value} value={option._value}>
                                 {option.label}
                               </option>
                             ))}
                           </select>
                         ) : field.type === 'toggle' ? (
-                          <label className="relative inline-flex items-center cursor-pointer">
+                          <div className="relative inline-flex items-center cursor-pointer">
                             <input
+                              id={`field-${field.id}`}
                               type="checkbox"
                               checked={field._value as boolean}
                               onChange={e =>
@@ -350,11 +353,12 @@ const SettingsManagement: React.FC = () => {
                               className="sr-only peer"
                             />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                          </label>
+                          </div>
                         ) : field.type === 'textarea' ? (
                           <textarea
-                            _value={field._value}
-                            onChange={e => handleFieldChange(section.id, field.id, e.target._value)}
+                            id={`field-${field.id}`}
+                            value={field._value as string}
+                            onChange={e => handleFieldChange(section.id, field.id, e.target.value)}
                             rows={4}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                           />

@@ -121,14 +121,13 @@ const MediaManagement: React.FC = () => {
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {folders.map(folder => (
-                <button
-                  key={folder.id}
-                  onClick={() => setSelectedFolder(folder.id)}
-                  className={`w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                    selectedFolder === folder.id ? 'bg-blue-50 dark:bg-blue-900/30' : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
+                <React.Fragment key={folder.id}>
+                  <button
+                    onClick={() => setSelectedFolder(folder.id)}
+                    className={`w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                      selectedFolder === folder.id ? 'bg-blue-50 dark:bg-blue-900/30' : ''
+                    }`}
+                  >
                     <Folder
                       size={20}
                       className={
@@ -136,9 +135,9 @@ const MediaManagement: React.FC = () => {
                       }
                     />
                     <span>{folder.name}</span>
-                  </div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{folder.count}</span>
-                </button>
+                  </button>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">{folder.count}</span>
+                </React.Fragment>
               ))}
             </div>
           </div>
@@ -194,7 +193,7 @@ const MediaManagement: React.FC = () => {
                 >
                   {item.type === 'image' ? (
                     <div className="aspect-video bg-gray-100 dark:bg-gray-700">
-                      <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
+                      <img src={item.url} alt={item.name} className="w-full h-full object-cover" width="400" height="225" />
                     </div>
                   ) : (
                     <div className="aspect-video bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
@@ -203,7 +202,7 @@ const MediaManagement: React.FC = () => {
                   )}
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium truncate">{item.name}</h3>
+                      <h2 className="font-medium truncate">{item.name}</h2>
                       <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         <MoreVertical size={18} />
                       </button>
@@ -240,6 +239,8 @@ const MediaManagement: React.FC = () => {
                           src={item.url}
                           alt={item.name}
                           className="w-16 h-16 object-cover rounded"
+                          width="64"
+                          height="64"
                         />
                       ) : (
                         <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center">
@@ -247,7 +248,7 @@ const MediaManagement: React.FC = () => {
                         </div>
                       )}
                       <div className="flex-1">
-                        <h3 className="font-medium mb-1">{item.name}</h3>
+                        <h2 className="font-medium mb-1">{item.name}</h2>
                         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                           <span>{item.size}</span>
                           {item.dimensions && <span>{item.dimensions}</span>}

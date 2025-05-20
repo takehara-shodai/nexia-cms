@@ -148,7 +148,7 @@ const ContentDetail: React.FC = () => {
         <div className="space-y-6">
           {/* Status */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">ステータス</h3>
+            <h2 className="text-lg font-medium mb-4">ステータス</h2>
             <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(content.status)}`}>
               {getStatusText(content.status)}
             </span>
@@ -156,7 +156,7 @@ const ContentDetail: React.FC = () => {
 
           {/* Metadata */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">メタデータ</h3>
+            <h2 className="text-lg font-medium mb-4">メタデータ</h2>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <User size={20} className="text-gray-400" />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  _Database,
+  Database,
   Search,
   Filter,
   Plus,
@@ -8,10 +8,10 @@ import {
   Settings,
   Copy,
   Trash,
-  _Save,
+  Save,
   X,
-  _Check,
-  _ChevronDown,
+  Check,
+  ChevronDown,
 } from 'lucide-react';
 
 interface Field {
@@ -201,7 +201,7 @@ const FieldSettings: React.FC = () => {
                   </button>
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-lg font-medium">{field.name}</h3>
+                      <h2 className="text-lg font-medium">{field.name}</h2>
                       {field.required && (
                         <span className="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-full">
                           必須
@@ -266,10 +266,11 @@ const FieldSettings: React.FC = () => {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-name">
                     フィールド名
                   </label>
                   <input
+                    id="field-name"
                     type="text"
                     value={editingField.name}
                     onChange={e => setEditingField({ ...editingField, name: e.target.value })}
@@ -278,10 +279,11 @@ const FieldSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-type">
                     フィールドタイプ
                   </label>
                   <select
+                    id="field-type"
                     value={editingField.type}
                     onChange={e =>
                       setEditingField({ ...editingField, type: e.target.value as FieldType })
@@ -297,10 +299,11 @@ const FieldSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-description">
                     説明
                   </label>
                   <textarea
+                    id="field-description"
                     value={editingField.description || ''}
                     onChange={e =>
                       setEditingField({ ...editingField, description: e.target.value })
@@ -334,10 +337,11 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'text' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="min-length">
                           最小文字数
                         </label>
                         <input
+                          id="min-length"
                           type="number"
                           value={editingField.settings.minLength || ''}
                           onChange={e =>
@@ -353,10 +357,11 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="max-length">
                           最大文字数
                         </label>
                         <input
+                          id="max-length"
                           type="number"
                           value={editingField.settings.maxLength || ''}
                           onChange={e =>
@@ -377,12 +382,13 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'select' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="option-label-0" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           選択肢
                         </label>
                         {(editingField.settings.options || []).map((option, _index) => (
                           <div key={_index} className="flex items-center gap-2 mb-2">
                             <input
+                              id={`option-label-${_index}`}
                               type="text"
                               value={option.label}
                               onChange={e => {
@@ -397,6 +403,7 @@ const FieldSettings: React.FC = () => {
                               className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                             />
                             <input
+                              id={`option-value-${_index}`}
                               type="text"
                               value={option.value}
                               onChange={e => {
@@ -466,10 +473,11 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'number' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="min-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           最小値
                         </label>
                         <input
+                          id="min-value"
                           type="number"
                           value={editingField.settings.min || ''}
                           onChange={e =>
@@ -485,10 +493,11 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="max-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           最大値
                         </label>
                         <input
+                          id="max-value"
                           type="number"
                           value={editingField.settings.max || ''}
                           onChange={e =>
@@ -504,10 +513,11 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="step-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           ステップ
                         </label>
                         <input
+                          id="step-value"
                           type="number"
                           value={editingField.settings.step || ''}
                           onChange={e =>
@@ -528,7 +538,7 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'media' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="allowed-file-types" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           許可するファイルタイプ
                         </label>
                         <div className="space-y-2">

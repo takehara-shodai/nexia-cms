@@ -52,11 +52,11 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
 }) => {
   return (
     <div
-      onClick={() => onItemClick(content.id)}
+      onClick={() => content.id && onItemClick(content.id)}
       className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
     >
       <div className="flex justify-between items-start mb-2">
-        <h3 className="text-lg font-medium">{content.title}</h3>
+        <h2 className="text-lg font-medium">{content.title}</h2>
         <div className="flex items-center gap-2">
           {content.status === 'published' && content.url && (
             <button
@@ -74,7 +74,7 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             onClick={e => {
               e.stopPropagation();
-              onMenuClick(content.id);
+              content.id && onMenuClick(content.id);
             }}
           >
             <MoreVertical size={18} />
@@ -100,7 +100,7 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
         </div>
         <p className="flex items-center gap-1">
           <User size={14} />
-          {content.author}
+          {content.author_id}
         </p>
         {content.publishedAt ? (
           <p className="flex items-center gap-1">
@@ -117,7 +117,7 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
         )}
         <p className="flex items-center gap-1">
           <Clock size={14} />
-          更新: {content.updatedAt}
+          更新: {content.updated_at}
         </p>
         {content.status === 'published' && content.views !== undefined && (
           <div className="pt-2 border-t border-gray-200 dark:border-gray-700 grid grid-cols-3 gap-2 text-center">

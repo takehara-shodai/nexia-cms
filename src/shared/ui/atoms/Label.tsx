@@ -17,4 +17,6 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
 )
 Label.displayName = "Label"
 
+// NOTE: Always use <Label> with a control (input, select, textarea) for accessibility compliance.
+
 export { Label } 

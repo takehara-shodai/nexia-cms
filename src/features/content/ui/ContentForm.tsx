@@ -66,23 +66,23 @@ export const ContentForm = forwardRef(function ContentForm({ content = null, isP
             </div>
             <div className="space-y-6">
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <h3 className="font-medium mb-3">ステータス</h3>
+                <h2 className="font-medium mb-3">ステータス</h2>
                 <Badge className={getStatusColor(form.status)}>
                   {getStatusLabel(form.status)}
                 </Badge>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <h3 className="font-medium mb-3">タグ</h3>
+                <h2 className="font-medium mb-3">タグ</h2>
                 <div className="flex flex-wrap gap-2">
-                  {form.tags.map((tag: string) => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
+                  {form.tags?.map((tag: Tag) => (
+                    <Badge key={tag.id} variant="secondary">
+                      {tag.name}
                     </Badge>
                   ))}
                 </div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <h3 className="font-medium mb-3">メタデータ</h3>
+                <h2 className="font-medium mb-3">メタデータ</h2>
                 <div className="space-y-3">
                   <div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">作成者</div>

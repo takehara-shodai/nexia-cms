@@ -25,9 +25,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
               {title}
-            </h3>
+            </h2>
             <button
               onClick={onClose}
               className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"

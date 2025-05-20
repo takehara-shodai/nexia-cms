@@ -52,13 +52,13 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
 }) => {
   return (
     <div
-      onClick={() => onItemClick(content.id)}
+      onClick={() => content.id && onItemClick(content.id)}
       className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-medium">{content.title}</h3>
+            <h2 className="text-lg font-medium">{content.title}</h2>
             <span
               className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
             >
@@ -75,7 +75,7 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
             </span>
             <span className="flex items-center gap-1">
               <User size={14} />
-              {content.author}
+              {content.author_id}
             </span>
             {content.publishedAt ? (
               <span className="flex items-center gap-1">
@@ -92,7 +92,7 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
             )}
             <span className="flex items-center gap-1">
               <Clock size={14} />
-              更新: {content.updatedAt}
+              更新: {content.updated_at}
             </span>
           </div>
           {content.status === 'published' && content.views !== undefined && (
@@ -120,7 +120,7 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             onClick={e => {
               e.stopPropagation();
-              onMenuClick(content.id);
+              content.id && onMenuClick(content.id);
             }}
           >
             <MoreVertical size={20} />
