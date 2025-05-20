@@ -19,45 +19,45 @@ export default function ContentNewPage() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-5 h-5" />
-          戻る
-        </Button>
-        <h1 className="text-2xl font-bold">新規コンテンツ作成</h1>
-        <div className="flex gap-2 ml-auto">
-          <Button
-            variant="outline"
-            onClick={() => setIsPreview((prev) => !prev)}
-            className="flex items-center gap-2"
-          >
-            {isPreview ? <Pencil className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            {isPreview ? "編集" : "プレビュー"}
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={isLoading}
-            variant="primaryFilled"
-            className="flex items-center gap-2"
-          >
-            <Send className="w-5 h-5" /> 保存
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            className="flex items-center gap-2 px-4"
-            onClick={() => {/* 削除処理 */}}
-          >
-            <Trash2 className="w-5 h-5" /> 削除
-          </Button>
+    <div className="fade-in">
+        <div className="flex items-center gap-2 mb-3">
+            <Button variant="ghost" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-5 h-5" />
+            戻る
+            </Button>
+            <h1 className="text-2xl font-bold">新規コンテンツ作成</h1>
+            <div className="flex gap-2 ml-auto">
+            <Button
+                variant="outline"
+                onClick={() => setIsPreview((prev) => !prev)}
+                className="flex items-center gap-2"
+            >
+                {isPreview ? <Pencil className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {isPreview ? "編集" : "プレビュー"}
+            </Button>
+            <Button
+                onClick={handleSave}
+                disabled={isLoading}
+                variant="primaryFilled"
+                className="flex items-center gap-2"
+            >
+                <Send className="w-5 h-5" /> 保存
+            </Button>
+            <Button
+                type="button"
+                variant="destructive"
+                className="flex items-center gap-2 px-4"
+                onClick={() => {/* 削除処理 */}}
+            >
+                <Trash2 className="w-5 h-5" /> 削除
+            </Button>
+            </div>
         </div>
-      </div>
-      <ContentForm
-        ref={formRef}
-        isPreview={isPreview}
-        onSuccess={() => navigate('/content')}
-      />
+        <ContentForm
+            ref={formRef}
+            isPreview={isPreview}
+            onSuccess={() => navigate('/content')}
+        />
     </div>
   );
 }
