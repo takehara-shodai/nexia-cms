@@ -88,7 +88,18 @@ app/
 │   │   │   ├─ lib/           #      date-fns ラッパ、string helpers
 │   │   │   ├─ api/           #      共通 ky インスタンス + interceptor
 │   │   │   ├─ constants/     #      ルート定義・メッセージ定数
-│   │   │   ├─ contexts/      #      ToastContext.tsx など "横串" Context
+│   │   ├─ contexts/           # 共通・横断的に使う React Context 群
+│   │   │   ├─ modal/
+│   │   │   │   ├─ context.tsx # モーダルの状態管理Context定義
+│   │   │   │   ├─ hooks.ts    # useModal() など
+│   │   │   │   ├─ index.ts    # export集約用
+│   │   │   │   └─ types.ts    # Modalに関連する型
+│   │   │   └─ theme/
+│   │   │       ├─ context.tsx # テーマの状態管理Context定義
+│   │   │       ├─ hooks.ts    # useTheme() など
+│   │   │       ├─ index.ts    # export集約用
+│   │   │       └─ types.ts    # テーマに関連する型
+│   │   └─ i18n/               # 多言語対応：言語リソースファイルやロジック
 │   │   │   └─ i18n/          #      多言語リソース
 │   │   │       ├─ locales/   #      JSON 辞書
 │   │   │       │   ├─ en.json
