@@ -25,6 +25,7 @@ export const fetchContents = async (): Promise<Content[]> => {
   }));
 };
 
+// TODO: Supabaseクライアントを使用した実装に置き換える
 export const createContentWithTags = async (
   content: Omit<Content, 'id' | 'created_at' | 'updated_at' | 'author_id'>,
   tags: Tag[]
@@ -36,6 +37,9 @@ export const createContentWithTags = async (
       title: content.title,
       content: content.content,
       status: content.status,
+      type: content.type,
+      description: content.description,
+      due_date: content.dueDate,
     }])
     .select('id')
     .single();
