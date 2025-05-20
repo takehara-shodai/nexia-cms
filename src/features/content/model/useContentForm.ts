@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createContent } from '@/features/content/api/contentApi';
+import { createContentWithTags } from '@/features/content/api/contentApi';
 import { Content } from '@/features/content/types';
 
 export function useContentForm(onSuccess?: (content: Content) => void) {
@@ -18,8 +18,8 @@ export function useContentForm(onSuccess?: (content: Content) => void) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const created = await createContent(form);
-      onSuccess?.(created);
+      const created = await createContentWithTags(form, form.tags || []);
+      onSuccess?.({ ...form, id: created.id });
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,8 @@ import { Badge } from "@/shared/ui/atoms/Badge"
 import { Label } from "@/shared/ui/atoms/Label"
 import { supabase } from "@/lib/supabase"
 import { useContentForm } from '@/features/content/model/useContentForm'
+import { TagSelect } from '@/shared/ui/molecules/TagSelect'
+import { useAuth } from '@/shared/hooks/useAuth'
 
 interface ContentType {
   id?: string;
@@ -34,20 +36,10 @@ const statusOptions = [
 
 export const ContentForm = forwardRef(function ContentForm({ content = null, isPreview = false, onSuccess }: ContentFormProps, ref) {
   const { form, handleChange, handleSubmit, loading } = useContentForm(onSuccess);
-  const [newTag, setNewTag] = useState("")
+  const { user } = useAuth();
+  const tenant_id = user?.tenant_id || '';
 
   useImperativeHandle(ref, () => ({ handleSubmit }));
-
-  const handleAddTag = () => {
-    if (newTag && !form.tags.includes(newTag)) {
-      handleChange('tags', [...form.tags, newTag])
-      setNewTag("")
-    }
-  }
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    handleChange('tags', form.tags.filter(tag => tag !== tagToRemove))
-  }
 
   const getStatusColor = (status: string) => {
     return statusOptions.find(option => option.value === status)?.color || statusOptions[0].color;
@@ -173,37 +165,11 @@ export const ContentForm = forwardRef(function ContentForm({ content = null, isP
             </div>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <Label className="mb-3 block">タグ</Label>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {form.tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                    {tag}
-                    <button 
-                      onClick={() => handleRemoveTag(tag)} 
-                      className="ml-1 text-gray-500 hover:text-red-500"
-                      type="button"
-                    >
-                      ×
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex items-center gap-2">
-                <Input
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                  placeholder="新しいタグ"
-                  className="flex-1 bg-white dark:bg-gray-700"
-                />
-                <Button 
-                  onClick={handleAddTag} 
-                  variant="outline"
-                  className="bg-white dark:bg-gray-700"
-                  type="button"
-                >
-                  追加
-                </Button>
-              </div>
+              <TagSelect
+                value={form.tags || []}
+                onChange={tags => handleChange('tags', tags)}
+                tenant_id={tenant_id}
+              />
             </div>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <Label className="mb-3 block">メタデータ</Label>
