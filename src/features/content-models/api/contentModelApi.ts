@@ -8,7 +8,7 @@ export async function createContentModel(
   // Get user's tenant_id if not provided
   if (!model.tenant_id) {
     const { data: userTenants } = await supabase
-      .from('nexia_cms_user_tenants')
+      .from('user_tenants')
       .select('tenant_id')
       .limit(1)
       .single();
