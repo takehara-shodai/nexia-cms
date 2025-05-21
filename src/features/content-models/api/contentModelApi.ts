@@ -4,13 +4,34 @@ import { ContentModel, ContentField } from '../types';
 export async function createContentModel(
   model: Omit<ContentModel, 'id' | 'created_at' | 'updated_at'>
 ): Promise<ContentModel> {
+  // Get user's tenant_id if not provided
+  if (!model.tenant_id) {
+    const { data: userTenants } = await supabase
+      .from('nexia_cms_user_tenants')
+      .select('tenant_id')
+      .limit(1)
+      .single();
+    
+    if (userTenants) {
+      model.tenant_id = userTenants.tenant_id;
+    }
+  }
+
+  // Generate slug if not provided
+  if (!model.slug) {
+    model.slug = model.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
   const { data, error } = await supabase
     .from('nexia_cms_content_models')
     .insert([model])
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error('Error creating content model:', error);
+    throw error;
+  }
   return data;
 }
 
