@@ -12,7 +12,7 @@ function Layout() {
     <div className="min-h-screen flex">
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -42,10 +42,10 @@ function Layout() {
       </div>
 
       {/* Main Content */}
-      <div className={`flex-1 min-h-screen flex flex-col ${isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'}`}>
-        <TopBar 
-          onMenuClick={() => setIsMobileMenuOpen(true)} 
-        />
+      <div
+        className={`flex-1 min-h-screen flex flex-col ${isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'}`}
+      >
+        <TopBar onMenuClick={() => setIsMobileMenuOpen(true)} />
         <main className="flex-1 p-4 md:p-6 bg-gray-50 dark:bg-gray-900 overflow-auto">
           <Outlet />
         </main>

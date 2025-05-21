@@ -6,7 +6,14 @@ import { AuthError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { Button } from '@/shared/ui/atoms/Button';
 import { Input } from '@/shared/ui/atoms/Input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/molecules/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/molecules/Card';
 import { Label } from '@/shared/ui/atoms/Label';
 
 const Login: React.FC = () => {
@@ -18,7 +25,9 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         navigate('/');
       }
@@ -71,13 +80,16 @@ const Login: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Mail
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <Input
                   id="email"
                   type="email"
                   placeholder="example@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -86,13 +98,16 @@ const Login: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="password">パスワード</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -104,11 +119,7 @@ const Login: React.FC = () => {
                 <span>{error}</span>
               </div>
             )}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="animate-spin">⚪</span>
@@ -124,11 +135,7 @@ const Login: React.FC = () => {
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button
-            variant="link"
-            onClick={() => navigate('/register')}
-            className="text-sm"
-          >
+          <Button variant="link" onClick={() => navigate('/register')} className="text-sm">
             アカウントをお持ちでない方はこちら
           </Button>
         </CardFooter>

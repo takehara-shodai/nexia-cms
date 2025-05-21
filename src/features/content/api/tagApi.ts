@@ -18,4 +18,4 @@ export async function createTag(name: string, tenant_id: string, color?: string)
     .single();
   if (error) throw error;
   return data as Tag;
-} 
+}

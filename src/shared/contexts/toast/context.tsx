@@ -10,21 +10,21 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = uuidv4();
-    setToasts((prev) => [...prev, { ...toast, id }]);
+    setToasts(prev => [...prev, { ...toast, id }]);
     return id;
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    setToasts(prev => prev.filter(toast => toast.id !== id));
   }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      
+
       {/* トーストコンテナ */}
       <div className="fixed bottom-4 right-4 flex flex-col gap-2 z-50">
-        {toasts.map((toast) => (
+        {toasts.map(toast => (
           <ToastComponent
             key={toast.id}
             type={toast.type}

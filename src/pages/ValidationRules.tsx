@@ -271,27 +271,63 @@ function validatePublishDate(value) {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-name">ルール名</label>
-                  <input id="rule-name" type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent" placeholder="例: タイトル必須" />
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="rule-name"
+                  >
+                    ルール名
+                  </label>
+                  <input
+                    id="rule-name"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    placeholder="例: タイトル必須"
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-description">説明</label>
-                  <textarea id="rule-description" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent" rows={3} placeholder="ルールの説明を入力..."></textarea>
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="rule-description"
+                  >
+                    説明
+                  </label>
+                  <textarea
+                    id="rule-description"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    rows={3}
+                    placeholder="ルールの説明を入力..."
+                  ></textarea>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-model">モデル</label>
-                    <select id="rule-model" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                    <label
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      htmlFor="rule-model"
+                    >
+                      モデル
+                    </label>
+                    <select
+                      id="rule-model"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    >
                       <option value="article">記事</option>
                       <option value="user">ユーザー</option>
                       <option value="category">カテゴリー</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-field">フィールド</label>
-                    <select id="rule-field" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                    <label
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      htmlFor="rule-field"
+                    >
+                      フィールド
+                    </label>
+                    <select
+                      id="rule-field"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    >
                       <option value="title">タイトル</option>
                       <option value="content">本文</option>
                       <option value="email">メールアドレス</option>
@@ -300,8 +336,16 @@ function validatePublishDate(value) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-type">バリデーションタイプ</label>
-                  <select id="rule-type" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="rule-type"
+                  >
+                    バリデーションタイプ
+                  </label>
+                  <select
+                    id="rule-type"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                  >
                     <option value="required">必須</option>
                     <option value="minLength">最小文字数</option>
                     <option value="maxLength">最大文字数</option>
@@ -317,14 +361,30 @@ function validatePublishDate(value) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="rule-error-message">エラーメッセージ</label>
-                  <input id="rule-error-message" type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent" placeholder="バリデーションエラー時のメッセージ" />
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="rule-error-message"
+                  >
+                    エラーメッセージ
+                  </label>
+                  <input
+                    id="rule-error-message"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    placeholder="バリデーションエラー時のメッセージ"
+                  />
                 </div>
 
                 <div className="flex items-center gap-4">
                   <label className="flex items-center" htmlFor="rule-active">
-                    <input id="rule-active" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">ルールを有効化</span>
+                    <input
+                      id="rule-active"
+                      type="checkbox"
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      ルールを有効化
+                    </span>
                   </label>
                 </div>
               </div>

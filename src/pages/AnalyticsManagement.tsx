@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Search,
-  Filter,
-  Printer,
-  BarChart,
-  PieChart,
-} from 'lucide-react';
+import { Search, Filter, Printer, BarChart, PieChart } from 'lucide-react';
 import {
   Calendar,
   ArrowUpRight,

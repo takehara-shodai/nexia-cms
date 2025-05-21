@@ -6,7 +6,14 @@ import { AuthError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { Button } from '@/shared/ui/atoms/Button';
 import { Input } from '@/shared/ui/atoms/Input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/molecules/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/molecules/Card';
 import { Label } from '@/shared/ui/atoms/Label';
 
 const Register: React.FC = () => {
@@ -19,7 +26,9 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         navigate('/');
       }
@@ -78,13 +87,16 @@ const Register: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Mail
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <Input
                   id="email"
                   type="email"
                   placeholder="example@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -93,13 +105,16 @@ const Register: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="password">パスワード</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -108,13 +123,16 @@ const Register: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">パスワード（確認）</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <Input
                   id="confirmPassword"
                   type="password"
                   placeholder="••••••••"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -126,11 +144,7 @@ const Register: React.FC = () => {
                 <span>{error}</span>
               </div>
             )}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="animate-spin">⚪</span>
@@ -146,11 +160,7 @@ const Register: React.FC = () => {
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button
-            variant="link"
-            onClick={() => navigate('/login')}
-            className="text-sm"
-          >
+          <Button variant="link" onClick={() => navigate('/login')} className="text-sm">
             すでにアカウントをお持ちの方はこちら
           </Button>
         </CardFooter>
@@ -159,4 +169,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register; 
+export default Register;

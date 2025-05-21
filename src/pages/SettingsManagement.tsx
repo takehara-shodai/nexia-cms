@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Settings,
-  Search,
-  Save,
-  Globe,
-  Database,
-  Shield,
-  Archive,
-  RefreshCw,
-} from 'lucide-react';
+import { Settings, Search, Save, Globe, Database, Shield, Archive, RefreshCw } from 'lucide-react';
 
 interface SettingSection {
   id: string;
@@ -311,7 +302,10 @@ const SettingsManagement: React.FC = () => {
                   <div className="space-y-6">
                     {section.fields.map(field => (
                       <div key={field.id}>
-                        <label htmlFor={`field-${field.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor={`field-${field.id}`}
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           {field.label}
                         </label>
                         {field.type === 'text' ||

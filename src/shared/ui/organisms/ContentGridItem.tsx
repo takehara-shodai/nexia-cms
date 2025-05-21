@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Edit2,
-  User,
-  Globe,
-  Calendar,
-  Clock,
-  Eye,
-  ArrowUpRight,
-  MoreVertical,
-} from 'lucide-react';
+import { Edit2, User, Globe, Calendar, Clock, Eye, ArrowUpRight, MoreVertical } from 'lucide-react';
 import { Content } from '@/features/content/types';
 
 interface ContentGridItemProps {
@@ -96,9 +87,7 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
             <Edit2 size={14} />
             {content.type}
           </span>
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
-          >
+          <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}>
             {getStatusText(content.status)}
           </span>
         </div>
@@ -142,4 +131,4 @@ export const ContentGridItem: React.FC<ContentGridItemProps> = ({
       </div>
     </div>
   );
-}; 
+};

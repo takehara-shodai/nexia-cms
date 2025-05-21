@@ -45,11 +45,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
   const showLogoutConfirmation = () => {
     showModal({
       title: 'ログアウト確認',
-      content: (
-        <p className="text-gray-700 dark:text-gray-300">
-          ログアウトしてもよろしいですか？
-        </p>
-      ),
+      content: <p className="text-gray-700 dark:text-gray-300">ログアウトしてもよろしいですか？</p>,
       footer: (
         <>
           <button
@@ -174,10 +170,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
         </div>
       </header>
 
-      <ProfileModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-      />
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </>
   );
 };

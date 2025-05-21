@@ -4,11 +4,11 @@ import { ToastType } from '@/shared/ui/molecules/Toast';
 
 export function useToast() {
   const context = useContext(ToastContext);
-  
+
   if (context === undefined) {
     throw new Error('useToast must be used within a ToastProvider');
   }
-  
+
   const { addToast, removeToast, toasts } = context;
 
   const toast = (message: string, type: ToastType = 'info', duration = 3000): string => {

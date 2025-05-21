@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Edit2,
-  User,
-  Globe,
-  Calendar,
-  Clock,
-  Eye,
-  ArrowUpRight,
-  MoreVertical,
-} from 'lucide-react';
+import { Edit2, User, Globe, Calendar, Clock, Eye, ArrowUpRight, MoreVertical } from 'lucide-react';
 import { Content } from '@/features/content/types';
 
 interface ContentListItemProps {
@@ -59,9 +50,7 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-medium">{content.title}</h2>
-            <span
-              className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}
-            >
+            <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(content.status)}`}>
               {getStatusText(content.status)}
             </span>
           </div>
@@ -133,4 +122,4 @@ export const ContentListItem: React.FC<ContentListItemProps> = ({
       </div>
     </div>
   );
-}; 
+};

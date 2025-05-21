@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export interface AuthUser {
   id: string;
@@ -20,7 +20,7 @@ export function useAuth() {
         if (data?.user) {
           setUser({
             id: data.user.id,
-            email: data.user.email ?? "",
+            email: data.user.email ?? '',
             tenant_id: data.user.user_metadata?.tenant_id || data.user.app_metadata?.tenant_id,
           });
         } else {
@@ -30,8 +30,10 @@ export function useAuth() {
       }
     }
     fetchUser();
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   return { user, loading };
-} 
+}

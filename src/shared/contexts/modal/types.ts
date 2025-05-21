@@ -10,4 +10,4 @@ export interface ModalProps {
 export interface ModalContextType {
   showModal: (props: ModalProps) => void;
   hideModal: () => void;
-} 
+}

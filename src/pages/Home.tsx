@@ -7,7 +7,9 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         navigate('/login');
       }
@@ -22,4 +24,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home; 
+export default Home;

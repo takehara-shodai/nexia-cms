@@ -528,7 +528,10 @@ const ApiManagement: React.FC = () => {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="token-expiry" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="token-expiry"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         トークン有効期限
                       </label>
                       <input
@@ -539,7 +542,10 @@ const ApiManagement: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="refresh-token-expiry" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="refresh-token-expiry"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         更新トークン有効期限
                       </label>
                       <input
@@ -584,7 +590,10 @@ const ApiManagement: React.FC = () => {
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="api-title" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-title"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         APIタイトル
                       </label>
                       <input
@@ -595,7 +604,10 @@ const ApiManagement: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="api-description" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-description"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         説明
                       </label>
                       <textarea
@@ -606,7 +618,10 @@ const ApiManagement: React.FC = () => {
                       ></textarea>
                     </div>
                     <div>
-                      <label htmlFor="api-version" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-version"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         バージョン
                       </label>
                       <input
@@ -651,7 +666,10 @@ const ApiManagement: React.FC = () => {
                   </h2>
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="custom-css" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="custom-css"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         カスタムCSS
                       </label>
                       <textarea
@@ -662,7 +680,10 @@ const ApiManagement: React.FC = () => {
                       ></textarea>
                     </div>
                     <div>
-                      <label htmlFor="custom-js" className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="custom-js"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         カスタムJavaScript
                       </label>
                       <textarea

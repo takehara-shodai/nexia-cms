@@ -41,11 +41,14 @@ export function TagSelect({ value, onChange, tenant_id }: TagSelectProps) {
     <div>
       <div className="flex flex-wrap gap-2 mb-2">
         {value.map(tag => (
-          <span key={tag.id} className="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
+          <span
+            key={tag.id}
+            className="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm"
+          >
             {tag.name}
-            <button 
-              type="button" 
-              className="ml-2 text-gray-500 hover:text-red-500 transition-colors" 
+            <button
+              type="button"
+              className="ml-2 text-gray-500 hover:text-red-500 transition-colors"
               onClick={() => handleRemove(tag)}
             >
               ×
@@ -61,9 +64,9 @@ export function TagSelect({ value, onChange, tenant_id }: TagSelectProps) {
           className="flex-1"
           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
         />
-        <Button 
-          type="button" 
-          onClick={handleAdd} 
+        <Button
+          type="button"
+          onClick={handleAdd}
           variant="primaryFilled"
           disabled={adding || !tenant_id || !input.trim()}
           className="px-4"
@@ -72,17 +75,19 @@ export function TagSelect({ value, onChange, tenant_id }: TagSelectProps) {
         </Button>
       </div>
       <div className="flex flex-wrap gap-2">
-        {tags.filter(tag => !value.find(t => t.id === tag.id)).map(tag => (
-          <Button
-            key={tag.id}
-            type="button"
-            variant="outline"
-            onClick={() => handleSelect(tag)}
-            className="px-3 py-1 h-auto text-sm bg-white dark:bg-gray-800"
-          >
-            {tag.name}
-          </Button>
-        ))}
+        {tags
+          .filter(tag => !value.find(t => t.id === tag.id))
+          .map(tag => (
+            <Button
+              key={tag.id}
+              type="button"
+              variant="outline"
+              onClick={() => handleSelect(tag)}
+              className="px-3 py-1 h-auto text-sm bg-white dark:bg-gray-800"
+            >
+              {tag.name}
+            </Button>
+          ))}
       </div>
     </div>
   );

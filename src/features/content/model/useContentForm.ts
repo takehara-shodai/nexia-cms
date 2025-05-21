@@ -4,14 +4,17 @@ import { createContentWithTags, updateContentWithTags } from '@/features/content
 import { Content } from '@/features/content/types';
 import { useAuth } from '@/shared/hooks/useAuth';
 
-export function useContentForm(onSuccess?: (content: Content) => void, initialContent?: Partial<Content> | null) {
+export function useContentForm(
+  onSuccess?: (content: Content) => void,
+  initialContent?: Partial<Content> | null
+) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  
+
   // Default values for required fields
   const defaultStatus = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // Default draft status
   const defaultType = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // Default article type
-  
+
   const [form, setForm] = useState<Omit<Content, 'id' | 'created_at' | 'updated_at'>>({
     title: initialContent?.title || '',
     content: initialContent?.content || '',
@@ -23,7 +26,7 @@ export function useContentForm(onSuccess?: (content: Content) => void, initialCo
     tags: initialContent?.tags || [],
   });
 
-  const handleChange = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
+  const handleChange = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
@@ -44,7 +47,11 @@ export function useContentForm(onSuccess?: (content: Content) => void, initialCo
 
       if (initialContent?.id) {
         // Edit mode
-        const updated = await updateContentWithTags(initialContent.id, contentData, contentData.tags || []);
+        const updated = await updateContentWithTags(
+          initialContent.id,
+          contentData,
+          contentData.tags || []
+        );
         toast.success('コンテンツを更新しました');
         onSuccess?.({ ...contentData, id: updated.id });
       } else {

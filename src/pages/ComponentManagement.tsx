@@ -234,24 +234,55 @@ const ComponentManagement: React.FC = () => {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="component-name">コンポーネント名</label>
-                  <input id="component-name" type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent" placeholder="例: SEOメタデータ" />
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="component-name"
+                  >
+                    コンポーネント名
+                  </label>
+                  <input
+                    id="component-name"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    placeholder="例: SEOメタデータ"
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="component-description">説明</label>
-                  <textarea id="component-description" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent" rows={3} placeholder="コンポーネントの説明を入力..."></textarea>
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="component-description"
+                  >
+                    説明
+                  </label>
+                  <textarea
+                    id="component-description"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    rows={3}
+                    placeholder="コンポーネントの説明を入力..."
+                  ></textarea>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <label className="flex items-center" htmlFor="component-reusable">
-                    <input id="component-reusable" type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">再利用可能</span>
+                    <input
+                      id="component-reusable"
+                      type="checkbox"
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      再利用可能
+                    </span>
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="component-fields">フィールド</label>
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor="component-fields"
+                  >
+                    フィールド
+                  </label>
                   <div className="space-y-2">
                     {/* Field items will be rendered here */}
                     <button className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">

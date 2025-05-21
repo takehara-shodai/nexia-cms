@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Eye, Pencil, Trash2 } from 'lucide-react';
-import { Button } from "@/shared/ui/atoms/Button";
+import { Button } from '@/shared/ui/atoms/Button';
 import { ContentForm } from '@/features/content/ui/ContentForm';
 import { fetchContents, deleteContent } from '@/features/content/api/contentApi';
 import { Content } from '@/features/content/types';
@@ -25,21 +25,21 @@ const ContentDetail: React.FC = () => {
         navigate('/content');
         return;
       }
-      
+
       console.log('Loading content with ID:', id);
-      
+
       try {
         setIsLoading(true);
         const contents = await fetchContents();
         console.log('Looking for content with ID:', id, 'in', contents.length, 'contents');
-        
+
         // 文字列比較の前に両方のIDを正規化して比較
-        const normalizeId = (idValue: string | undefined) => 
+        const normalizeId = (idValue: string | undefined) =>
           idValue ? idValue.toLowerCase().replace(/-/g, '') : '';
-        
+
         const normalizedSearchId = normalizeId(id);
         const found = contents.find(c => normalizeId(c.id) === normalizedSearchId);
-        
+
         if (found) {
           console.log('Content found:', found);
           setContent(found);
@@ -62,7 +62,7 @@ const ContentDetail: React.FC = () => {
     setIsLoading(true);
     try {
       console.log('Starting content update with content:', JSON.stringify(content, null, 2));
-      
+
       // フォームの状態確認
       if (formRef.current) {
         console.log('Form reference exists');
@@ -74,7 +74,7 @@ const ContentDetail: React.FC = () => {
       }
     } catch (error) {
       console.error('Error saving content:', error);
-      
+
       // エラーの詳細情報を表示
       if (error instanceof Error) {
         console.error('Error message:', error.message);
@@ -110,8 +110,8 @@ const ContentDetail: React.FC = () => {
           <Button variant="outline" onClick={hideModal}>
             キャンセル
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             onClick={async () => {
               setIsLoading(true);
               try {
@@ -129,7 +129,7 @@ const ContentDetail: React.FC = () => {
             削除する
           </Button>
         </>
-      )
+      ),
     });
   };
 
@@ -141,15 +141,15 @@ const ContentDetail: React.FC = () => {
           戻る
         </Button>
         <h1 className="text-2xl font-bold">コンテンツ編集</h1>
-        
+
         <div className="flex gap-2 ml-auto">
           <Button
             variant="outline"
-            onClick={() => setIsPreview((prev) => !prev)}
+            onClick={() => setIsPreview(prev => !prev)}
             className="flex items-center gap-2"
           >
             {isPreview ? <Pencil className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            {isPreview ? "編集" : "プレビュー"}
+            {isPreview ? '編集' : 'プレビュー'}
           </Button>
           <Button
             onClick={handleSave}
@@ -174,16 +174,22 @@ const ContentDetail: React.FC = () => {
         <>
           {/* Content情報をデバッグ表示 */}
           <div className="hidden">
-            <pre>{JSON.stringify({
-              id: content.id,
-              status: content.status,
-              status_id: content.status_id,
-              type_id: content.type_id,
-              tenant_id: content.tenant_id,
-              author_id: content.author_id
-            }, null, 2)}</pre>
+            <pre>
+              {JSON.stringify(
+                {
+                  id: content.id,
+                  status: content.status,
+                  status_id: content.status_id,
+                  type_id: content.type_id,
+                  tenant_id: content.tenant_id,
+                  author_id: content.author_id,
+                },
+                null,
+                2
+              )}
+            </pre>
           </div>
-          
+
           <ContentForm
             ref={formRef}
             content={content}

@@ -30,9 +30,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm })
         </>
       }
     >
-      <p className="text-gray-700 dark:text-gray-300">
-        ログアウトしてもよろしいですか？
-      </p>
+      <p className="text-gray-700 dark:text-gray-300">ログアウトしてもよろしいですか？</p>
     </Modal>
   );
 };

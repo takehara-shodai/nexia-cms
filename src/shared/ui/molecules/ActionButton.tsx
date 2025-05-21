@@ -1,5 +1,5 @@
-import { Button } from "@/shared/ui/atoms/Button"
-import { DivideIcon as LucideIcon } from "lucide-react"
+import { Button } from '@/shared/ui/atoms/Button';
+import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface ActionButtonProps {
   icon: LucideIcon;
@@ -19,7 +19,7 @@ export function ActionButton({
   className,
 }: ActionButtonProps) {
   const isDestructive = variant === 'destructive';
-  
+
   return (
     <Button
       variant={variant}

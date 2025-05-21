@@ -30,4 +30,4 @@ export function useTagSelect(tenant_id: string) {
   };
 
   return { tags, loading, error, addTag };
-} 
+}

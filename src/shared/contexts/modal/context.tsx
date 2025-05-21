@@ -28,4 +28,4 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       </Modal>
     </ModalContext.Provider>
   );
-} 
+}

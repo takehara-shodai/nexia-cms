@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  Filter,
-  Plus,
-  Grid,
-  List as ListIcon,
-} from 'lucide-react';
+import { Search, Filter, Plus, Grid, List as ListIcon } from 'lucide-react';
 import { Content } from '@/features/content/types';
 import { fetchContents } from '@/features/content/api/contentApi';
 import { ContentListItem } from '@/shared/ui/organisms/ContentListItem';
@@ -60,7 +54,8 @@ const ContentList: React.FC = () => {
 
   const filteredContents = contents.filter(content => {
     const matchesStatus = filters.status === 'all' || content.status === filters.status;
-    const matchesSearch = filters.searchTerm === '' || 
+    const matchesSearch =
+      filters.searchTerm === '' ||
       content.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
       content.description?.toLowerCase().includes(filters.searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;

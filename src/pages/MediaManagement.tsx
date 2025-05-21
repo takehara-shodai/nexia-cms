@@ -136,7 +136,9 @@ const MediaManagement: React.FC = () => {
                     />
                     <span>{folder.name}</span>
                   </button>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">{folder.count}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">
+                    {folder.count}
+                  </span>
                 </React.Fragment>
               ))}
             </div>
@@ -193,7 +195,13 @@ const MediaManagement: React.FC = () => {
                 >
                   {item.type === 'image' ? (
                     <div className="aspect-video bg-gray-100 dark:bg-gray-700">
-                      <img src={item.url} alt={item.name} className="w-full h-full object-cover" width="400" height="225" />
+                      <img
+                        src={item.url}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        width="400"
+                        height="225"
+                      />
                     </div>
                   ) : (
                     <div className="aspect-video bg-gray-100 dark:bg-gray-700 flex items-center justify-center">

@@ -41,29 +41,32 @@ const SideNav = ({
   const toggleItem = (key: string) => {
     setExpandedItems(prev => {
       const newState = { ...prev };
-      
+
       if (!prev[key]) {
         Object.keys(prev).forEach(k => {
           if (k !== key) newState[k] = false;
         });
       }
-      
+
       newState[key] = !prev[key];
-      
+
       return newState;
     });
   };
 
   const handleNavigation = (path: string, parentKey?: string) => {
     navigate(path);
-    
+
     if (parentKey) {
       setExpandedItems(prev => ({
-        ...Object.keys(prev).reduce((acc, key) => ({
-          ...acc,
-          [key]: key === parentKey ? true : false
-        }), {}),
-        [parentKey]: true
+        ...Object.keys(prev).reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: key === parentKey ? true : false,
+          }),
+          {}
+        ),
+        [parentKey]: true,
       }));
     }
 
@@ -80,11 +83,7 @@ const SideNav = ({
   const showLogoutConfirmation = () => {
     showModal({
       title: 'ログアウト確認',
-      content: (
-        <p className="text-gray-700 dark:text-gray-300">
-          ログアウトしてもよろしいですか？
-        </p>
-      ),
+      content: <p className="text-gray-700 dark:text-gray-300">ログアウトしてもよろしいですか？</p>,
       footer: (
         <>
           <button
@@ -119,7 +118,7 @@ const SideNav = ({
   }
 
   return (
-    <div 
+    <div
       className={`h-screen flex flex-col bg-[#3B4992] text-white ${
         isCollapsed ? 'w-[72px]' : 'w-64'
       }`}
@@ -128,7 +127,9 @@ const SideNav = ({
       <div className="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-[#4B5AA7] flex-shrink-0">
         {!isCollapsed ? (
           <>
-            <span className="text-base lg:text-lg font-semibold whitespace-nowrap">VAREAL.CMS.APP</span>
+            <span className="text-base lg:text-lg font-semibold whitespace-nowrap">
+              VAREAL.CMS.APP
+            </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onCollapsedChange(true)}
@@ -181,16 +182,12 @@ const SideNav = ({
           {navigationItems.map(item => {
             const isActive = isItemActive(item);
             const isExpanded = expandedItems[item.key];
-            
+
             return (
               <div
                 key={item.key}
                 className={`w-full text-left transition-colors outline-none rounded-lg mb-1 cursor-pointer ${
-                  isActive
-                    ? 'bg-white/15'
-                    : isExpanded
-                    ? 'bg-white/10'
-                    : 'hover:bg-white/5'
+                  isActive ? 'bg-white/15' : isExpanded ? 'bg-white/10' : 'hover:bg-white/5'
                 }`}
                 onClick={() => {
                   if (isCollapsed) {
@@ -202,15 +199,23 @@ const SideNav = ({
                   }
                 }}
               >
-                <div className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                <div
+                  className={`px-4 py-2.5 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+                >
                   <div className="flex items-center min-w-0">
-                    <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-white/70'}`}>
+                    <span
+                      className={`flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-white/70'}`}
+                    >
                       {item.icon}
                     </span>
-                    <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}>
-                      <span className={`text-sm font-medium whitespace-nowrap transition-colors ${
-                        isActive ? 'text-white' : 'text-white/90'
-                      }`}>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto ml-3'}`}
+                    >
+                      <span
+                        className={`text-sm font-medium whitespace-nowrap transition-colors ${
+                          isActive ? 'text-white' : 'text-white/90'
+                        }`}
+                      >
                         {item.label}
                       </span>
                     </div>
@@ -218,9 +223,15 @@ const SideNav = ({
                   {!isCollapsed && item.children && (
                     <span className="flex-shrink-0 ml-2">
                       {isExpanded ? (
-                        <ChevronDown size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                        <ChevronDown
+                          size={16}
+                          className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}
+                        />
                       ) : (
-                        <ChevronRight size={16} className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                        <ChevronRight
+                          size={16}
+                          className={`transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}
+                        />
                       )}
                     </span>
                   )}
@@ -232,7 +243,7 @@ const SideNav = ({
                       return (
                         <div
                           key={child.key}
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
                             handleNavigation(child.path, item.key);
                           }}
@@ -255,7 +266,9 @@ const SideNav = ({
       </div>
 
       {/* Footer */}
-      <div className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <div
+        className={`p-4 border-t border-[#4B5AA7] mt-auto flex-shrink-0 ${isCollapsed ? 'flex flex-col items-center' : ''}`}
+      >
         <button
           onClick={toggleTheme}
           className={`flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors mb-2 ${
@@ -263,8 +276,12 @@ const SideNav = ({
           }`}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          <span className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
-            <span className="text-xs whitespace-nowrap">{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
+          <span
+            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}
+          >
+            <span className="text-xs whitespace-nowrap">
+              {theme === 'dark' ? 'ライトモード' : 'ダークモード'}
+            </span>
           </span>
         </button>
         <button
@@ -274,7 +291,9 @@ const SideNav = ({
           }`}
         >
           <LogOut size={18} />
-          <span className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}>
+          <span
+            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0' : 'w-auto'}`}
+          >
             <span className="text-xs whitespace-nowrap">ログアウト</span>
           </span>
         </button>

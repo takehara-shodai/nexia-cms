@@ -7,4 +7,4 @@ export function useModal() {
     throw new Error('useModal must be used within a ModalProvider');
   }
   return context;
-} 
+}

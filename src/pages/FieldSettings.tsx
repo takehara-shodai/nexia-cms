@@ -263,7 +263,10 @@ const FieldSettings: React.FC = () => {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-name">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="field-name"
+                  >
                     フィールド名
                   </label>
                   <input
@@ -276,7 +279,10 @@ const FieldSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-type">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="field-type"
+                  >
                     フィールドタイプ
                   </label>
                   <select
@@ -296,7 +302,10 @@ const FieldSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="field-description">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="field-description"
+                  >
                     説明
                   </label>
                   <textarea
@@ -334,7 +343,10 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'text' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="min-length">
+                        <label
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          htmlFor="min-length"
+                        >
                           最小文字数
                         </label>
                         <input
@@ -354,7 +366,10 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="max-length">
+                        <label
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          htmlFor="max-length"
+                        >
                           最大文字数
                         </label>
                         <input
@@ -379,7 +394,10 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'select' && (
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="option-label-0" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor="option-label-0"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           選択肢
                         </label>
                         {(editingField.settings.options || []).map((option, _index) => (
@@ -470,7 +488,10 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'number' && (
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="min-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor="min-value"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           最小値
                         </label>
                         <input
@@ -490,7 +511,10 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="max-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor="max-value"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           最大値
                         </label>
                         <input
@@ -510,7 +534,10 @@ const FieldSettings: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="step-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor="step-value"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           ステップ
                         </label>
                         <input
@@ -535,7 +562,10 @@ const FieldSettings: React.FC = () => {
                   {editingField.type === 'media' && (
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="allowed-file-types" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label
+                          htmlFor="allowed-file-types"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
                           許可するファイルタイプ
                         </label>
                         <div className="space-y-2">
