@@ -93,7 +93,7 @@ const ContentDetail: React.FC = () => {
           <ArrowLeft className="w-5 h-5" />
           戻る
         </Button>
-        {content && <p className="text-sm text-gray-500 ml-2">ID: {content.id}</p>}
+        <h1 className="text-2xl font-bold">コンテンツ編集</h1>
         
         <div className="flex gap-2 ml-auto">
           <Button
