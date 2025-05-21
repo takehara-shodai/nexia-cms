@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { Content, Tag } from '@/features/content/types';
+import { toast } from 'sonner';
 
 export const fetchContents = async (): Promise<Content[]> => {
   try {
@@ -117,7 +118,6 @@ async function removeContentTags(contentId: string) {
   if (error) throw error;
 }
 
-// 更新処理を段階的に行う - まずは最小限の情報から
 export async function updateContentWithTags(id: string, content: Omit<Content, 'id' | 'created_at' | 'updated_at'>, tags: Tag[]) {
   try {
     // デフォルト値を設定（外部キー制約違反の回避）
@@ -196,12 +196,15 @@ export async function deleteContent(id: string): Promise<void> {
     
     if (error) {
       console.error('Error deleting content:', error);
+      toast.error('コンテンツの削除に失敗しました');
       throw error;
     }
     
+    toast.success('コンテンツを削除しました');
     console.log('Content deleted successfully');
   } catch (error) {
     console.error('Failed to delete content:', error);
+    toast.error('コンテンツの削除に失敗しました');
     throw error;
   }
 }
