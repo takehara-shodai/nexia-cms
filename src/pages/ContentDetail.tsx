@@ -101,7 +101,7 @@ const ContentDetail: React.FC = () => {
       title: '削除確認',
       content: (
         <div className="py-4">
-          <p className="mb-4">本当に「{content.title}」を削除しますか？</p>
+          <p className="mb-4">本当に削除しますか？</p>
           <p className="text-red-500 text-sm">この操作は取り消せません。</p>
         </div>
       ),
