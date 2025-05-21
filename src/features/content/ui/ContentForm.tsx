@@ -10,20 +10,13 @@ import { TagSelect } from '@/shared/ui/molecules/TagSelect'
 import { useAuth } from '@/shared/hooks/useAuth'
 import type { ContentStatus, Tag } from '@/features/content/types';
 
-interface ContentType {
-  id?: string;
-  title?: string;
-  content?: string;
-  status?: ContentStatus;
-  tags?: Tag[];
-  created_at?: string;
-  updated_at?: string;
-}
+// メインのContentタイプをインポートして使用
+import { Content } from '@/features/content/types';
 
 interface ContentFormProps {
-  content?: ContentType | null;
+  content?: Content | null;
   isPreview?: boolean;
-  onSuccess?: (content: ContentType) => void;
+  onSuccess?: (content: Content) => void;
 }
 
 const statusOptions: { value: ContentStatus; label: string; color: string }[] = [
@@ -33,8 +26,8 @@ const statusOptions: { value: ContentStatus; label: string; color: string }[] = 
   { value: 'archived' as ContentStatus, label: 'アーカイブ', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' },
 ];
 
-export const ContentForm = forwardRef(function ContentForm({ isPreview = false, onSuccess }: ContentFormProps, ref) {
-  const { form, handleChange, handleSubmit } = useContentForm(onSuccess);
+export const ContentForm = forwardRef(function ContentForm({ content = null, isPreview = false, onSuccess }: ContentFormProps, ref) {
+  const { form, handleChange, handleSubmit } = useContentForm(onSuccess, content);
   const { user } = useAuth();
   const tenant_id = user?.tenant_id || '';
 
@@ -138,7 +131,21 @@ export const ContentForm = forwardRef(function ContentForm({ isPreview = false, 
               <Label className="mb-3 block">ステータス</Label>
               <Select 
                 value={form.status} 
-                onValueChange={(value) => handleChange('status', value as ContentStatus)}              >
+                onValueChange={(value) => {
+                  // ステータス変更時に両方のフィールドを更新
+                  handleChange('status', value as ContentStatus);
+                  
+                  // ステータスに対応するIDを設定
+                  const statusIdMap = {
+                    'draft': 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb',
+                    'review': '2b773e0a-7cb6-4c56-b28b-fb96affaea8e',
+                    'published': '3c884d1b-8d9a-4f72-c39c-9d07bffdea9f',
+                    'archived': '4d995e2c-9e0a-5f83-d40d-ae18cffeeb0f'
+                  };
+                  handleChange('status_id', statusIdMap[value as ContentStatus] || 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb');
+                  
+                  console.log(`Status changed to: ${value}, status_id: ${statusIdMap[value as ContentStatus]}`);
+                }}              >
                 <SelectTrigger className="w-full bg-white dark:bg-gray-700">
                   <SelectValue placeholder="ステータスを選択">
                     <span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(form.status)}`}>

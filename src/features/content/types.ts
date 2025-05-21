@@ -5,7 +5,7 @@ export interface Tag {
   id: string;
   name: string;
   color?: string;
-  tenant_id?: string;
+  tenant_id?: string | null;
   created_at?: string;
 }
 
@@ -20,10 +20,10 @@ export interface Content {
   content: string;
   status: ContentStatus;
   status_id: string;
-  slug: string;
+  slug?: string; // データベースにはない、オプショナルに変更
   type_id: string;
-  tenant_id: string;
-  author_id?: string;
+  tenant_id?: string | null; // nullも許容
+  author_id?: string | null; // nullも許容
   tags?: Tag[];
   created_at?: string;
   updated_at?: string;

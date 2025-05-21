@@ -63,16 +63,13 @@ async function ensureTags(tags: Tag[]): Promise<string[]> {
 }
 
 export async function createContentWithTags(content: Omit<Content, 'id' | 'created_at' | 'updated_at'>, tags: Tag[]) {
-  // 空文字列の場合はnullに変換し、デフォルト値を設定する（DBの制約違反を防ぐため）
-  const defaultTypeId = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // デフォルトの記事タイプID
-  const defaultStatusId = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // デフォルトの下書きステータスID
-  
+  // 空文字列の場合はnullに変換する（DBの制約違反を防ぐため）
   const payload = {
     title: content.title,
     content: content.content,
-    status: content.status || 'draft',
-    status_id: content.status_id || defaultStatusId,
-    type_id: content.type_id || defaultTypeId,
+    status: content.status,
+    status_id: content.status_id,
+    type_id: content.type_id,
     tenant_id: content.tenant_id || null,
     author_id: content.author_id || null
   };
@@ -117,26 +114,20 @@ async function removeContentTags(contentId: string) {
   if (error) throw error;
 }
 
-// 更新処理を段階的に行う - まずは最小限の情報から
 export async function updateContentWithTags(id: string, content: Omit<Content, 'id' | 'created_at' | 'updated_at'>, tags: Tag[]) {
   try {
-    // デフォルト値を設定（外部キー制約違反の回避）
-    const defaultTypeId = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // デフォルトの記事タイプID
-    const defaultStatusId = 'f0a6c4b0-7c91-4d1a-9e3a-a3dd76c46fdb'; // デフォルトの下書きステータスID
-
-    // タイトルのみ更新する最小限のペイロード
-    const minimalPayload = {
+    // 更新のステップを分割し、まずタイトルと内容のみ更新
+    const basicPayload = {
       title: content.title,
-      type_id: content.type_id || defaultTypeId,
-      status_id: content.status_id || defaultStatusId
+      content: content.content
     };
-    
-    console.log('Updating content with minimal payload:', minimalPayload);
-    
-    // 1. コンテンツ本体をupdate - 最小限の情報のみ
+
+    console.log('Updating content with full payload:', JSON.stringify(fullPayload, null, 2));
+
+    // 1. コンテンツ本体をupdate - 必要なフィールドすべて
     const { data: contentData, error: contentError } = await supabase
       .from('nexia_cms_contents')
-      .update(minimalPayload)
+      .update(fullPayload)
       .eq('id', id)
       .select('id')
       .single();
@@ -144,37 +135,37 @@ export async function updateContentWithTags(id: string, content: Omit<Content, '
     if (contentError) {
       console.error('Update error:', contentError);
       console.error('Error details:', JSON.stringify(contentError, null, 2));
+      console.error('Request payload:', JSON.stringify(fullPayload, null, 2));
       throw contentError;
     }
-    
-    console.log('Basic content update successful');
-    
+
+    console.log('Update successful, content ID:', contentData?.id);
+
     // 2. タグIDを確定
     const tagIds = await ensureTags(tags.map(tag => ({
       ...tag,
       tenant_id: content.tenant_id === '' ? null : content.tenant_id
     })));
-    
+
     // 3. 既存のタグ関連付けを削除
     await removeContentTags(id);
-    
+
     // 4. 中間テーブルにinsert
-    if (tagIds.length > 0) {
-      const contentTags = tagIds.map(tag_id => ({
-        content_id: id,
-        tag_id,
-      }));
-      
+    const contentTags = tagIds.map(tag_id => ({
+      content_id: id,
+      tag_id,
+    }));
+    
+    if (contentTags.length > 0) {
       const { error: linkError } = await supabase
         .from('nexia_cms_content_tags')
         .insert(contentTags);
-        
       if (linkError) {
         console.error('Error linking tags:', linkError);
-        // タグエラーは処理を続行
+        throw linkError;
       }
     }
-    
+
     return contentData;
   } catch (error) {
     console.error('Error in updateContentWithTags:', error);
