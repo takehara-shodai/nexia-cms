@@ -4,6 +4,7 @@ export interface ModalProps {
   title?: string;
   content?: React.ReactNode;
   footer?: React.ReactNode;
+  message?: string;
 }
 
 export interface ModalContextType {

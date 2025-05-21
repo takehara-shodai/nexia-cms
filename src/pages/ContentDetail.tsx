@@ -1,10 +1,12 @@
+// filepath: /Users/vareal/WorkSpace/project/nexia-cms/src/pages/ContentDetail.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/shared/ui/atoms/Button";
 import { ContentForm } from '@/features/content/ui/ContentForm';
-import { fetchContents } from '@/features/content/api/contentApi';
+import { fetchContents, deleteContent } from '@/features/content/api/contentApi';
 import { Content } from '@/features/content/types';
+import { useModal } from '@/shared/contexts/modal/hooks';
 
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
@@ -13,6 +15,7 @@ const ContentDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState<Content | null>(null);
   const formRef = useRef<{ handleSubmit: () => void }>(null);
+  const { showModal, hideModal } = useModal();
 
   // コンテンツデータの読み込み
   useEffect(() => {
@@ -86,6 +89,50 @@ const ContentDetail: React.FC = () => {
     }
   };
 
+  // 削除機能
+  const handleDelete = () => {
+    if (!id || !content) {
+      console.error('No content ID provided or content not loaded');
+      return;
+    }
+
+    // 削除確認モーダルを表示
+    showModal({
+      title: '削除確認',
+      content: (
+        <div className="py-4">
+          <p className="mb-4">本当に「{content.title}」を削除しますか？</p>
+          <p className="text-red-500 text-sm">この操作は取り消せません。</p>
+        </div>
+      ),
+      footer: (
+        <>
+          <Button variant="outline" onClick={hideModal}>
+            キャンセル
+          </Button>
+          <Button 
+            variant="destructive" 
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                await deleteContent(id);
+                hideModal();
+                navigate('/content');
+              } catch (error) {
+                console.error('Error deleting content:', error);
+                alert('削除中にエラーが発生しました。');
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+          >
+            削除する
+          </Button>
+        </>
+      )
+    });
+  };
+
   return (
     <div className="fade-in">
       <div className="flex items-center gap-2 mb-3">
@@ -116,7 +163,7 @@ const ContentDetail: React.FC = () => {
             type="button"
             variant="destructive"
             className="flex items-center gap-2 px-4"
-            onClick={() => {/* 削除処理 */}}
+            onClick={handleDelete}
           >
             <Trash2 className="w-5 h-5" /> 削除
           </Button>

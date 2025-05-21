@@ -181,3 +181,27 @@ export async function updateContentWithTags(id: string, content: Omit<Content, '
     throw error;
   }
 }
+
+// コンテンツ削除機能
+export async function deleteContent(id: string): Promise<void> {
+  try {
+    // まずタグの関連付けを削除
+    await removeContentTags(id);
+    
+    // コンテンツ本体を削除
+    const { error } = await supabase
+      .from('nexia_cms_contents')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting content:', error);
+      throw error;
+    }
+    
+    console.log('Content deleted successfully');
+  } catch (error) {
+    console.error('Failed to delete content:', error);
+    throw error;
+  }
+}
