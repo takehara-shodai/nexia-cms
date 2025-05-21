@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List } from 'lucide-react';
+import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
 import { ContentModel } from '@/features/content-models/types';
 import { createContentModel, createContentField, fetchContentModels } from '@/features/content-models/api/contentModelApi';
 import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
@@ -9,6 +9,7 @@ const ContentModels: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [models, setModels] = useState<ContentModel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   useEffect(() => {
     loadModels();
@@ -50,6 +51,18 @@ const ContentModels: React.FC = () => {
       console.error('Error creating model:', error);
       toast.error('コンテンツモデルの作成に失敗しました');
     }
+  };
+
+  const handleEditModel = (model: ContentModel) => {
+    // Handle edit
+    console.log('Edit model:', model);
+    setActiveMenu(null);
+  };
+
+  const handleDeleteModel = (model: ContentModel) => {
+    // Handle delete
+    console.log('Delete model:', model);
+    setActiveMenu(null);
   };
 
   const getFieldIcon = (type: string) => {
@@ -123,9 +136,34 @@ const ContentModels: React.FC = () => {
                   <h2 className="text-lg font-medium mb-1">{model.name}</h2>
                   <p className="text-gray-600 dark:text-gray-400 text-sm">{model.description}</p>
                 </div>
-                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                  <MoreVertical size={20} />
-                </button>
+                <div className="relative">
+                  <button 
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    onClick={() => setActiveMenu(activeMenu === model.id ? null : model.id)}
+                  >
+                    <MoreVertical size={20} />
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  {activeMenu === model.id && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10">
+                      <button
+                        onClick={() => handleEditModel(model)}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                      >
+                        <Pencil size={16} />
+                        <span>編集</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteModel(model)}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600 dark:text-red-400"
+                      >
+                        <Trash size={16} />
+                        <span>削除</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
