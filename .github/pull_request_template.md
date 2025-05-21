@@ -1,6 +1,6 @@
 # Issue Ticket
 
-- [URL]
+- [Title](URL)
 
 # やった事
 
