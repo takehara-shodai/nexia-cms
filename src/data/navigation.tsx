@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   LayoutDashboard,
   FileText,
@@ -9,7 +8,6 @@ import {
   Languages,
   Users,
   Settings,
-  _Activity,
   PieChart,
   Package,
   Apple as Api,
@@ -35,7 +33,7 @@ export const navigationItems = [
     path: '/content',
     children: [
       { key: 'content-list', label: 'コンテンツ一覧', path: '/content' },
-      { key: 'content-create', label: 'コンテンツ作成', path: '/content/create' },
+      { key: 'content-create', label: 'コンテンツ作成', path: '/content/new' },
       { key: 'content-drafts', label: '下書き一覧', path: '/content/drafts' },
       { key: 'content-published', label: '公開済みコンテンツ', path: '/content/published' },
       { key: 'content-archive', label: 'アーカイブ', path: '/content/archive' },

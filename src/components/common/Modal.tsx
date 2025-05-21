@@ -15,19 +15,17 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-100 animate-[scale-in_0.15s_ease-in-out]">
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              {title}
-            </h3>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">{title}</h2>
             <button
               onClick={onClose}
               className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -36,11 +34,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer 
             </button>
           </div>
         )}
-        
+
         {/* Content */}
-        <div className="p-4">
-          {children}
-        </div>
+        <div className="p-4">{children}</div>
 
         {/* Footer */}
         {footer && (

@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import {
   Key,
-  _RefreshCw,
   Copy,
   Eye,
   EyeOff,
-  _AlertTriangle,
-  _CheckCircle,
-  _XCircle,
   Search,
   Filter,
   Plus,
-  _Code,
   Settings,
   Trash,
-  _ArrowRight,
   Globe,
   Lock,
   Book,
@@ -299,7 +293,7 @@ const ApiManagement: React.FC = () => {
                       >
                         {endpoint.method}
                       </span>
-                      <h3 className="text-lg font-medium font-mono">{endpoint.path}</h3>
+                      <h2 className="text-lg font-medium font-mono">{endpoint.path}</h2>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${getStatusColor(endpoint.status)}`}
                       >
@@ -345,7 +339,7 @@ const ApiManagement: React.FC = () => {
                 {/* Parameters */}
                 {endpoint.parameters && endpoint.parameters.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="text-sm font-medium mb-2">パラメータ</h4>
+                    <h3 className="text-sm font-medium mb-2">パラメータ</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {endpoint.parameters.map((param, index) => (
                         <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
@@ -374,7 +368,7 @@ const ApiManagement: React.FC = () => {
                 {/* Responses */}
                 {endpoint.responses && endpoint.responses.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="text-sm font-medium mb-2">レスポンス</h4>
+                    <h3 className="text-sm font-medium mb-2">レスポンス</h3>
                     <div className="space-y-4">
                       {endpoint.responses.map((response, index) => (
                         <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
@@ -534,20 +528,28 @@ const ApiManagement: React.FC = () => {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="token-expiry"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         トークン有効期限
                       </label>
                       <input
+                        id="token-expiry"
                         type="number"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                         placeholder="24"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="refresh-token-expiry"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         更新トークン有効期限
                       </label>
                       <input
+                        id="refresh-token-expiry"
                         type="number"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                         placeholder="7"
@@ -588,30 +590,42 @@ const ApiManagement: React.FC = () => {
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-title"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         APIタイトル
                       </label>
                       <input
+                        id="api-title"
                         type="text"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                         placeholder="API名"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-description"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         説明
                       </label>
                       <textarea
+                        id="api-description"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                         rows={3}
                         placeholder="APIの説明"
                       ></textarea>
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="api-version"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         バージョン
                       </label>
                       <input
+                        id="api-version"
                         type="text"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                         placeholder="1.0.0"
@@ -647,25 +661,33 @@ const ApiManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     カスタマイズ
-                  </h3>
+                  </h2>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="custom-css"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         カスタムCSS
                       </label>
                       <textarea
+                        id="custom-css"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 font-mono"
                         rows={3}
                         placeholder="/* カスタムスタイル */"
                       ></textarea>
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        htmlFor="custom-js"
+                        className="block text-sm text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         カスタムJavaScript
                       </label>
                       <textarea
+                        id="custom-js"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 font-mono"
                         rows={3}
                         placeholder="// カスタムスクリプト"

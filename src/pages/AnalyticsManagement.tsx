@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
+import { Search, Filter, Printer, BarChart, PieChart } from 'lucide-react';
 import {
-  Search,
-  Filter,
-  Printer,
-  _ExternalLink,
-  BarChart,
-  _FileText,
-  PieChart,
-} from 'lucide-react';
-import {
-  _Download,
   Calendar,
   ArrowUpRight,
   ArrowDownRight,
@@ -232,7 +223,7 @@ const AnalyticsManagement: React.FC = () => {
                 <span>{metric.change.value}%</span>
               </div>
             </div>
-            <h3 className="text-sm text-gray-600 dark:text-gray-400 mb-1">{metric.metric}</h3>
+            <h2 className="text-sm text-gray-600 dark:text-gray-400 mb-1">{metric.metric}</h2>
             <p className="text-2xl font-bold">{metric.value.toLocaleString()}</p>
           </div>
         ))}
@@ -247,7 +238,7 @@ const AnalyticsManagement: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-medium mb-1">{chart.title}</h3>
+                <h2 className="text-lg font-medium mb-1">{chart.title}</h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{chart.description}</p>
               </div>
               <div className="flex items-center gap-2">

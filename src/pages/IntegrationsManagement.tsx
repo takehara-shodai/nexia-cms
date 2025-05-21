@@ -7,7 +7,6 @@ import {
   Globe,
   Code,
   Puzzle,
-  _ArrowRight,
   Power,
   CheckCircle,
   AlertTriangle,
@@ -25,7 +24,7 @@ interface Integration {
   version: string;
   lastUpdated: string;
   author: string;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 const IntegrationsManagement: React.FC = () => {
@@ -237,7 +236,7 @@ const IntegrationsManagement: React.FC = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-medium">{integration.name}</h3>
+                        <h2 className="text-lg font-medium">{integration.name}</h2>
                         <span
                           className={`px-2 py-1 rounded-full text-xs flex items-center gap-1 ${getStatusColor(integration.status)}`}
                         >
@@ -276,7 +275,7 @@ const IntegrationsManagement: React.FC = () => {
 
                 {integration.config && (
                   <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <h4 className="text-sm font-medium mb-2">設定情報</h4>
+                    <h3 className="text-sm font-medium mb-2">設定情報</h3>
                     <div className="space-y-2">
                       {Object.entries(integration.config).map(([key, value]) => (
                         <div key={key} className="flex items-center gap-2 text-sm">

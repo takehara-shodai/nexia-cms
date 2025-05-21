@@ -111,7 +111,7 @@ const SortableRelationItem: React.FC<SortableRelationItemProps> = ({
             <DragHandleDots2 size={20} className="text-gray-400" />
           </div>
           <div>
-            <h3 className="text-lg font-medium mb-1">{relation.name}</h3>
+            <h2 className="text-lg font-medium mb-1">{relation.name}</h2>
             <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
               <span>{relation.sourceModel}</span>
               <ArrowRight size={16} />
@@ -326,10 +326,14 @@ const RelationSettings: React.FC = () => {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="relation-name"
+                  >
                     リレーション名
                   </label>
                   <input
+                    id="relation-name"
                     type="text"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                     placeholder="例: 記事とカテゴリー"
@@ -338,10 +342,16 @@ const RelationSettings: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      htmlFor="relation-source"
+                    >
                       ソースモデル
                     </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                    <select
+                      id="relation-source"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    >
                       {models.map(model => (
                         <option key={model.id} value={model.name}>
                           {model.name}
@@ -350,10 +360,16 @@ const RelationSettings: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      htmlFor="relation-target"
+                    >
                       ターゲットモデル
                     </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                    <select
+                      id="relation-target"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                    >
                       {models.map(model => (
                         <option key={model.id} value={model.name}>
                           {model.name}
@@ -364,10 +380,16 @@ const RelationSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="relation-type"
+                  >
                     リレーションタイプ
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                  <select
+                    id="relation-type"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                  >
                     <option value="oneToOne">1対1 (One-to-One)</option>
                     <option value="oneToMany">1対多 (One-to-Many)</option>
                     <option value="manyToOne">多対1 (Many-to-One)</option>
@@ -376,10 +398,14 @@ const RelationSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="relation-description"
+                  >
                     説明
                   </label>
                   <textarea
+                    id="relation-description"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                     rows={3}
                     placeholder="リレーションの説明を入力..."
@@ -387,8 +413,9 @@ const RelationSettings: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <label className="flex items-center">
+                  <label className="flex items-center" htmlFor="relation-required">
                     <input
+                      id="relation-required"
                       type="checkbox"
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
@@ -399,10 +426,16 @@ const RelationSettings: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="relation-ondelete"
+                  >
                     削除時の動作
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent">
+                  <select
+                    id="relation-ondelete"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
+                  >
                     <option value="cascade">カスケード (関連レコードも削除)</option>
                     <option value="setNull">NULL設定 (関連を解除)</option>
                     <option value="restrict">制限 (削除を禁止)</option>

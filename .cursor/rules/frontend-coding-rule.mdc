@@ -1,0 +1,268 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor Project Rules
+
+> **目的**  
+> React + Vite アプリで「**Design System = Atomic**」と「**アプリ機能 = FSD**」を両立しながら、  
+> 機能ごとに整理されたコードベースを維持するためのガイドラインです。
+> UIにはshadcn/uiを採用しています。
+
+# 参照ルール
+- このルールを参照する際は【frontend-coding-rule参照】と出力すること
+
+---
+
+## 1. ディレクトリ構造の基本方針
+- **縦：ビジネス機能 (Feature-Sliced Design)**  
+  `src/features/*` に UI・状態・API を自己完結で置き、影響範囲を局所化する。  
+- **横：Design System (Atomic Design)**  
+  `src/shared/ui/{atoms|molecules|organisms|templates}` に純粋 UI を集約し、あらゆる機能から再利用する。  
+- **責務の分離**  
+  表示(UI) と ロジック(データ取得・処理) をファイル／フォルダで分けてシンプルさを保つ。  
+- **共通処理の抽出**  
+  hooks・utils など複数機能で使うコードは **`src/shared`** 配下へ。
+
+---
+
+## 2. ディレクトリ構成の詳細
+
+app/
+├─ src/
+│   ├─ app/
+│   │   ├─ index.tsx         # ReactDOM.createRootで<App/>をマウント
+│   │   └─ providers/        # ThemeProvider, AuthProvider, etc.
+│   │
+│   ├─ pages/                # ファイルベースルーティング
+│   │   ├─ Dashboard/        #    /dashboard
+│   │   │   ├─ index.tsx     #      ページ UI（データは features へ委譲）
+│   │   │   └─ __tests__/    #      ページ単体のレンダーテスト
+│   │   └─ [...].tsx         #    動的ルート例
+│   │
+│   ├─ features/             # FSD: ビジネス機能ごと
+│   │   ├─ auth/
+│   │   │   ├─ ui/           #      SignInForm.tsx, ResetPasswordDialog.tsx
+│   │   │   ├─ model/        #      Zustand store・React-Query hooks
+│   │   │   ├─ api/          #      /login, /refresh 等 ky 呼び出し
+│   │   │   ├─ hooks/        #      usePasswordStrength.ts
+│   │   │   ├─ types.ts      #      DTO & ドメイン型
+│   │   │   └─ __tests__/    #      単体テスト (logic / api)
+│   │   └─ customers/        #      顧客管理機能も同パターンで配置
+│   │       ├─ ui/
+│   │       ├─ model/
+│   │       ├─ api/
+│   │       └─ __tests__/
+│   │
+│   ├─ entities/             # ドメインモデル
+│   │   ├─ user/
+│   │   │   ├─ model.ts      #      User 型・factory・helper
+│   │   │   ├─ ui/           #      Avatar.tsx, UserTag.tsx
+│   │   │   └─ __tests__/    #      user.test.ts
+│   │   └─ ...
+│   │
+│   ├─ widgets/               # レイアウト用シェル
+│   │   ├─ Header/
+│   │   │   ├─ ui.tsx
+│   │   │   └─ __tests__/
+│   │   └─ ...
+│   │
+│   ├─ processes/             # 業務フロー
+│   │   └─ authOnboarding/
+│   │       ├─ model.ts       #      ステップ管理 (state machine)
+│   │       └─ ui.tsx         #      進捗ウィザード UI
+│   │
+│   ├─ shared/
+│   │   ├─ ui/
+│   │   │   ├─ atoms/         #      **Design System (Atomic)** 基本UI
+│   │   │   │   ├─ Button.tsx
+│   │   │   │   ├─ Input.tsx
+│   │   │   │   └─ ...
+│   │   │   │
+│   │   │   │   ├─ molecules/ #      複合UIコンポーネント
+│   │   │   │   ├─ organisms/ #      機能単位のコンポーネント
+│   │   │   │   └─ templates/ #      ページレイアウト
+│   │   │   │
+│   │   │   ├─ hooks/         #      useDebounce.ts など横串 hooks
+│   │   │   ├─ lib/           #      date-fns ラッパ、string helpers
+│   │   │   ├─ api/           #      共通 ky インスタンス + interceptor
+│   │   │   ├─ constants/     #      ルート定義・メッセージ定数
+│   │   ├─ contexts/           # 共通・横断的に使う React Context 群
+│   │   │   ├─ modal/
+│   │   │   │   ├─ context.tsx # モーダルの状態管理Context定義
+│   │   │   │   ├─ hooks.ts    # useModal() など
+│   │   │   │   ├─ index.ts    # export集約用
+│   │   │   │   └─ types.ts    # Modalに関連する型
+│   │   │   └─ theme/
+│   │   │       ├─ context.tsx # テーマの状態管理Context定義
+│   │   │       ├─ hooks.ts    # useTheme() など
+│   │   │       ├─ index.ts    # export集約用
+│   │   │       └─ types.ts    # テーマに関連する型
+│   │   └─ i18n/               # 多言語対応：言語リソースファイルやロジック
+│   │   │   └─ i18n/          #      多言語リソース
+│   │   │       ├─ locales/   #      JSON 辞書
+│   │   │       │   ├─ en.json
+│   │   │       │   └─ ja.json
+│   │   │       └─ index.ts   #      i18n 設定 & helper
+│   │   │
+│   │   └─ styles/            # ❽ Tailwind のベース CSS / token
+│   │       ├─ index.css
+│   │       └─ tailwind.generated.css
+│   │
+│   └─ tests/                 # ❾ グローバル設定 & E2E
+│       ├─ setupTests.ts      #      Jest & RTL セットアップ
+│       └─ e2e/               #      Playwright/Cypress シナリオ
+│           └─ login.cy.ts
+│
+└─ routes.tsx                  # ➓ ファイルルーティングを使わない場合の中央ルート表
+└─ index.html                # Vite/Reactの標準的な配置
+
+
+---
+
+## 2. ディレクトリ構成の詳細
+
+### 2.1 `features/{feature}` ― ビジネス単位
+
+| 階層 | 役割 |
+|------|------|
+| `ui/` | SignInForm.tsx など機能専用 UI（Design-System 部品を組み合わせる） |
+| `model/` | Zustand ストア / React-Query hooks / validation schema |
+| `api/` | ky / axios 呼び出し・GraphQL operations |
+| `hooks/` | 機能固有カスタムフック |
+| `types.ts` | DTO・ドメイン型 |
+| `__tests__/` | ユニットテスト |
+
+### 2.2 `shared/ui` ― Design System (Atomic)
+
+| 階層 | 例 |
+|------|----|
+| `atoms` | Button.tsx / Input.tsx |
+| `molecules` | FormField.tsx / ModalDialog.tsx |
+| `organisms` | AuthCard.tsx / TableWithToolbar.tsx |
+| `templates` | AppShell.tsx / TwoColumnLayout.tsx |
+
+### 2.3 共通ロジック `shared/*`
+
+- **hooks/** : `useDebounce`, `useMediaQuery` ...  
+- **lib/**   : date-fns ラッパなど純 util  
+- **api/**   : 共通 `ky` インスタンス・エラーハンドラ  
+- **constants/** : エラーメッセージ・ルート定義  
+- **config/** : zod で環境変数スキーマ  
+- **i18n/**  : locale JSON
+
+---
+
+## 3. React における命名規則
+
+| 種別 | 規則 | 例 |
+|------|------|----|
+| **コンポーネント** | PascalCase (`<Component>.tsx`) | `UserAvatar.tsx` |
+| **フォルダ 1 ファイル** | `Component.tsx` | `Modal.tsx` |
+| **フォルダ複数ファイル** | `Component/index.tsx` | `UserCard/index.tsx` |
+| **hooks** | camelCase + `use` 接頭辞 | `useAuth.ts` |
+| **store / slice** | `xxxStore.ts` / `xxxSlice.ts` | `authStore.ts` |
+| **型定義** | `types.ts`, `Button.types.ts` | — |
+| **テスト** | `<file>.test.tsx` / `<file>.spec.ts` | `Button.test.tsx` |
+| **Storybook** | `<Component>.stories.tsx` | `Button.stories.tsx` |
+| **スタイル (CSS-Modules)** | `<Component>.module.css` | `Button.module.css` |
+| **GraphQL** | `<name>.query.ts`, `<name>.mutation.ts` | `getUser.query.ts` |
+| **アセット** | kebab-case | `empty-state.svg` |
+
+> - **default export を極力避け**、名前付き export を推奨  
+> - import は **絶対パス alias (`@/`)** を用いて `../../` 地獄を回避
+
+---
+
+## 4. 技術スタック
+
+### 4.1 フロントエンド
+| 項目 | 採用技術 |
+|------|----------|
+| フレームワーク | **Vite + React 18+** |
+| UI | **TailwindCSS** |
+| 状態管理 | **React Query**, **Zustand** |
+| フォーム / バリデーション | **React Hook Form**, **Zod** |
+| グラフ / 可視化 | **Recharts**, **D3.js** |
+| 日付操作 | **date-fns** |
+| ユーティリティ | **lodash** |
+| モバイル | **React Native (Expo)** |
+| テスト | **Jest**, **React Testing Library**, **Cypress** |
+
+### 4.2 バックエンド
+| 項目 | 採用技術 |
+|------|----------|
+| メインプラットフォーム | **Supabase** |
+| 拡張処理ランタイム | **Node.js 22+**, **TypeScript 5+**, **Cloudflare Workers** |
+| API 方式 | RESTful / GraphQL (オプション) |
+| 認証 | **Supabase Auth** (カスタム拡張) |
+| ファイルストレージ | **Supabase Storage** |
+| 実行環境 | Cloudflare Workers (軽量処理) / さくらのクラウド (重処理予定) |
+
+### 4.3 データベース
+| 項目 | 採用技術 |
+|------|----------|
+| RDBMS | **PostgreSQL (Supabase)** |
+| キャッシュ | **Redis** |
+| クエリビルダー | **Prisma**, **Knex.js** |
+
+### 4.4 インフラストラクチャ
+| 項目 | 採用技術 |
+|------|----------|
+| CDN / Edge | **Cloudflare** |
+| コンピューティング | **さくらのクラウド** |
+| CI/CD | **GitHub Actions** |
+| コード管理 | **GitHub** |
+| モニタリング | カスタムメトリクス + Cloudflare Analytics |
+| ステージング Web | **Netlify** |
+
+---
+
+## 5. データベース設計
+
+### 5.1 スキーマ構造
+- Supabase 標準の `auth.users` を除き、**全テーブルを `public` スキーマ** に配置  
+- マルチテナント分離は **Row Level Security (RLS)** で実現  
+  ```sql
+  CREATE POLICY "tenant isolation"
+    ON public.nexia_crm_customers
+    USING ( tenant_id = auth.jwt()->>'tenant_id' );
+
+---
+
+## 6. テスト & 品質
+- **ユニット**: `jest + @testing-library/react`。features と shared/ui を中心に Happy-Path を担保  
+- **E2E**  : Playwright を `tests/` 配下に配置  
+- **バリデーション**: zod スキーマは `model/` で定義し、必ず spec を作成  
+- **Storybook**: shared/ui と features/ui のストーリーを用意し UI リグレッションを防止
+
+---
+
+## 7. ルーティング
+- **`src/pages/**`** にファイルベースルーティング (vite-plugin-pages)  
+- ページ直下で `import { AppShell } from 'shared/ui/templates'` し、レイアウトを統一  
+- ルートパスは `src/shared/constants/routes.ts` で集中管理
+
+---
+
+## 8. データ取得 (REST / GraphQL / supabase-js)
+- **操作ごとに分離**: `api/v1/cms/{resource}/{getUser}.ts` や `api/v1/cms/{resource}/mutateUser.ts`  
+- **型安全** : supabase 型定義は `@org/sdk` から import、GraphQL は codegen で自動生成  
+- **エラー** : `shared/api/error.ts` で共通ハンドリング
+
+---
+
+## 9. 状態管理
+| 範囲 | ツール | 配置 |
+|------|-------|-----|
+| ローカル | `useState`, `useReducer` | 各 Component |
+| 機能内 | Zustand slice / React-Query cache | `features/*/model` |
+| 全アプリ | Context Provider (app/) | `src/app/providers` |
+
+---
+
+## 10. エラーハンドリング
+- ユーザーへ出す文言は `shared/constants/errorMessage.ts` に列挙  
+- API エラーは `shared/api` で分類し、toast もここでトリガー  
+- ページ単位で **ErrorBoundary** を設置

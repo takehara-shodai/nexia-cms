@@ -106,7 +106,10 @@ const FileUpload = ({
     setFiles(prev => {
       const newFiles = [...prev];
       if (newFiles[index].preview) {
-        URL.revokeObjectURL(newFiles[index].preview!);
+        const previewUrl = newFiles[index].preview;
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+        }
       }
       newFiles.splice(index, 1);
       return newFiles;
@@ -181,7 +184,7 @@ const FileUpload = ({
       {files.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-medium">アップロード予定のファイル</h3>
+            <h2 className="font-medium">アップロード予定のファイル</h2>
           </div>
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {files.map((file, index) => (

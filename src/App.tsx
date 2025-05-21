@@ -1,12 +1,13 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { ModalProvider } from '@/contexts/ModalContext.tsx';
+import { ThemeProvider } from '@/shared/contexts/theme';
+import { ModalProvider } from '@/shared/contexts/modal';
+import { Toast } from '@/shared/ui/molecules/Toast';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
 import ContentList from '@/pages/ContentList';
 import ContentDetail from '@/pages/ContentDetail';
+import NewContentPage from '@/pages/ContentNewPage';
 import ContentModels from '@/pages/ContentModels';
 import FieldSettings from '@/pages/FieldSettings';
 import RelationSettings from '@/pages/RelationSettings';
@@ -33,6 +34,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="content" element={<ContentList />} />
               <Route path="content/:id" element={<ContentDetail />} />
+              <Route path="content/new" element={<NewContentPage />} />
               <Route path="models" element={<ContentModels />} />
               <Route path="models/fields" element={<FieldSettings />} />
               <Route path="models/relations" element={<RelationSettings />} />
@@ -48,6 +50,7 @@ function App() {
               <Route path="localization" element={<LocalizationManagement />} />
             </Route>
           </Routes>
+          <Toast />
         </BrowserRouter>
       </ModalProvider>
     </ThemeProvider>

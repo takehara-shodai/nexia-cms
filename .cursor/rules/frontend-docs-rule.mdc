@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Documentation Rule
+
+## 1. フォルダREADME
+- 各フォルダに **README.md** を設置し、目的・使い方・依存を書く
+
+## 2. アーキテクチャ記録
+- ADR(Architecture Decision Record) を `/docs/adr/NNN-title.md` 形式で管理
+
+## 3. リファクタ・設計変更時
+- 大きなリファクタ前後で "Why, What, How" を PR description に記録
+- 重要な設計判断は必ずドキュメント化
+
+## 4. その他
+- ドキュメントは常に最新を保つ
+- コードとドキュメントの乖離を防ぐため、PRレビュー時にREADME/ADRの更新も確認
+
+# 参照ルール
+- このルールを参照した際は【frontend-docs-rule参照】と出力すること

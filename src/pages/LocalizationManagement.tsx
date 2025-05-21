@@ -7,12 +7,10 @@ import {
   Globe,
   Check,
   X,
-  _ChevronDown,
   Edit2,
   Trash,
-  _RefreshCw,
-  Download,
   Upload,
+  Download,
 } from 'lucide-react';
 
 interface Language {
@@ -251,7 +249,7 @@ const LocalizationManagement: React.FC = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-medium">{language.name}</h3>
+                        <h2 className="text-lg font-medium">{language.name}</h2>
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           ({language.nativeName})
                         </span>
@@ -316,9 +314,9 @@ const LocalizationManagement: React.FC = () => {
                       <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm">
                         {translation.category}
                       </span>
-                      <h3 className="font-mono text-gray-600 dark:text-gray-400">
+                      <h2 className="font-mono text-gray-600 dark:text-gray-400">
                         {translation.key}
-                      </h3>
+                      </h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {Object.entries(translation.translations).map(([lang, text]) => (
@@ -361,7 +359,7 @@ const LocalizationManagement: React.FC = () => {
                       {region.code}
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium mb-1">{region.name}</h3>
+                      <h2 className="text-lg font-medium mb-1">{region.name}</h2>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 dark:text-gray-400">
                         <span>言語: {region.language}</span>
                         <span>タイムゾーン: {region.timezone}</span>

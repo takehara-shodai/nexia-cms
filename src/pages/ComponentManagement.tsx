@@ -17,7 +17,7 @@ interface ComponentField {
   name: string;
   type: string;
   required: boolean;
-  settings?: Record<string, any>;
+  settings?: Record<string, unknown>;
 }
 
 const ComponentManagement: React.FC = () => {
@@ -142,7 +142,7 @@ const ComponentManagement: React.FC = () => {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-medium">{_component.name}</h3>
+                    <h2 className="text-lg font-medium">{_component.name}</h2>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
                         _component.isReusable
@@ -234,10 +234,14 @@ const ComponentManagement: React.FC = () => {
             <div className="p-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="component-name"
+                  >
                     コンポーネント名
                   </label>
                   <input
+                    id="component-name"
                     type="text"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                     placeholder="例: SEOメタデータ"
@@ -245,10 +249,14 @@ const ComponentManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    htmlFor="component-description"
+                  >
                     説明
                   </label>
                   <textarea
+                    id="component-description"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                     rows={3}
                     placeholder="コンポーネントの説明を入力..."
@@ -256,8 +264,9 @@ const ComponentManagement: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <label className="flex items-center">
+                  <label className="flex items-center" htmlFor="component-reusable">
                     <input
+                      id="component-reusable"
                       type="checkbox"
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
@@ -268,7 +277,10 @@ const ComponentManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor="component-fields"
+                  >
                     フィールド
                   </label>
                   <div className="space-y-2">

@@ -9,7 +9,7 @@ const ActivityLog = ({ activities, title }: ActivityLogProps) => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">{title}</h3>
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white">{title}</h2>
       </div>
       <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] overflow-y-auto">
         {activities.length > 0 ? (

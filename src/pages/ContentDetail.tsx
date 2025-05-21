@@ -1,188 +1,207 @@
-import React, { useState } from 'react';
+// filepath: /Users/vareal/WorkSpace/project/nexia-cms/src/pages/ContentDetail.tsx
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Eye, Trash, Clock, User, Calendar } from 'lucide-react';
-
-interface ContentData {
-  id: string;
-  title: string;
-  content: string;
-  type: string;
-  status: 'draft' | 'published' | 'archived';
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-}
+import { ArrowLeft, Send, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Button } from '@/shared/ui/atoms/Button';
+import { ContentForm } from '@/features/content/ui/ContentForm';
+import { fetchContents, deleteContent } from '@/features/content/api/contentApi';
+import { Content } from '@/features/content/types';
+import { useModal } from '@/shared/contexts/modal/hooks';
 
 const ContentDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isPreview, setIsPreview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [content, setContent] = useState<Content | null>(null);
+  const formRef = useRef<{ handleSubmit: () => void }>(null);
+  const { showModal, hideModal } = useModal();
 
-  // Mock data - replace with actual data fetching
-  const [content, setContent] = useState<ContentData>({
-    id: id || '1',
-    title: '2024年のトレンド予測',
-    content: 'ここに記事の本文が入ります...',
-    type: 'article',
-    status: 'published',
-    author: '山田太郎',
-    createdAt: '2024-03-01',
-    updatedAt: '2024-03-10',
-    tags: ['トレンド', '2024', '予測'],
-  });
+  // コンテンツデータの読み込み
+  useEffect(() => {
+    const loadContent = async () => {
+      if (!id) {
+        console.error('No content ID provided');
+        navigate('/content');
+        return;
+      }
 
-  const [isEditing, setIsEditing] = useState(false);
+      console.log('Loading content with ID:', id);
 
-  const handleSave = () => {
-    // Implement save functionality
-    setIsEditing(false);
-  };
+      try {
+        setIsLoading(true);
+        const contents = await fetchContents();
+        console.log('Looking for content with ID:', id, 'in', contents.length, 'contents');
 
-  const getStatusColor = (status: ContentData['status']) => {
-    switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+        // 文字列比較の前に両方のIDを正規化して比較
+        const normalizeId = (idValue: string | undefined) =>
+          idValue ? idValue.toLowerCase().replace(/-/g, '') : '';
+
+        const normalizedSearchId = normalizeId(id);
+        const found = contents.find(c => normalizeId(c.id) === normalizedSearchId);
+
+        if (found) {
+          console.log('Content found:', found);
+          setContent(found);
+        } else {
+          console.error('Content not found with ID:', id);
+          // コンテンツが見つからない場合は一覧に戻る
+          navigate('/content');
+        }
+      } catch (error) {
+        console.error('Error loading content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadContent();
+  }, [id, navigate]);
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      console.log('Starting content update with content:', JSON.stringify(content, null, 2));
+
+      // フォームの状態確認
+      if (formRef.current) {
+        console.log('Form reference exists');
+        await formRef.current.handleSubmit();
+        console.log('Content saved successfully');
+      } else {
+        console.error('Form reference is null - cannot submit');
+        alert('フォームの参照が見つかりません。ページを再読み込みしてください。');
+      }
+    } catch (error) {
+      console.error('Error saving content:', error);
+
+      // エラーの詳細情報を表示
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        alert(`保存中にエラーが発生しました: ${error.message}`);
+      } else if (typeof error === 'object' && error !== null) {
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        alert('保存中に不明なエラーが発生しました。コンソールを確認してください。');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getStatusText = (status: ContentData['status']) => {
-    switch (status) {
-      case 'published':
-        return '公開中';
-      case 'draft':
-        return '下書き';
-      case 'archived':
-        return 'アーカイブ';
-      default:
-        return status;
+  // 削除機能
+  const handleDelete = () => {
+    if (!id || !content) {
+      console.error('No content ID provided or content not loaded');
+      return;
     }
+
+    // 削除確認モーダルを表示
+    showModal({
+      title: '削除確認',
+      content: (
+        <div className="py-4">
+          <p className="mb-4">本当に削除しますか？</p>
+          <p className="text-red-500 text-sm">この操作は取り消せません。</p>
+        </div>
+      ),
+      footer: (
+        <>
+          <Button variant="outline" onClick={hideModal}>
+            キャンセル
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                await deleteContent(id);
+                hideModal();
+                navigate('/content');
+              } catch (error) {
+                console.error('Error deleting content:', error);
+                alert('削除中にエラーが発生しました。');
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+          >
+            削除する
+          </Button>
+        </>
+      ),
+    });
   };
 
   return (
     <div className="fade-in">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/content')}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+      <div className="flex items-center gap-2 mb-3">
+        <Button variant="ghost" onClick={() => navigate('/content')}>
+          <ArrowLeft className="w-5 h-5" />
+          戻る
+        </Button>
+        <h1 className="text-2xl font-bold">コンテンツ編集</h1>
+
+        <div className="flex gap-2 ml-auto">
+          <Button
+            variant="outline"
+            onClick={() => setIsPreview(prev => !prev)}
+            className="flex items-center gap-2"
           >
-            <ArrowLeft size={24} />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold mb-1">コンテンツ詳細</h1>
-            <p className="text-gray-600 dark:text-gray-400">ID: {content.id}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-          >
-            <Eye size={20} />
-            <span>{isEditing ? 'プレビュー' : '編集'}</span>
-          </button>
-          <button
+            {isPreview ? <Pencil className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            {isPreview ? '編集' : 'プレビュー'}
+          </Button>
+          <Button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+            disabled={isLoading}
+            variant="primaryFilled"
+            className="flex items-center gap-2"
           >
-            <Save size={20} />
-            <span>保存</span>
-          </button>
-          <button className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
-            <Trash size={20} />
-          </button>
+            <Send className="w-5 h-5" /> 保存
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="flex items-center gap-2 px-4"
+            onClick={handleDelete}
+          >
+            <Trash2 className="w-5 h-5" /> 削除
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Title and content */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={content.title}
-                  onChange={e => setContent({ ...content, title: e.target.value })}
-                  className="w-full text-2xl font-bold mb-4 bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-0"
-                />
-                <textarea
-                  value={content.content}
-                  onChange={e => setContent({ ...content, content: e.target.value })}
-                  className="w-full h-64 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg p-4 focus:border-blue-500 focus:ring-0"
-                />
-              </>
-            ) : (
-              <>
-                <h2 className="text-2xl font-bold mb-4">{content.title}</h2>
-                <p className="text-gray-600 dark:text-gray-400">{content.content}</p>
-              </>
-            )}
+      {content ? (
+        <>
+          {/* Content情報をデバッグ表示 */}
+          <div className="hidden">
+            <pre>
+              {JSON.stringify(
+                {
+                  id: content.id,
+                  status: content.status,
+                  status_id: content.status_id,
+                  type_id: content.type_id,
+                  tenant_id: content.tenant_id,
+                  author_id: content.author_id,
+                },
+                null,
+                2
+              )}
+            </pre>
           </div>
 
-          {/* Tags */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">タグ</h3>
-            <div className="flex flex-wrap gap-2">
-              {content.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
+          <ContentForm
+            ref={formRef}
+            content={content}
+            isPreview={isPreview}
+            onSuccess={() => navigate('/content')}
+          />
+        </>
+      ) : (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">読み込み中...</p>
         </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Status */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">ステータス</h3>
-            <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(content.status)}`}>
-              {getStatusText(content.status)}
-            </span>
-          </div>
-
-          {/* Metadata */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-medium mb-4">メタデータ</h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <User size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">作成者</p>
-                  <p className="font-medium">{content.author}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Calendar size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">作成日</p>
-                  <p className="font-medium">{content.createdAt}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock size={20} className="text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">最終更新日</p>
-                  <p className="font-medium">{content.updatedAt}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
