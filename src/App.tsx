@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/shared/contexts/theme';
 import { ModalProvider } from '@/shared/contexts/modal';
+import { Toast } from '@/shared/ui/molecules/Toast';
 import Layout from '@/components/layout/Layout';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
@@ -49,6 +50,7 @@ function App() {
               <Route path="localization" element={<LocalizationManagement />} />
             </Route>
           </Routes>
+          <Toast />
         </BrowserRouter>
       </ModalProvider>
     </ThemeProvider>
