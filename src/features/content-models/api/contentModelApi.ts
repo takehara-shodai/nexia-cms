@@ -22,32 +22,19 @@ export async function createContentModel(
     model.slug = model.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   }
 
-  // Split insert and select into separate operations
-  const { data: insertedData, error: insertError } = await supabase
+  // Create the content model
+  const { data, error } = await supabase
     .from('nexia_cms_content_models')
     .insert([model])
-    .select('id')
+    .select()
     .single();
 
-  if (insertError) {
-    console.error('Error creating content model:', insertError);
-    throw insertError;
+  if (error) {
+    console.error('Error creating content model:', error);
+    throw error;
   }
 
-  // Fetch the complete model data in a separate query
-  const { data: completeData, error: selectError } = await supabase
-    .from('nexia_cms_content_models')
-    .select('*')
-    .eq('id', insertedData.id)
-    .single();
-
-  if (selectError) {
-    console.error('Error fetching created model:', selectError);
-    // Return partial data if select fails
-    return { ...model, id: insertedData.id };
-  }
-
-  return completeData;
+  return data;
 }
 
 export async function createContentField(
@@ -56,24 +43,11 @@ export async function createContentField(
   const { data, error } = await supabase
     .from('nexia_cms_content_fields')
     .insert([field])
-    .select('id')
+    .select()
     .single();
 
   if (error) throw error;
-
-  // Fetch complete field data
-  const { data: completeData, error: selectError } = await supabase
-    .from('nexia_cms_content_fields')
-    .select('*')
-    .eq('id', data.id)
-    .single();
-
-  if (selectError) {
-    // Return partial data if select fails
-    return { ...field, id: data.id };
-  }
-
-  return completeData;
+  return data;
 }
 
 export async function fetchContentModels(): Promise<ContentModel[]> {
