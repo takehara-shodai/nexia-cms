@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter } from 'lucide-react';
-import { ContentModel, ContentField } from '@/features/content-models/types';
+import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List } from 'lucide-react';
+import { ContentModel } from '@/features/content-models/types';
 import { createContentModel, createContentField, fetchContentModels } from '@/features/content-models/api/contentModelApi';
 import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
 import { toast } from 'sonner';
@@ -29,12 +29,11 @@ const ContentModels: React.FC = () => {
 
   const handleCreateModel = async (
     model: Omit<ContentModel, 'id'>,
-    fields: Omit<ContentField, 'id'>[]
+    fields: any[]
   ) => {
     try {
       const createdModel = await createContentModel(model);
       
-      // Create fields with the new model ID
       await Promise.all(
         fields.map(field =>
           createContentField({
@@ -50,6 +49,23 @@ const ContentModels: React.FC = () => {
     } catch (error) {
       console.error('Error creating model:', error);
       toast.error('コンテンツモデルの作成に失敗しました');
+    }
+  };
+
+  const getFieldIcon = (type: string) => {
+    switch (type) {
+      case 'text':
+        return <Text size={16} />;
+      case 'number':
+        return <Hash size={16} />;
+      case 'date':
+        return <Calendar size={16} />;
+      case 'image':
+        return <Image size={16} />;
+      case 'array':
+        return <List size={16} />;
+      default:
+        return <Text size={16} />;
     }
   };
 
@@ -96,19 +112,55 @@ const ContentModels: React.FC = () => {
       {loading ? (
         <div className="text-center py-12">Loading...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {models.map(model => (
             <div
               key={model.id}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
             >
-              <h2 className="text-lg font-medium mb-2">{model.name}</h2>
-              {model.description && (
-                <p className="text-gray-600 dark:text-gray-400 mb-4">{model.description}</p>
-              )}
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                <p>スラッグ: {model.slug}</p>
-                <p>作成日: {new Date(model.created_at!).toLocaleDateString()}</p>
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-medium mb-1">{model.name}</h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">{model.description}</p>
+                </div>
+                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <MoreVertical size={20} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Example fields - replace with actual fields data */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
+                    {getFieldIcon('text')}
+                  </div>
+                  <div>
+                    <p className="font-medium">タイトル</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">text (必須)</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
+                    {getFieldIcon('text')}
+                  </div>
+                  <div>
+                    <p className="font-medium">本文</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">text (必須)</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
+                    {getFieldIcon('date')}
+                  </div>
+                  <div>
+                    <p className="font-medium">公開日</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">date (必須)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                作成日: {new Date(model.created_at!).toLocaleDateString()} 更新日: {new Date(model.updated_at!).toLocaleDateString()} フィールド数: 5
               </div>
             </div>
           ))}
