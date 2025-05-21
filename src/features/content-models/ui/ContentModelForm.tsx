@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -12,6 +12,8 @@ import { useAuth } from '@/shared/hooks/useAuth';
 
 interface ContentModelFormProps {
   onSubmit: (model: Omit<ContentModel, 'id'>, fields: Omit<ContentField, 'id'>[]) => Promise<void>;
+  initialModel?: ContentModel | null;
+  initialFields?: Omit<ContentField, 'id'>[];
 }
 
 function SortableField({ field, index, onFieldChange, onRemoveField }: any) {
@@ -105,7 +107,7 @@ function SortableField({ field, index, onFieldChange, onRemoveField }: any) {
   );
 }
 
-export function ContentModelForm({ onSubmit }: ContentModelFormProps) {
+export function ContentModelForm({ onSubmit, initialModel, initialFields }: ContentModelFormProps) {
   const { user } = useAuth();
   const [model, setModel] = useState<Omit<ContentModel, 'id'>>({
     name: '',
@@ -116,6 +118,22 @@ export function ContentModelForm({ onSubmit }: ContentModelFormProps) {
   });
 
   const [fields, setFields] = useState<Omit<ContentField, 'id'>[]>([]);
+
+  // Initialize form with initial data if provided
+  useEffect(() => {
+    if (initialModel) {
+      setModel({
+        name: initialModel.name,
+        slug: initialModel.slug,
+        description: initialModel.description || '',
+        tenant_id: initialModel.tenant_id,
+        settings: initialModel.settings,
+      });
+    }
+    if (initialFields) {
+      setFields(initialFields);
+    }
+  }, [initialModel, initialFields]);
 
   const handleAddField = () => {
     setFields([

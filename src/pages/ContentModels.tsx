@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
 import { ContentModel } from '@/features/content-models/types';
-import { createContentModel, createContentField, fetchContentModels } from '@/features/content-models/api/contentModelApi';
+import { createContentModel, createContentField, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
 import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
 import { toast } from 'sonner';
 
 const ContentModels: React.FC = () => {
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [models, setModels] = useState<ContentModel[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [editingModel, setEditingModel] = useState<ContentModel | null>(null);
+  const [editingFields, setEditingFields] = useState<any[]>([]);
 
   useEffect(() => {
     loadModels();
@@ -45,7 +47,9 @@ const ContentModels: React.FC = () => {
       );
 
       toast.success('コンテンツモデルを作成しました');
-      setShowCreateModal(false);
+      setShowModal(false);
+      setEditingModel(null);
+      setEditingFields([]);
       loadModels();
     } catch (error) {
       console.error('Error creating model:', error);
@@ -53,10 +57,17 @@ const ContentModels: React.FC = () => {
     }
   };
 
-  const handleEditModel = (model: ContentModel) => {
-    // Handle edit
-    console.log('Edit model:', model);
-    setActiveMenu(null);
+  const handleEditModel = async (model: ContentModel) => {
+    try {
+      const fields = await fetchContentFields(model.id);
+      setEditingModel(model);
+      setEditingFields(fields);
+      setShowModal(true);
+      setActiveMenu(null);
+    } catch (error) {
+      console.error('Error loading fields:', error);
+      toast.error('フィールドの読み込みに失敗しました');
+    }
   };
 
   const handleDeleteModel = (model: ContentModel) => {
@@ -82,6 +93,12 @@ const ContentModels: React.FC = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingModel(null);
+    setEditingFields([]);
+  };
+
   return (
     <div className="fade-in">
       <div className="flex justify-between items-center mb-6">
@@ -90,7 +107,7 @@ const ContentModels: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400">コンテンツの構造を定義・管理します</p>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => setShowModal(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
@@ -205,17 +222,23 @@ const ContentModels: React.FC = () => {
         </div>
       )}
 
-      {/* Create Modal */}
-      {showCreateModal && (
+      {/* Create/Edit Modal */}
+      {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
             className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setShowCreateModal(false)}
+            onClick={handleCloseModal}
           ></div>
           <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl m-4">
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-4">新規コンテンツモデル</h2>
-              <ContentModelForm onSubmit={handleCreateModel} />
+              <h2 className="text-xl font-bold mb-4">
+                {editingModel ? 'コンテンツモデルを編集' : '新規コンテンツモデル'}
+              </h2>
+              <ContentModelForm 
+                onSubmit={handleCreateModel} 
+                initialModel={editingModel}
+                initialFields={editingFields}
+              />
             </div>
           </div>
         </div>
