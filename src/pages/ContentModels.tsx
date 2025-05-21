@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
-import { ContentModel } from '@/features/content-models/types';
-import { createContentModel, createContentField, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
+import { ContentModel, ContentField } from '@/features/content-models/types';
+import { createContentModel, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
 import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
 import { toast } from 'sonner';
 
 const ContentModels: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [models, setModels] = useState<ContentModel[]>([]);
+  const [modelFields, setModelFields] = useState<Record<string, ContentField[]>>({});
   const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [editingModel, setEditingModel] = useState<ContentModel | null>(null);
-  const [editingFields, setEditingFields] = useState<any[]>([]);
+  const [editingFields, setEditingFields] = useState<ContentField[]>([]);
 
   useEffect(() => {
     loadModels();
@@ -22,6 +23,14 @@ const ContentModels: React.FC = () => {
       setLoading(true);
       const data = await fetchContentModels();
       setModels(data);
+
+      // Fetch fields for each model
+      const fieldsPromises = data.map(model => 
+        fetchContentFields(model.id).then(fields => [model.id, fields])
+      );
+      const fieldsData = await Promise.all(fieldsPromises);
+      const fieldsMap = Object.fromEntries(fieldsData);
+      setModelFields(fieldsMap);
     } catch (error) {
       console.error('Error loading models:', error);
       toast.error('モデルの読み込みに失敗しました');
@@ -32,20 +41,10 @@ const ContentModels: React.FC = () => {
 
   const handleCreateModel = async (
     model: Omit<ContentModel, 'id'>,
-    fields: any[]
+    fields: Omit<ContentField, 'id' | 'model_id'>[]
   ) => {
     try {
-      const createdModel = await createContentModel(model);
-      
-      await Promise.all(
-        fields.map(field =>
-          createContentField({
-            ...field,
-            model_id: createdModel.id,
-          })
-        )
-      );
-
+      await createContentModel(model, fields);
       toast.success('コンテンツモデルを作成しました');
       setShowModal(false);
       setEditingModel(null);
@@ -184,38 +183,25 @@ const ContentModels: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Example fields - replace with actual fields data */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
-                    {getFieldIcon('text')}
+                {modelFields[model.id]?.map(field => (
+                  <div key={field.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
+                      {getFieldIcon(field.type)}
+                    </div>
+                    <div>
+                      <p className="font-medium">{field.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {field.type} {field.required && '(必須)'}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">タイトル</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">text (必須)</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
-                    {getFieldIcon('text')}
-                  </div>
-                  <div>
-                    <p className="font-medium">本文</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">text (必須)</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
-                    {getFieldIcon('date')}
-                  </div>
-                  <div>
-                    <p className="font-medium">公開日</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">date (必須)</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                作成日: {new Date(model.created_at!).toLocaleDateString()} 更新日: {new Date(model.updated_at!).toLocaleDateString()} フィールド数: 5
+                作成日: {new Date(model.created_at!).toLocaleDateString()} 
+                更新日: {new Date(model.updated_at!).toLocaleDateString()} 
+                フィールド数: {modelFields[model.id]?.length || 0}
               </div>
             </div>
           ))}
