@@ -299,23 +299,6 @@ CREATE TABLE IF NOT EXISTS "public"."nexia_cms_tags" (
 
 ALTER TABLE "public"."nexia_cms_tags" OWNER TO "postgres";
 
-
-CREATE TABLE IF NOT EXISTS "public"."profiles" (
-    "id" "uuid" NOT NULL,
-    "name" "text" NOT NULL,
-    "email" "text" NOT NULL,
-    "avatar_url" "text",
-    "department" "text",
-    "title" "text",
-    "bio" "text",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"()
-);
-
-
-ALTER TABLE "public"."profiles" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."tenants" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -408,11 +391,6 @@ ALTER TABLE ONLY "public"."nexia_cms_tags"
 
 ALTER TABLE ONLY "public"."nexia_cms_tags"
     ADD CONSTRAINT "nexia_cms_tags_slug_key" UNIQUE ("slug");
-
-
-
-ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
 
 
 
@@ -535,10 +513,6 @@ CREATE OR REPLACE TRIGGER "update_nexia_cms_tags_updated_at" BEFORE UPDATE ON "p
 
 
 
-CREATE OR REPLACE TRIGGER "update_profiles_updated_at" BEFORE UPDATE ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."update_timestamp"();
-
-
-
 CREATE OR REPLACE TRIGGER "update_tenants_updated_at" BEFORE UPDATE ON "public"."tenants" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
 
 
@@ -603,11 +577,6 @@ ALTER TABLE ONLY "public"."nexia_cms_entries"
 
 
 
-ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
 ALTER TABLE ONLY "public"."user_tenants"
     ADD CONSTRAINT "user_tenants_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE CASCADE;
 
@@ -635,10 +604,6 @@ CREATE POLICY "Authenticated users can view content types" ON "public"."nexia_cm
 
 
 CREATE POLICY "Enable all operations for authenticated users" ON "public"."nexia_cms_content_models" TO "authenticated" USING (true) WITH CHECK (true);
-
-
-
-CREATE POLICY "Profiles are viewable by everyone" ON "public"."profiles" FOR SELECT USING (true);
 
 
 
@@ -671,10 +636,6 @@ CREATE POLICY "Users can read tags within their tenant" ON "public"."nexia_cms_t
 
 
 CREATE POLICY "Users can update their own contents" ON "public"."nexia_cms_contents" FOR UPDATE TO "authenticated" USING (("author_id" = "auth"."uid"())) WITH CHECK (("author_id" = "auth"."uid"()));
-
-
-
-CREATE POLICY "Users can update their own profile" ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id")) WITH CHECK (("auth"."uid"() = "id"));
 
 
 
@@ -747,9 +708,6 @@ ALTER TABLE "public"."nexia_cms_entries" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."nexia_cms_tags" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."tenants" ENABLE ROW LEVEL SECURITY;
@@ -1879,12 +1837,6 @@ GRANT ALL ON TABLE "public"."nexia_cms_entries" TO "service_role";
 GRANT ALL ON TABLE "public"."nexia_cms_tags" TO "anon";
 GRANT ALL ON TABLE "public"."nexia_cms_tags" TO "authenticated";
 GRANT ALL ON TABLE "public"."nexia_cms_tags" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."profiles" TO "anon";
-GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
-GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 

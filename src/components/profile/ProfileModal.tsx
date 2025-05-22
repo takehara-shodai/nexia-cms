@@ -56,7 +56,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         }
 
         const { data, error } = await supabase
-          .from('profiles')
+          .from('users')
           .select('*')
           .eq('id', user.id)
           .single();
@@ -105,7 +105,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      const { error } = await supabase.from('profiles').upsert({
+      const { error } = await supabase.from('users').upsert({
         ...profile,
         updated_at: new Date().toISOString(),
       });
