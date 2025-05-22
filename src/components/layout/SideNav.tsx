@@ -77,7 +77,8 @@ const SideNav = ({
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/login');
+    // ページの完全なリロードでセッションを確実にクリア
+    window.location.href = '/login';
   };
 
   const showLogoutConfirmation = () => {

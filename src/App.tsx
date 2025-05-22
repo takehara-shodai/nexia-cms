@@ -21,6 +21,7 @@ import IntegrationsManagement from '@/pages/IntegrationsManagement';
 import AnalyticsManagement from '@/pages/AnalyticsManagement';
 import SettingsManagement from '@/pages/SettingsManagement';
 import LocalizationManagement from '@/pages/LocalizationManagement';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -30,7 +31,11 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Layout />}>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }>
               <Route index element={<Dashboard />} />
               <Route path="content" element={<ContentList />} />
               <Route path="content/:id" element={<ContentDetail />} />

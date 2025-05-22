@@ -311,4 +311,23 @@ INSERT INTO "public"."role_tenants" ("role_id", "tenant_id", "created_at") VALUE
 -- PostgreSQL database dump complete
 --
 
+-- コンテンツモデルのサンプルデータを追加
+INSERT INTO public.nexia_cms_content_models (id, tenant_id, name, slug, description, settings, created_at, updated_at)
+VALUES 
+  ('c1b0c2d3-e4f5-4a7b-8c9d-0e1f2a3b4c5d', '00000000-0000-0000-0000-000000000000', 'ブログ記事', 'blog-post', 'ブログ記事用のコンテンツモデル', '{}', '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('d2c3d4e5-f6a7-4b9c-9d1e-2f3a4b5c6d7e', '00000000-0000-0000-0000-000000000000', 'ページ', 'page', '静的ページ用のコンテンツモデル', '{}', '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('e3d4e5f6-a7b8-4cd0-a1f2-a3b4c5d6e7f8', '11111111-1111-1111-1111-111111111111', 'プロダクト', 'product', '製品情報用のコンテンツモデル', '{}', '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00');
+
+-- コンテンツフィールドのサンプルデータを追加
+INSERT INTO public.nexia_cms_content_fields (model_id, name, type, required, settings, order_position, created_at, updated_at)
+VALUES
+  ('c1b0c2d3-e4f5-4a7b-8c9d-0e1f2a3b4c5d', 'タイトル', 'text', true, '{}', 0, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('c1b0c2d3-e4f5-4a7b-8c9d-0e1f2a3b4c5d', '内容', 'richtext', true, '{}', 1, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('c1b0c2d3-e4f5-4a7b-8c9d-0e1f2a3b4c5d', '概要', 'text', false, '{}', 2, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('d2c3d4e5-f6a7-4b9c-9d1e-2f3a4b5c6d7e', 'タイトル', 'text', true, '{}', 0, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('d2c3d4e5-f6a7-4b9c-9d1e-2f3a4b5c6d7e', '内容', 'richtext', true, '{}', 1, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('e3d4e5f6-a7b8-4cd0-a1f2-a3b4c5d6e7f8', '製品名', 'text', true, '{}', 0, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('e3d4e5f6-a7b8-4cd0-a1f2-a3b4c5d6e7f8', '説明', 'richtext', true, '{}', 1, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00'),
+  ('e3d4e5f6-a7b8-4cd0-a1f2-a3b4c5d6e7f8', '価格', 'number', true, '{}', 2, '2025-05-22 10:00:00+00', '2025-05-22 10:00:00+00');
+
 RESET ALL;
