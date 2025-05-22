@@ -1,4 +1,4 @@
-import { ToastType } from '@/shared/ui/molecules/Toast';
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface Toast {
   id: string;
