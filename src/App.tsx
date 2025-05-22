@@ -21,7 +21,7 @@ import IntegrationsManagement from '@/pages/IntegrationsManagement';
 import AnalyticsManagement from '@/pages/AnalyticsManagement';
 import SettingsManagement from '@/pages/SettingsManagement';
 import LocalizationManagement from '@/pages/LocalizationManagement';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/features/auth/ui/ProtectedRoute';
 import './App.css';
 
 function App() {
