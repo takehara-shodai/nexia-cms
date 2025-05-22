@@ -1,4 +1,4 @@
-import ActivityItem, { ActivityItemProps } from '@/components/dashboard/ActivityItem';
+import ActivityItem, { ActivityItemProps } from '@/shared/ui/molecules/ActivityItem';
 
 type ActivityLogProps = {
   activities: ActivityItemProps[];
@@ -24,18 +24,8 @@ const ActivityLog = ({ activities, title }: ActivityLogProps) => {
             />
           ))
         ) : (
-          <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-            アクティビティはありません
-          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 p-4">No activities found.</p>
         )}
-      </div>
-      <div className="px-6 py-3 bg-gray-50 dark:bg-gray-750 border-t border-gray-200 dark:border-gray-700">
-        <a
-          href="#"
-          className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
-        >
-          すべてのアクティビティを表示
-        </a>
       </div>
     </div>
   );

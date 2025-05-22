@@ -19,27 +19,19 @@ const StatCard = ({ title, value, icon, change, bgColor, textColor }: StatCardPr
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-            <h2 className="text-2xl font-bold">{value}</h2>
+            <p className="text-2xl font-bold" style={{ color: textColor }}>{value}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {icon}
             {change && (
-              <div className="flex items-center mt-1">
-                <span
-                  className={`text-xs font-medium ${
-                    change.isPositive
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}
-                >
-                  {change.isPositive ? '↑ ' : '↓ '}
-                  {change.value}
-                </span>
-              </div>
+              <span
+                className={`text-sm font-medium ${change.isPositive ? 'text-green-500' : 'text-red-500'}`}
+              >
+                {change.value}
+              </span>
             )}
           </div>
-          <div className={`rounded-full p-3 ${bgColor} ${textColor}`}>{icon}</div>
         </div>
-      </div>
-      <div className="h-1 w-full bg-gray-100 dark:bg-gray-700">
-        <div className={`h-full ${bgColor.replace('bg-', 'bg-opacity-70 ')} w-3/4`}></div>
       </div>
     </div>
   );

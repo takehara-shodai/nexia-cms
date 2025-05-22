@@ -15,7 +15,7 @@ import {
   Edit,
   MoreVertical,
 } from 'lucide-react';
-import UploadModal from '@/components/upload/UploadModal';
+import UploadModal from '@/shared/ui/organisms/UploadModal';
 
 interface MediaItem {
   id: string;

@@ -13,13 +13,13 @@ import {
 import { useTheme } from '@/shared/contexts/theme';
 import { useModal } from '@/shared/contexts/modal';
 import { supabase } from '@/lib/supabase';
-import ProfileModal from '@/components/profile/ProfileModal';
+import ProfileModal from '@/features/user/ui/ProfileModal';
 
 interface TopBarProps {
   onMenuClick: () => void;
 }
 
-const TopBar = ({ onMenuClick }: TopBarProps) => {
+export const TopBar = ({ onMenuClick }: TopBarProps) => {
   const { theme, toggleTheme } = useTheme();
   const { showModal, hideModal } = useModal();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -174,5 +174,3 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
     </>
   );
 };
-
-export default TopBar;

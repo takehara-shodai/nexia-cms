@@ -9,7 +9,7 @@ interface ModalProps {
   footer?: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer }) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer }) => {
   if (!isOpen) return null;
 
   return (

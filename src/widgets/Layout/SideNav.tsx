@@ -24,7 +24,7 @@ type SideNavProps = {
   onCollapsedChange: (collapsed: boolean) => void;
 };
 
-const SideNav = ({
+export const SideNav = ({
   mode: _mode,
   isOpen = true,
   onClose,
@@ -302,5 +302,3 @@ const SideNav = ({
     </div>
   );
 };
-
-export default SideNav;

@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '@/components/common/Modal';
+import { Modal } from '@/shared/ui/organisms/Modal';
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -7,7 +7,7 @@ interface LogoutModalProps {
   onConfirm: () => void;
 }
 
-const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm }) => {
+export const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -34,5 +34,3 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm })
     </Modal>
   );
 };
-
-export default LogoutModal;

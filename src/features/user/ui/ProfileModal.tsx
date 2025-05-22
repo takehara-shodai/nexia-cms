@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
-import Modal from '@/components/common/Modal';
+import Modal from '@/shared/ui/organisms/Modal';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         setIsLoading(true);
         setError(null);
 
-        // First check if we have a valid session
         const {
           data: { session },
           error: sessionError,

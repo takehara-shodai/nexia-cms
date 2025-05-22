@@ -1,44 +1,44 @@
 import React from 'react';
-import StatCard from '@/components/dashboard/StatCard';
-import ActivityLog from '@/components/dashboard/ActivityLog';
-import MetricChart from '@/components/dashboard/MetricChart';
-import SystemStatusCard from '@/components/dashboard/SystemStatusCard';
-import { FileText, Users, Server, Zap, _Globe, _Database } from 'lucide-react';
-import { ActivityItemProps } from '@/components/dashboard/ActivityItem';
+import StatCard from '@/shared/ui/molecules/StatCard';
+import ActivityLog from '@/shared/ui/organisms/ActivityLog';
+import MetricChart from '@/shared/ui/organisms/MetricChart';
+import SystemStatusCard from '@/shared/ui/organisms/SystemStatusCard';
+import { FileText, Users, Server, Zap, Globe, Database } from 'lucide-react';
+import { ActivityItemProps } from '@/shared/ui/molecules/ActivityItem';
 
 const Dashboard: React.FC = () => {
   // Activity log data
   const recentActivities: ActivityItemProps[] = [
     {
-      user: { name: '山田太郎', initial: 'Y' },
+      user: { name: '山田太郎' },
       action: 'が記事を公開しました:',
       target: '2024年の最新トレンド',
       time: '15分前',
-      status: 'success',
+      status: 'pending',
     },
     {
-      user: { name: '佐藤花子', initial: 'S' },
+      user: { name: '佐藤花子' },
       action: 'がメディアをアップロードしました:',
       target: 'hero-image.jpg',
       time: '30分前',
-      status: 'info',
+      status: 'pending',
     },
     {
-      user: { name: '鈴木一郎', initial: 'S' },
+      user: { name: '鈴木一郎' },
       action: 'がユーザーを追加しました:',
       target: '田中次郎',
       time: '1時間前',
-      status: 'info',
+      status: 'error',
     },
     {
-      user: { name: 'システム', initial: 'S' },
+      user: { name: 'システム' },
       action: 'がバックアップを完了しました:',
       target: 'daily-backup-20240610',
       time: '3時間前',
       status: 'success',
     },
     {
-      user: { name: '高橋悠', initial: 'T' },
+      user: { name: '高橋悠' },
       action: 'のAPIリクエストが制限を超えました:',
       target: '/api/content',
       time: '5時間前',
@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
     { name: 'CMS サービス', status: 'online' },
     { name: 'API サービス', status: 'online' },
     { name: 'メディアストレージ', status: 'online' },
-    { name: 'データベース', status: 'warning', details: '高負荷' },
+    { name: 'データベース', status: 'maintenance', details: '高負荷' },
     { name: 'バックアップサービス', status: 'online' },
   ];
 

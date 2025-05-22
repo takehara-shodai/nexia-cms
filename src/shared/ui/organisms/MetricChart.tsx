@@ -20,11 +20,7 @@ const MetricChart = ({ title, description, height = 300, children }: MetricChart
         {children ? (
           children
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-750 rounded border border-dashed border-gray-300 dark:border-gray-600">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              チャートデータがここに表示されます
-            </p>
-          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">No data available.</p>
         )}
       </div>
     </div>

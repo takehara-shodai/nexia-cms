@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import SideNav from '@/components/layout/SideNav';
-import TopBar from '@/components/layout/TopBar';
-import Footer from '@/components/layout/Footer';
+import { SideNav } from '@/widgets/Layout/SideNav';
+import { TopBar } from '@/widgets/Layout/TopBar';
+import { Footer } from '@/widgets/Layout/Footer';
 
-function Layout() {
+export const Layout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -53,6 +53,4 @@ function Layout() {
       </div>
     </div>
   );
-}
-
-export default Layout;
+};

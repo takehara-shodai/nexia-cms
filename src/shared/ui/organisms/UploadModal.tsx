@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import FileUpload from '@/components/upload/FileUpload';
+import FileUpload from '@/shared/ui/molecules/FileUpload';
 
 type UploadModalProps = {
   isOpen: boolean;
@@ -24,27 +24,7 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
           </button>
         </div>
         <div className="p-4">
-          <FileUpload
-            onFilesSelected={onUpload}
-            accept="image/*"
-            multiple={true}
-            maxSize={5 * 1024 * 1024} // 5MB
-            maxFiles={10}
-          />
-        </div>
-        <div className="flex justify-end gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
-            キャンセル
-          </button>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            完了
-          </button>
+          <FileUpload onFilesSelected={onUpload} />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback } from 'react';
-import Modal from '@/components/common/Modal';
+import Modal from '@/shared/ui/organisms/Modal';
 import { ModalProps, ModalContextType } from './types';
 
 export const ModalContext = createContext<ModalContextType | undefined>(undefined);
