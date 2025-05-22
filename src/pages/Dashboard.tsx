@@ -3,7 +3,7 @@ import StatCard from '@/shared/ui/molecules/StatCard';
 import ActivityLog from '@/shared/ui/organisms/ActivityLog';
 import MetricChart from '@/shared/ui/organisms/MetricChart';
 import SystemStatusCard from '@/shared/ui/organisms/SystemStatusCard';
-import { FileText, Users, Server, Zap, Globe, Database } from 'lucide-react';
+import { FileText, Users, Server, Zap } from 'lucide-react';
 import { ActivityItemProps } from '@/shared/ui/molecules/ActivityItem';
 
 const Dashboard: React.FC = () => {
@@ -47,7 +47,11 @@ const Dashboard: React.FC = () => {
   ];
 
   // System status data
-  const systemStatuses = [
+  const systemStatuses: {
+    name: string;
+    status: 'online' | 'maintenance' | 'error' | 'warning';
+    details?: string;
+  }[] = [
     { name: 'CMS サービス', status: 'online' },
     { name: 'API サービス', status: 'online' },
     { name: 'メディアストレージ', status: 'online' },

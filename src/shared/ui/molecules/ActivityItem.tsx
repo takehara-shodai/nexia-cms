@@ -6,7 +6,7 @@ export interface ActivityItemProps {
   action: string;
   target: string;
   time: string;
-  status?: 'success' | 'error' | 'pending';
+  status?: 'success' | 'error' | 'pending' | 'warning';
 }
 
 const ActivityItem = ({ user, action, target, time, status }: ActivityItemProps) => {
@@ -14,6 +14,7 @@ const ActivityItem = ({ user, action, target, time, status }: ActivityItemProps)
     success: 'text-green-600 dark:text-green-400',
     error: 'text-red-600 dark:text-red-400',
     pending: 'text-yellow-600 dark:text-yellow-400',
+    warning: 'text-orange-600 dark:text-orange-400',
   };
 
   return (
