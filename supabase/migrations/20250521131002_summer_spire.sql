@@ -24,8 +24,9 @@ WITH CHECK (
   tenant_id IS NOT NULL AND
   EXISTS (
     SELECT 1 
-    FROM nexia_cms_user_tenants
-    WHERE nexia_cms_user_tenants.tenant_id = nexia_cms_content_models.tenant_id
-    AND nexia_cms_user_tenants.user_id = auth.uid()
+    -- FROM nexia_cms_user_tenants
+    FROM user_tenants
+    WHERE user_tenants.tenant_id = nexia_cms_content_models.tenant_id
+    AND user_tenants.user_id = auth.uid()
   )
 );

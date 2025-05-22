@@ -262,7 +262,7 @@ CREATE OR REPLACE TRIGGER "update_nexia_cms_content_types_updated_at" BEFORE UPD
 CREATE OR REPLACE TRIGGER "update_nexia_cms_contents_updated_at" BEFORE UPDATE ON "public"."nexia_cms_contents" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
 
 
-
+DROP TRIGGER IF EXISTS "update_nexia_cms_tags_updated_at" ON "public"."nexia_cms_tags";
 CREATE OR REPLACE TRIGGER "update_nexia_cms_tags_updated_at" BEFORE UPDATE ON "public"."nexia_cms_tags" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
 
 

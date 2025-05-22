@@ -1,3 +1,41 @@
+-- このマイグレーションでは、既存のテーブル構造を修正し、足りないテーブルを作成します
+
+-- まず、nexia_cms_tags テーブルに足りないカラムを追加します
+DO $$
+BEGIN
+    -- 'slug' カラムがなければ追加
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'nexia_cms_tags' 
+        AND column_name = 'slug'
+    ) THEN
+        ALTER TABLE public.nexia_cms_tags ADD COLUMN slug TEXT UNIQUE;
+    END IF;
+
+    -- 'description' カラムがなければ追加
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'nexia_cms_tags' 
+        AND column_name = 'description'
+    ) THEN
+        ALTER TABLE public.nexia_cms_tags ADD COLUMN description TEXT;
+    END IF;
+
+    -- 'updated_at' カラムがなければ追加
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'nexia_cms_tags' 
+        AND column_name = 'updated_at'
+    ) THEN
+        ALTER TABLE public.nexia_cms_tags ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
+    END IF;
+END
+$$;
+
+-- 続いて、テナント関連のテーブルを作成します
 -- Create tenants table if not exists
 CREATE TABLE IF NOT EXISTS public.tenants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -22,8 +60,11 @@ CREATE TABLE IF NOT EXISTS public.user_tenants (
 ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_tenants ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Users can view their tenants" ON public.tenants;
+DROP POLICY IF EXISTS "Users can view their tenant memberships" ON public.user_tenants;
+
+-- Create policies
 CREATE POLICY "Users can view their tenants"
   ON public.tenants
   FOR SELECT
@@ -36,7 +77,6 @@ CREATE POLICY "Users can view their tenants"
     )
   );
 
-DROP POLICY IF EXISTS "Users can view their tenant memberships" ON public.user_tenants;
 CREATE POLICY "Users can view their tenant memberships"
   ON public.user_tenants
   FOR SELECT
@@ -78,3 +118,21 @@ WHERE NOT EXISTS (
   WHERE user_id = auth.users.id
 )
 ON CONFLICT DO NOTHING;
+
+-- インデックスを追加します（関連カラムが存在する場合のみ）
+DROP INDEX IF EXISTS idx_tags_tenant_id;
+CREATE INDEX IF NOT EXISTS idx_tags_tenant_id ON public.nexia_cms_tags(tenant_id);
+
+DROP INDEX IF EXISTS idx_tags_slug;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'nexia_cms_tags' 
+        AND column_name = 'slug'
+    ) THEN
+        EXECUTE 'CREATE INDEX IF NOT EXISTS idx_tags_slug ON public.nexia_cms_tags(slug)';
+    END IF;
+END
+$$;

@@ -66,11 +66,13 @@ ALTER TABLE public.nexia_cms_contents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nexia_cms_content_tags ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for content statuses
+DROP POLICY IF EXISTS "Anyone can read content statuses" ON public.nexia_cms_content_statuses;
 CREATE POLICY "Anyone can read content statuses" 
     ON public.nexia_cms_content_statuses FOR SELECT 
     USING (true);
 
 -- Create policies for content types
+DROP POLICY IF EXISTS "Authenticated users can view content types" ON public.nexia_cms_content_types;
 CREATE POLICY "Authenticated users can view content types" 
     ON public.nexia_cms_content_types FOR SELECT 
     TO authenticated 

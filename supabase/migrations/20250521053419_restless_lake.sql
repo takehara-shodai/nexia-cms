@@ -65,7 +65,8 @@ CREATE POLICY "Users can delete their tenant's tags"
     TO authenticated
     USING (tenant_id = auth.uid());
 
--- Create updated_at trigger
+-- Create updated_at trigger (with IF NOT EXISTS check)
+DROP TRIGGER IF EXISTS update_nexia_cms_tags_updated_at ON public.nexia_cms_tags;
 CREATE TRIGGER update_nexia_cms_tags_updated_at
     BEFORE UPDATE ON public.nexia_cms_tags
     FOR EACH ROW
@@ -83,11 +84,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create trigger to auto-generate slug
+DROP TRIGGER IF EXISTS set_tag_slug ON public.nexia_cms_tags;
 CREATE TRIGGER set_tag_slug
     BEFORE INSERT OR UPDATE ON public.nexia_cms_tags
     FOR EACH ROW
     EXECUTE FUNCTION generate_tag_slug();
 
--- Add indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_tags_tenant_id ON public.nexia_cms_tags(tenant_id);
-CREATE INDEX IF NOT EXISTS idx_tags_slug ON public.nexia_cms_tags(slug);
+-- Indexes are moved to a later migration
+-- to ensure columns exist first

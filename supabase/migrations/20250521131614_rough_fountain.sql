@@ -29,7 +29,8 @@ TO authenticated
 WITH CHECK (
   tenant_id IN (
     SELECT tenant_id 
-    FROM nexia_cms_user_tenants 
+    -- FROM nexia_cms_user_tenants 
+    FROM user_tenants
     WHERE user_id = auth.uid()
   )
 );
@@ -41,7 +42,8 @@ TO authenticated
 USING (
   tenant_id IN (
     SELECT tenant_id 
-    FROM nexia_cms_user_tenants 
+    -- FROM nexia_cms_user_tenants 
+    FROM user_tenants
     WHERE user_id = auth.uid()
   )
 );
@@ -53,7 +55,8 @@ TO authenticated
 USING (
   tenant_id IN (
     SELECT tenant_id 
-    FROM nexia_cms_user_tenants 
+    -- FROM nexia_cms_user_tenants
+    FROM user_tenants 
     WHERE user_id = auth.uid()
   )
 )

@@ -34,13 +34,14 @@ CREATE TABLE IF NOT EXISTS public.tenants (
 );
 
 -- Create user-tenant junction table
-CREATE TABLE IF NOT EXISTS public.nexia_cms_user_tenants (
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
-    role TEXT NOT NULL DEFAULT 'member',
-    created_at TIMESTAMPTZ DEFAULT now(),
-    PRIMARY KEY (user_id, tenant_id)
-);
+-- NOTE: This table is no longer needed, we use the user_tenants table instead
+-- CREATE TABLE IF NOT EXISTS public.nexia_cms_user_tenants (
+--     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+--     tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
+--     role TEXT NOT NULL DEFAULT 'member',
+--     created_at TIMESTAMPTZ DEFAULT now(),
+--     PRIMARY KEY (user_id, tenant_id)
+-- );
 
 -- Create content models table
 CREATE TABLE IF NOT EXISTS public.nexia_cms_content_models (
@@ -99,7 +100,7 @@ CREATE TABLE IF NOT EXISTS public.nexia_cms_assets (
 
 -- Enable RLS
 ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.nexia_cms_user_tenants ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE public.nexia_cms_user_tenants ENABLE ROW LEVEL SECURITY; -- No longer needed
 ALTER TABLE public.nexia_cms_content_models ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nexia_cms_content_fields ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nexia_cms_entries ENABLE ROW LEVEL SECURITY;
@@ -109,20 +110,23 @@ ALTER TABLE public.nexia_cms_assets ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their tenants" ON public.tenants
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM public.nexia_cms_user_tenants
+            -- SELECT 1 FROM public.nexia_cms_user_tenants
+            SELECT 1 FROM public.user_tenants -- Use user_tenants instead
             WHERE tenant_id = id AND user_id = auth.uid()
         )
     );
 
 -- Create policies for user_tenants
-CREATE POLICY "Users can view their tenant memberships" ON public.nexia_cms_user_tenants
-    FOR SELECT USING (user_id = auth.uid());
+-- Policy moved to the user_tenants table
+-- CREATE POLICY "Users can view their tenant memberships" ON public.nexia_cms_user_tenants
+--    FOR SELECT USING (user_id = auth.uid());
 
 -- Create policies for content models
 CREATE POLICY "Users can view content models of their tenants" ON public.nexia_cms_content_models
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM public.nexia_cms_user_tenants
+            -- SELECT 1 FROM public.nexia_cms_user_tenants
+            SELECT 1 FROM public.user_tenants
             WHERE tenant_id = tenant_id AND user_id = auth.uid()
         )
     );
@@ -132,7 +136,8 @@ CREATE POLICY "Users can view content fields of their tenants" ON public.nexia_c
     FOR SELECT USING (
         EXISTS (
             SELECT 1 FROM public.nexia_cms_content_models cm
-            JOIN public.nexia_cms_user_tenants ut ON ut.tenant_id = cm.tenant_id
+            -- JOIN public.nexia_cms_user_tenants ut ON ut.tenant_id = cm.tenant_id
+            JOIN public.user_tenants ut ON ut.tenant_id = cm.tenant_id
             WHERE cm.id = model_id AND ut.user_id = auth.uid()
         )
     );
@@ -142,7 +147,8 @@ CREATE POLICY "Users can view entries of their tenants" ON public.nexia_cms_entr
     FOR SELECT USING (
         EXISTS (
             SELECT 1 FROM public.nexia_cms_content_models cm
-            JOIN public.nexia_cms_user_tenants ut ON ut.tenant_id = cm.tenant_id
+            -- JOIN public.nexia_cms_user_tenants ut ON ut.tenant_id = cm.tenant_id
+            JOIN public.user_tenants ut ON ut.tenant_id = cm.tenant_id
             WHERE cm.id = model_id AND ut.user_id = auth.uid()
         )
     );
@@ -151,7 +157,8 @@ CREATE POLICY "Users can view entries of their tenants" ON public.nexia_cms_entr
 CREATE POLICY "Users can view assets of their tenants" ON public.nexia_cms_assets
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM public.nexia_cms_user_tenants
+            -- SELECT 1 FROM public.nexia_cms_user_tenants
+            SELECT 1 FROM public.user_tenants
             WHERE tenant_id = tenant_id AND user_id = auth.uid()
         )
     );
@@ -165,27 +172,32 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_tenants_updated_at ON public.tenants;
 CREATE TRIGGER update_tenants_updated_at
     BEFORE UPDATE ON public.tenants
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+DROP TRIGGER IF EXISTS update_content_models_updated_at ON public.nexia_cms_content_models;
 CREATE TRIGGER update_content_models_updated_at
     BEFORE UPDATE ON public.nexia_cms_content_models
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+DROP TRIGGER IF EXISTS update_content_fields_updated_at ON public.nexia_cms_content_fields;
 CREATE TRIGGER update_content_fields_updated_at
     BEFORE UPDATE ON public.nexia_cms_content_fields
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+DROP TRIGGER IF EXISTS update_entries_updated_at ON public.nexia_cms_entries;
 CREATE TRIGGER update_entries_updated_at
     BEFORE UPDATE ON public.nexia_cms_entries
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- Create indexes for better query performance
-CREATE INDEX idx_user_tenants_user_id ON public.nexia_cms_user_tenants(user_id);
-CREATE INDEX idx_user_tenants_tenant_id ON public.nexia_cms_user_tenants(tenant_id);
-CREATE INDEX idx_content_models_tenant_id ON public.nexia_cms_content_models(tenant_id);
-CREATE INDEX idx_content_fields_model_id ON public.nexia_cms_content_fields(model_id);
-CREATE INDEX idx_entries_model_id ON public.nexia_cms_entries(model_id);
-CREATE INDEX idx_assets_tenant_id ON public.nexia_cms_assets(tenant_id);
-CREATE INDEX idx_assets_entry_id ON public.nexia_cms_assets(entry_id);
+-- Indexes for nexia_cms_user_tenants are no longer needed
+-- CREATE INDEX IF NOT EXISTS idx_user_tenants_user_id ON public.nexia_cms_user_tenants(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_user_tenants_tenant_id ON public.nexia_cms_user_tenants(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_content_models_tenant_id ON public.nexia_cms_content_models(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_content_fields_model_id ON public.nexia_cms_content_fields(model_id);
+CREATE INDEX IF NOT EXISTS idx_entries_model_id ON public.nexia_cms_entries(model_id);
+CREATE INDEX IF NOT EXISTS idx_assets_tenant_id ON public.nexia_cms_assets(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_assets_entry_id ON public.nexia_cms_assets(entry_id);
