@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
 import { ContentModel, ContentField } from '@/features/content-models/types';
-import { createContentModel, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
+import { createContentModel, updateContentModel, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
 import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
 import { toast } from 'sonner';
 
@@ -39,20 +39,25 @@ const ContentModels: React.FC = () => {
     }
   };
 
-  const handleCreateModel = async (
+  const handleSaveModel = async (
     model: Omit<ContentModel, 'id'>,
     fields: Omit<ContentField, 'id' | 'model_id'>[]
   ) => {
     try {
-      await createContentModel(model, fields);
-      toast.success('コンテンツモデルを作成しました');
+      if (editingModel) {
+        await updateContentModel(editingModel.id, model, fields);
+        toast.success('コンテンツモデルを更新しました');
+      } else {
+        await createContentModel(model, fields);
+        toast.success('コンテンツモデルを作成しました');
+      }
       setShowModal(false);
       setEditingModel(null);
       setEditingFields([]);
       loadModels();
     } catch (error) {
-      console.error('Error creating model:', error);
-      toast.error('コンテンツモデルの作成に失敗しました');
+      console.error('Error saving model:', error);
+      toast.error('コンテンツモデルの保存に失敗しました');
     }
   };
 
@@ -221,7 +226,7 @@ const ContentModels: React.FC = () => {
                 {editingModel ? 'コンテンツモデルを編集' : '新規コンテンツモデル'}
               </h2>
               <ContentModelForm 
-                onSubmit={handleCreateModel} 
+                onSubmit={handleSaveModel} 
                 initialModel={editingModel}
                 initialFields={editingFields}
               />
