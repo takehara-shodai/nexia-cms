@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -10,10 +10,17 @@ import { Plus, GripVertical, Settings, Trash } from 'lucide-react';
 import { ContentModel, ContentField, FieldType } from '../types';
 import { useAuth } from '@/shared/hooks/useAuth';
 
+export interface FormControlHandle {
+  addField: () => void;
+  getFormData: () => { model: Omit<ContentModel, 'id'>; fields: Omit<ContentField, 'id'>[] };
+  submit: () => void;
+}
+
 interface ContentModelFormProps {
   onSubmit: (model: Omit<ContentModel, 'id'>, fields: Omit<ContentField, 'id'>[]) => Promise<void>;
   initialModel?: ContentModel | null;
   initialFields?: Omit<ContentField, 'id'>[];
+  formRef?: React.RefObject<FormControlHandle>;
 }
 
 function SortableField({ field, index, onFieldChange, onRemoveField }: any) {
@@ -107,8 +114,11 @@ function SortableField({ field, index, onFieldChange, onRemoveField }: any) {
   );
 }
 
-export function ContentModelForm({ onSubmit, initialModel, initialFields }: ContentModelFormProps) {
+export function ContentModelForm({ onSubmit, initialModel, initialFields, formRef }: ContentModelFormProps) {
   const { user } = useAuth();
+  // 内部用のフォーム要素参照
+  const internalFormRef = React.useRef<HTMLFormElement>(null);
+  
   const [model, setModel] = useState<Omit<ContentModel, 'id'>>({
     name: '',
     slug: '',
@@ -135,19 +145,47 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields }: Cont
     }
   }, [initialModel, initialFields]);
 
-  const handleAddField = () => {
-    setFields([
-      ...fields,
+  // 外部からアクセスできるようにする
+  const handleAddField = useCallback(() => {
+    setFields(prevFields => [
+      ...prevFields,
       {
         name: '',
         type: 'text',
         required: false,
         settings: {},
-        order_position: fields.length,
+        order_position: prevFields.length,
         model_id: '', // Will be set after model creation
       },
     ]);
-  };
+  }, []);
+
+  // handleSubmit関数を先に定義
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onSubmit(model, fields);
+  }, [onSubmit, model, fields]);
+
+  // フォームのコントローラーを外部に公開
+  React.useImperativeHandle(
+    formRef,
+    () => ({
+      addField: handleAddField,
+      getFormData: () => ({ model, fields }),
+      submit: () => {
+        if (internalFormRef.current) {
+          // HTMLFormElement.submit()メソッドはフォームのsubmitイベントを発火しないため
+          // 代わりにカスタムsubmitイベントを作成して発火する
+          const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
+          internalFormRef.current.dispatchEvent(submitEvent);
+        } else {
+          // フォーム要素が取得できない場合は直接onSubmitを呼び出す
+          onSubmit(model, fields);
+        }
+      }
+    }),
+    [handleAddField, model, fields, onSubmit]
+  );
 
   const handleFieldChange = (index: number, field: Partial<ContentField>) => {
     setFields(fields.map((f, i) => (i === index ? { ...f, ...field } : f)));
@@ -178,13 +216,8 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields }: Cont
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onSubmit(model, fields);
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={internalFormRef} onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="name">モデル名</Label>
@@ -200,11 +233,12 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields }: Cont
           <Label htmlFor="slug">スラッグ</Label>
           <Input
             id="slug"
-            value={model.slug}
+            value={model.slug || ''}
             onChange={e => setModel({ ...model, slug: e.target.value })}
             placeholder="例: blog-posts"
-            required
+            // required属性を削除
           />
+          <p className="text-xs text-gray-500 mt-1">任意項目です。空のままにするとスラッグなしで保存されます</p>
         </div>
       </div>
 
@@ -243,12 +277,7 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields }: Cont
           </SortableContext>
         </DndContext>
       </div>
-
-      <div className="flex justify-end gap-2">
-        <Button type="submit" variant="primaryFilled">
-          保存
-        </Button>
-      </div>
+      {/* 保存ボタンを削除 - フッターに移動 */}
     </form>
   );
 }

@@ -3,6 +3,42 @@ DROP POLICY IF EXISTS "Allow all for authenticated users" ON public.user_tenants
 DROP POLICY IF EXISTS "Allow all for authenticated users on content models" ON public.nexia_cms_content_models;
 DROP POLICY IF EXISTS "Allow all for authenticated users on content fields" ON public.nexia_cms_content_fields;
 
+-- user_tenants テーブルの既存ポリシーをすべて削除
+DROP POLICY IF EXISTS "Users can view own tenant memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can view tenant user memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can insert tenant user memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can update tenant user memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can delete tenant user memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Users can view their own tenant memberships fixed" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can view tenant memberships" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can manage user_tenants" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can update user_tenants" ON public.user_tenants;
+DROP POLICY IF EXISTS "Admins can delete user_tenants" ON public.user_tenants;
+
+-- 無限再帰を防ぐためのヘルパー関数を作成
+CREATE OR REPLACE FUNCTION public.get_user_admin_tenants(user_uid UUID)
+RETURNS SETOF UUID
+LANGUAGE SQL SECURITY DEFINER
+STABLE
+AS $$
+    SELECT tenant_id
+    FROM public.user_tenants
+    WHERE user_id = user_uid AND role = 'admin';
+$$;
+
+-- ユーザーが特定のテナントの管理者かどうかを確認するヘルパー関数
+CREATE OR REPLACE FUNCTION public.is_tenant_admin(tenant_uid UUID)
+RETURNS BOOLEAN
+LANGUAGE SQL SECURITY DEFINER
+STABLE
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.user_tenants
+        WHERE user_id = auth.uid() AND tenant_id = tenant_uid AND role = 'admin'
+    );
+$$;
+
 -- ユーザーテナント関連のポリシー（適切なアクセス制御）
 -- 1. ユーザーは自分自身のテナントメンバーシップを閲覧可能
 CREATE POLICY "Users can view own tenant memberships"
@@ -17,14 +53,7 @@ ON public.user_tenants
 FOR SELECT
 TO authenticated
 USING (
-    EXISTS (
-        SELECT 1
-        FROM public.user_tenants ut
-        WHERE 
-            ut.user_id = auth.uid() 
-            AND ut.role = 'admin'
-            AND ut.tenant_id = user_tenants.tenant_id
-    )
+    tenant_id IN (SELECT public.get_user_admin_tenants(auth.uid()))
 );
 
 -- 3. 管理者は自分のテナントのユーザー関係を追加可能
@@ -33,14 +62,7 @@ ON public.user_tenants
 FOR INSERT
 TO authenticated
 WITH CHECK (
-    EXISTS (
-        SELECT 1
-        FROM public.user_tenants ut
-        WHERE 
-            ut.user_id = auth.uid() 
-            AND ut.role = 'admin'
-            AND ut.tenant_id = user_tenants.tenant_id
-    )
+    tenant_id IN (SELECT public.get_user_admin_tenants(auth.uid()))
 );
 
 -- 4. 管理者は自分のテナントのユーザー関係を更新可能
@@ -49,24 +71,10 @@ ON public.user_tenants
 FOR UPDATE
 TO authenticated
 USING (
-    EXISTS (
-        SELECT 1
-        FROM public.user_tenants ut
-        WHERE 
-            ut.user_id = auth.uid() 
-            AND ut.role = 'admin'
-            AND ut.tenant_id = user_tenants.tenant_id
-    )
+    tenant_id IN (SELECT public.get_user_admin_tenants(auth.uid()))
 )
 WITH CHECK (
-    EXISTS (
-        SELECT 1
-        FROM public.user_tenants ut
-        WHERE 
-            ut.user_id = auth.uid() 
-            AND ut.role = 'admin'
-            AND ut.tenant_id = user_tenants.tenant_id
-    )
+    tenant_id IN (SELECT public.get_user_admin_tenants(auth.uid()))
 );
 
 -- 5. 管理者は自分のテナントのユーザー関係を削除可能
@@ -75,14 +83,7 @@ ON public.user_tenants
 FOR DELETE
 TO authenticated
 USING (
-    EXISTS (
-        SELECT 1
-        FROM public.user_tenants ut
-        WHERE 
-            ut.user_id = auth.uid() 
-            AND ut.role = 'admin'
-            AND ut.tenant_id = user_tenants.tenant_id
-    )
+    tenant_id IN (SELECT public.get_user_admin_tenants(auth.uid()))
 );
 
 -- コンテンツモデル関連のポリシー

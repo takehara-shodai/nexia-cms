@@ -2,7 +2,7 @@ export interface ContentModel {
   id: string;
   tenant_id: string | null;
   name: string;
-  slug: string;
+  slug: string | null; // スラッグをnull許容に変更
   description?: string;
   settings: Record<string, unknown>;
   created_at?: string;

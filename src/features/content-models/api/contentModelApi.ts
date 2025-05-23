@@ -18,9 +18,11 @@ export async function createContentModel(
     }
   }
 
-  // Generate slug if not provided
+  // スラッグは空文字列の場合、一時的に空文字列を使用（DBがNULL許容になるまで）
   if (!model.slug) {
-    model.slug = model.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    // DBにNOT NULL制約がある間は空文字列をセット
+    model.slug = '';
+    // マイグレーション適用後にnullに戻す: model.slug = null;
   }
 
   // Start a transaction by using a single supabase call
@@ -82,6 +84,13 @@ export async function updateContentModel(
   model: Partial<ContentModel>,
   fields: Omit<ContentField, 'id' | 'model_id' | 'created_at' | 'updated_at'>[]
 ): Promise<ContentModel> {
+  // スラッグは空文字列の場合、一時的に空文字列を使用（DBがNULL許容になるまで）
+  if (!model.slug) {
+    // DBにNOT NULL制約がある間は空文字列をセット
+    model.slug = '';
+    // マイグレーション適用後にnullに戻す: model.slug = null;
+  }
+  
   // Update model
   const { data: updatedModel, error: modelError } = await supabase
     .from('nexia_cms_content_models')
@@ -116,4 +125,16 @@ export async function updateContentModel(
   }
 
   return updatedModel;
+}
+
+export async function deleteContentModel(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('nexia_cms_content_models')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting content model:', error);
+    throw error;
+  }
 }

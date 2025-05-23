@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
 import { ContentModel, ContentField } from '@/features/content-models/types';
-import { createContentModel, updateContentModel, fetchContentModels, fetchContentFields } from '@/features/content-models/api/contentModelApi';
-import { ContentModelForm } from '@/features/content-models/ui/ContentModelForm';
+import { fetchContentModels, fetchContentFields, deleteContentModel, createContentModel, updateContentModel } from '@/features/content-models/api/contentModelApi';
 import { toast } from 'sonner';
+import { useModal } from '@/shared/contexts/modal/hooks';
+import { ContentModelForm, FormControlHandle } from '@/features/content-models/ui/ContentModelForm';
+import { Button } from '@/shared/ui/atoms/Button';
 
 const ContentModels: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
+  const { showModal, hideModal } = useModal();
   const [models, setModels] = useState<ContentModel[]>([]);
   const [modelFields, setModelFields] = useState<Record<string, ContentField[]>>({});
   const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [editingModel, setEditingModel] = useState<ContentModel | null>(null);
-  const [editingFields, setEditingFields] = useState<ContentField[]>([]);
+  
+  // コンポーネントのトップレベルで formRef を定義
+  const formRef = React.useRef<FormControlHandle>(null);
 
   useEffect(() => {
     loadModels();
@@ -39,46 +42,155 @@ const ContentModels: React.FC = () => {
     }
   };
 
-  const handleSaveModel = async (
-    model: Omit<ContentModel, 'id'>,
-    fields: Omit<ContentField, 'id' | 'model_id'>[]
-  ) => {
-    try {
-      if (editingModel) {
-        await updateContentModel(editingModel.id, model, fields);
-        toast.success('コンテンツモデルを更新しました');
-      } else {
-        await createContentModel(model, fields);
-        toast.success('コンテンツモデルを作成しました');
-      }
-      setShowModal(false);
-      setEditingModel(null);
-      setEditingFields([]);
-      loadModels();
-    } catch (error) {
-      console.error('Error saving model:', error);
-      toast.error('コンテンツモデルの保存に失敗しました');
-    }
+  const handleCreateModel = () => {
+    const newModel = {
+      id: '',
+      tenant_id: null,
+      name: '',
+      slug: '',
+      description: '',
+      settings: {},
+      created_at: '',
+      updated_at: '',
+    };
+    
+    // formRefはコンポーネントのトップレベルで定義済み
+    showModal({
+      title: '新規コンテンツモデル',
+      size: '4xl', // 幅を大きく設定
+      content: (
+        <div className="w-full">
+          <ContentModelForm
+            initialModel={newModel}
+            formRef={formRef}
+            onSubmit={async (model, fields) => {
+              try {
+                await createContentModel(model, fields);
+                toast.success('コンテンツモデルを作成しました');
+                loadModels();
+              } catch (error) {
+                console.error('Error creating model:', error);
+                toast.error('コンテンツモデルの作成に失敗しました');
+              } finally {
+                hideModal();
+              }
+            }}
+          />
+        </div>
+      ),
+      footer: (
+        <div className="w-full flex items-center justify-between">
+          <Button 
+            type="button" 
+            onClick={() => formRef.current?.addField()} 
+            variant="outline" 
+            size="sm"
+          >
+            <Plus size={16} className="mr-2" />
+            フィールドを追加
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => formRef.current?.submit()}
+            variant="primaryFilled"
+          >
+            保存
+          </Button>
+        </div>
+      ),
+    });
   };
 
   const handleEditModel = async (model: ContentModel) => {
     try {
       const fields = await fetchContentFields(model.id);
-      setEditingModel(model);
-      setEditingFields(fields);
-      setShowModal(true);
-      setActiveMenu(null);
+      
+      // formRefはコンポーネントのトップレベルで定義済み
+      showModal({
+        title: 'コンテンツモデルを編集',
+        size: '4xl', // 幅を大きく設定
+        content: (
+          <div className="w-full">
+            <ContentModelForm
+              initialModel={model}
+              initialFields={fields}
+              formRef={formRef}
+              onSubmit={async (updatedModel, updatedFields) => {
+                try {
+                  await updateContentModel(model.id, updatedModel, updatedFields);
+                  toast.success('コンテンツモデルを更新しました');
+                  loadModels();
+                } catch (error) {
+                  console.error('Error updating model:', error);
+                  toast.error('コンテンツモデルの更新に失敗しました');
+                } finally {
+                  hideModal();
+                }
+              }}
+            />
+          </div>
+        ),
+        footer: (
+          <div className="w-full flex items-center justify-between">
+            <Button 
+              type="button" 
+              onClick={() => formRef.current?.addField()} 
+              variant="outline" 
+              size="sm"
+            >
+              <Plus size={16} className="mr-2" />
+              フィールドを追加
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => formRef.current?.submit()}
+              variant="primaryFilled"
+            >
+              保存
+            </Button>
+          </div>
+        ),
+      });
     } catch (error) {
       console.error('Error loading fields:', error);
       toast.error('フィールドの読み込みに失敗しました');
     }
   };
 
-  const handleDeleteModel = (model: ContentModel) => {
-    // Handle delete
-    console.log('Delete model:', model);
-    setActiveMenu(null);
-  };
+  const handleDeleteModel = useCallback((model: ContentModel) => {
+    showModal({
+      title: `「${model.name}」を削除しますか？`,
+      size: 'md', // 標準サイズ
+      content: 'この操作は取り消せません。',
+      footer: (
+        <>
+          <button
+            onClick={hideModal} // Close modal
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            キャンセル
+          </button>
+          <button
+            onClick={async () => {
+              try {
+                await deleteContentModel(model.id);
+                toast.success('コンテンツモデルを削除しました');
+                loadModels();
+              } catch (error) {
+                console.error('Error deleting model:', error);
+                toast.error('コンテンツモデルの削除に失敗しました');
+              } finally {
+                hideModal(); // Close modal
+              }
+            }}
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+          >
+            削除
+          </button>
+        </>
+      ),
+    });
+  }, [showModal, hideModal, loadModels]);
 
   const getFieldIcon = (type: string) => {
     switch (type) {
@@ -97,12 +209,6 @@ const ContentModels: React.FC = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEditingModel(null);
-    setEditingFields([]);
-  };
-
   return (
     <div className="fade-in">
       <div className="flex justify-between items-center mb-6">
@@ -111,7 +217,7 @@ const ContentModels: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400">コンテンツの構造を定義・管理します</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={handleCreateModel}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
@@ -169,14 +275,20 @@ const ContentModels: React.FC = () => {
                   {activeMenu === model.id && (
                     <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10">
                       <button
-                        onClick={() => handleEditModel(model)}
+                        onClick={() => {
+                          handleEditModel(model);
+                          setActiveMenu(null); // ドロップダウンメニューを閉じる
+                        }}
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                       >
                         <Pencil size={16} />
                         <span>編集</span>
                       </button>
                       <button
-                        onClick={() => handleDeleteModel(model)}
+                        onClick={() => {
+                          handleDeleteModel(model);
+                          setActiveMenu(null); // ドロップダウンメニューを閉じる
+                        }}
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600 dark:text-red-400"
                       >
                         <Trash size={16} />
@@ -213,27 +325,7 @@ const ContentModels: React.FC = () => {
         </div>
       )}
 
-      {/* Create/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={handleCloseModal}
-          ></div>
-          <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl m-4">
-            <div className="p-6">
-              <h2 className="text-xl font-bold mb-4">
-                {editingModel ? 'コンテンツモデルを編集' : '新規コンテンツモデル'}
-              </h2>
-              <ContentModelForm 
-                onSubmit={handleSaveModel} 
-                initialModel={editingModel}
-                initialFields={editingFields}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 不要なモーダルセクションを削除 */}
     </div>
   );
 };

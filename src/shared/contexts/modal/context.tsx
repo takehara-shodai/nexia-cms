@@ -23,6 +23,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
         onClose={hideModal}
         title={modalProps?.title}
         footer={modalProps?.footer}
+        size={modalProps?.size || 'md'}
       >
         {modalProps?.content}
       </Modal>
