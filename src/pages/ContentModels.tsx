@@ -72,9 +72,10 @@ const ContentModels: React.FC = () => {
             onClick={() => formRef.current?.addField()} 
             variant="outline" 
             size="sm"
+            className="flex items-center"
           >
-            <Plus size={16} className="mr-2" />
-            フィールドを追加
+            <Plus size={16} className="mr-0 sm:mr-2" />
+            <span className="hidden sm:inline">フィールドを追加</span>
           </Button>
           <Button 
             type="button" 
@@ -127,9 +128,10 @@ const ContentModels: React.FC = () => {
             onClick={() => formRef.current?.addField()} 
             variant="outline" 
             size="sm"
+            className="flex items-center"
           >
-            <Plus size={16} className="mr-2" />
-            フィールドを追加
+            <Plus size={16} className="mr-0 sm:mr-2" />
+            <span className="hidden sm:inline">フィールドを追加</span>
           </Button>
           <Button 
             type="button" 
@@ -204,10 +206,10 @@ const ContentModels: React.FC = () => {
         </div>
         <button
           onClick={handleCreateModel}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-2 rounded-lg flex items-center justify-center md:gap-2 transition-colors"
         >
           <Plus size={20} />
-          <span>新規モデル</span>
+          <span className="hidden md:inline">新規モデル</span>
         </button>
       </div>
 
@@ -227,9 +229,9 @@ const ContentModels: React.FC = () => {
               />
             </div>
           </div>
-          <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
             <Filter size={20} />
-            <span>フィルター</span>
+            <span className="hidden sm:inline">フィルター</span>
           </button>
         </div>
       </div>
