@@ -37,7 +37,13 @@ export async function createContentModel(
 
   // Create fields with the model_id
   if (fields.length > 0) {
-    const fieldsWithModelId = fields.map((field, index) => ({
+    // フィールドをorder_position順でソート
+    const sortedFields = [...fields].sort((a, b) => {
+      return (a.order_position || 0) - (b.order_position || 0);
+    });
+    
+    // 明示的に順番を付け直す
+    const fieldsWithModelId = sortedFields.map((field, index) => ({
       ...field,
       model_id: createdModel.id,
       order_position: index,
@@ -60,7 +66,7 @@ export async function fetchContentModels(): Promise<ContentModel[]> {
   const { data, error } = await supabase
     .from('nexia_cms_content_models')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false });  // created_atの降順でソート
 
   if (error) throw error;
   return data;
@@ -71,7 +77,7 @@ export async function fetchContentFields(modelId: string): Promise<ContentField[
     .from('nexia_cms_content_fields')
     .select('*')
     .eq('model_id', modelId)
-    .order('order_position', { ascending: true });
+    .order('order_position', { ascending: true }); // order_positionを最優先でソート
 
   if (error) throw error;
   return data;
@@ -82,20 +88,40 @@ export async function updateContentModel(
   model: Partial<ContentModel>,
   fields: ContentField[]
 ): Promise<ContentModel> {
-  // スラッグが空文字列の場合はnullに設定
-  if (model.slug !== undefined && model.slug?.trim() === '') {
-    model.slug = null;
-  }
+  // モデルの内容が実際に変更されているか確認する
+  // name、description、slugなど実際のモデル情報に変更がある場合のみ、モデルを更新
+  const hasModelChanges = Object.keys(model).length > 0 && 
+    (model.name !== undefined || model.description !== undefined || model.slug !== undefined || model.settings !== undefined);
   
-  // Update model
-  const { data: updatedModel, error: modelError } = await supabase
-    .from('nexia_cms_content_models')
-    .update(model)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (modelError) throw modelError;
+  let updatedModel: ContentModel;
+    
+  // モデル自体に変更がある場合のみ更新処理を実行
+  if (hasModelChanges) {
+    // スラッグが空文字列の場合はnullに設定
+    if (model.slug !== undefined && model.slug?.trim() === '') {
+      model.slug = null;
+    }
+    
+    const { data, error: modelError } = await supabase
+      .from('nexia_cms_content_models')
+      .update(model)
+      .eq('id', id)
+      .select()
+      .single();
+      
+    if (modelError) throw modelError;
+    updatedModel = data;
+  } else {
+    // モデル自体に変更がない場合は、現在のモデルデータを取得するだけ
+    const { data, error: fetchError } = await supabase
+      .from('nexia_cms_content_models')
+      .select('*')
+      .eq('id', id)
+      .single();
+      
+    if (fetchError) throw fetchError;
+    updatedModel = data;
+  }
 
   // 既存のフィールドを取得
   const { data: existingFields, error: fetchError } = await supabase

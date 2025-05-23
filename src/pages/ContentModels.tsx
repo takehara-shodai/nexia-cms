@@ -105,10 +105,33 @@ const ContentModels: React.FC = () => {
             formRef={formRef}
             onSubmit={async (updatedModel, updatedFields) => {
               try {
+                // モデル自体に変更があるか確認（名前、説明、スラッグなど）
+                const hasModelChanges = 
+                  model.name !== updatedModel.name || 
+                  model.description !== updatedModel.description || 
+                  model.slug !== updatedModel.slug;
+                
+                // モデルに変更がない場合は空オブジェクトを送信
+                // APIでは空オブジェクトを受け取ると更新しない
+                const modelToUpdate = hasModelChanges ? updatedModel : {};
+                
+                // 既存フィールドの情報を保持しながら更新
+                const fieldsWithOrderInfo = updatedFields.map(field => {
+                  // 既存フィールドの場合は、元のcreated_atを維持する
+                  const originalField = fields.find(f => f.id === field.id);
+                  if (originalField) {
+                    return {
+                      ...field,
+                      created_at: originalField.created_at || field.created_at,
+                    };
+                  }
+                  return field;
+                });
+
                 await updateModel.mutateAsync({ 
                   id: model.id, 
-                  model: updatedModel, 
-                  fields: updatedFields 
+                  model: modelToUpdate, 
+                  fields: fieldsWithOrderInfo
                 });
                 toast.success('コンテンツモデルを更新しました');
                 // React Queryが自動的にデータを更新
@@ -288,7 +311,9 @@ const ContentModels: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {modelFields[model.id]?.map((field: ContentField) => (
+                {modelFields[model.id]
+                  ?.sort((a, b) => (a.order_position || 0) - (b.order_position || 0)) // 必ず表示順をorder_positionでソート
+                  .map((field: ContentField) => (
                   <div key={field.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
                       {getFieldIcon(field.type)}
@@ -303,10 +328,10 @@ const ContentModels: React.FC = () => {
                 ))}
               </div>
 
-              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                作成日: {new Date(model.created_at!).toLocaleDateString()} 
-                更新日: {new Date(model.updated_at!).toLocaleDateString()} 
-                フィールド数: {modelFields[model.id]?.length || 0}
+              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400 flex gap-4">
+                <span>作成日: {new Date(model.created_at!).toLocaleDateString('ja-JP')}</span>
+                <span>更新日: {new Date(model.updated_at!).toLocaleDateString('ja-JP')}</span>
+                <span>フィールド数: {modelFields[model.id]?.length || 0}</span>
               </div>
             </div>
           ))}

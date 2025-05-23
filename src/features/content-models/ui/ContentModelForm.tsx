@@ -19,6 +19,43 @@ interface FieldSettingsModalProps {
   isEditing: boolean;
 }
 
+// フィールドタイプに応じたデフォルト設定を取得する関数
+const getDefaultSettings = (type: FieldType): Record<string, unknown> => {
+  switch (type) {
+    case 'text':
+      return {
+        minLength: undefined,
+        maxLength: undefined,
+        defaultValue: '',
+      };
+    case 'number':
+      return {
+        min: undefined,
+        max: undefined,
+        step: 1,
+      };
+    case 'date':
+      return {
+        format: 'YYYY-MM-DD',
+      };
+    case 'array':
+      return {
+        options: [],
+        multiple: false,
+      };
+    case 'relation':
+      return {
+        relationModel: '',
+      };
+    case 'json':
+    case 'boolean':
+    case 'image':
+    case 'richtext':
+    default:
+      return {};
+  }
+};
+
 function FieldSettingsModal({ field, isOpen, onClose, onSave, isEditing }: FieldSettingsModalProps) {
   const [editingField, setEditingField] = useState<ContentField>(field);
 
@@ -325,9 +362,15 @@ function FieldSettingsModal({ field, isOpen, onClose, onSave, isEditing }: Field
               <select
                 id="field-type-edit"
                 value={editingField.type}
-                onChange={(e) =>
-                  setEditingField({ ...editingField, type: e.target.value as FieldType })
-                }
+                onChange={(e) => {
+                  const newType = e.target.value as FieldType;
+                  // タイプが変更されたら適切なデフォルト設定で初期化する
+                  setEditingField({
+                    ...editingField,
+                    type: newType,
+                    settings: getDefaultSettings(newType)
+                  });
+                }}
                 className="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 appearance-none"
               >
                 <option value="text">テキスト</option>
@@ -387,7 +430,7 @@ interface ContentModelFormProps {
   formRef?: React.RefObject<FormControlHandle>;
 }
 
-function SortableField({ field, index, onFieldChange, onRemoveField, onOpenSettings }: any) {
+function SortableField({ field, index, onFieldChange, onRemoveField, onOpenSettings, isEditing = false }: any) {
   const {
     attributes,
     listeners,
@@ -429,10 +472,11 @@ function SortableField({ field, index, onFieldChange, onRemoveField, onOpenSetti
             >
               {field.required ? '必須' : 'オプション'}
             </button>
+            {/* 編集モードでのみ設定アイコンを表示 */}
             <button
               type="button"
               onClick={() => onOpenSettings(field, index)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors ${!isEditing ? 'hidden' : ''}`}
             >
               <Settings size={18} />
             </button>
@@ -464,7 +508,14 @@ function SortableField({ field, index, onFieldChange, onRemoveField, onOpenSetti
               <select
                 id={`field-type-${index}`}
                 value={field.type}
-                onChange={e => onFieldChange(index, { type: e.target.value as FieldType })}
+                onChange={e => {
+                  const newType = e.target.value as FieldType;
+                  // タイプが変更されたら適切なデフォルト設定で初期化する
+                  onFieldChange(index, {
+                    type: newType,
+                    settings: getDefaultSettings(newType)
+                  });
+                }}
                 className="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 appearance-none text-sm"
               >
                 <option value="text">テキスト</option>
@@ -517,32 +568,66 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
     }
     if (initialFields) {
       // 既存のフィールドを正しく扱うために、initialFieldsを完全なContentFieldとして扱う
-      setFields(initialFields as ContentField[]);
+      // 常にorder_position順でソートし、これを最優先の並び順とする
+      const sortedFields = [...initialFields]
+        .sort((a, b) => {
+          return (a.order_position || 0) - (b.order_position || 0);
+        }) as ContentField[];
+      
+      // order_positionが明示的に保持されるよう、各フィールドに値を設定
+      const fieldsWithExplicitOrder = sortedFields.map((field, index) => ({
+        ...field,
+        order_position: index
+      }));
+      
+      setFields(fieldsWithExplicitOrder);
     }
   }, [initialModel, initialFields]);
 
   // 外部からアクセスできるようにする
   const handleAddField = useCallback(() => {
-    setFields(prevFields => [
-      ...prevFields,
-      {
-        id: `temp-${new Date().getTime()}-${prevFields.length}`, // 一時的なIDを作成
-        name: '',
-        type: 'text',
-        required: false,
-        settings: {},
-        order_position: prevFields.length,
-        model_id: '', // Will be set after model creation
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const now = new Date().toISOString();
+    
+    setFields(prevFields => {
+      // 既存フィールドの最大order_positionを取得
+      const maxOrderPosition = prevFields.length > 0
+        ? Math.max(...prevFields.map(field => field.order_position || 0))
+        : -1;
+      
+      return [
+        ...prevFields,
+        {
+          id: `temp-${new Date().getTime()}-${prevFields.length}`, // 一時的なIDを作成
+          name: '',
+          type: 'text',
+          required: false,
+          settings: {},
+          order_position: maxOrderPosition + 1, // 最大値+1で追加して確実に最後に配置
+          model_id: '', // Will be set after model creation
+          created_at: now,
+          updated_at: now,
+        }
+      ];
+    });
   }, []);
 
   // handleSubmit関数を先に定義
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(model, fields);
+    
+    // フィールドをorder_positionで明示的に並び替える
+    // これにより、常に表示されている順序と同じ順序でAPIに送られる
+    const sortedFields = [...fields].sort((a, b) => {
+      return (a.order_position || 0) - (b.order_position || 0);
+    });
+    
+    // 念のため、order_positionを再度確実に設定
+    const fieldsWithExplicitOrder = sortedFields.map((field, index) => ({
+      ...field,
+      order_position: index
+    }));
+    
+    await onSubmit(model, fieldsWithExplicitOrder);
   }, [onSubmit, model, fields]);
 
   // フォームのコントローラーを外部に公開
@@ -567,7 +652,22 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
   );
 
   const handleFieldChange = (index: number, field: Partial<ContentField>) => {
-    setFields(fields.map((f, i) => (i === index ? { ...f, ...field } : f)));
+    setFields(fields.map((f, i) => {
+      if (i === index) {
+        // 設定オブジェクトがある場合は、既存の設定とマージする
+        const settings = field.settings 
+          ? { ...f.settings, ...field.settings } 
+          : f.settings;
+          
+        return { 
+          ...f, 
+          ...field,
+          // 設定が明示的に渡されたかに関わらず、常に設定を含める
+          settings 
+        };
+      }
+      return f;
+    }));
   };
 
   const handleRemoveField = (index: number) => {
@@ -586,12 +686,16 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
       const [movedField] = newFields.splice(oldIndex, 1);
       newFields.splice(newIndex, 0, movedField);
       
-      setFields(
-        newFields.map((field, index) => ({
-          ...field,
-          order_position: index,
-        }))
-      );
+      // 順序を保持するためにorder_positionを更新し、これを最優先にする
+      const updatedFields = newFields.map((field, index) => ({
+        ...field,
+        order_position: index, // order_positionで明示的に順序を指定
+        // 更新日時も更新して、変更を記録
+        updated_at: new Date().toISOString()
+      }));
+      
+      // 並び順を優先するために状態を完全に置き換え
+      setFields(updatedFields);
     }
   };
 
@@ -686,6 +790,7 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
                     onFieldChange={handleFieldChange}
                     onRemoveField={handleRemoveField}
                     onOpenSettings={openSettingsModal}
+                    isEditing={initialModel !== null && initialModel !== undefined}
                   />
                 ))}
               </div>
