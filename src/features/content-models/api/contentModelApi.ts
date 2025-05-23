@@ -18,11 +18,9 @@ export async function createContentModel(
     }
   }
 
-  // スラッグは空文字列の場合、一時的に空文字列を使用（DBがNULL許容になるまで）
-  if (!model.slug) {
-    // DBにNOT NULL制約がある間は空文字列をセット
-    model.slug = '';
-    // マイグレーション適用後にnullに戻す: model.slug = null;
+  // スラッグが空文字列の場合はnullに設定
+  if (model.slug !== undefined && model.slug?.trim() === '') {
+    model.slug = null;
   }
 
   // Start a transaction by using a single supabase call
@@ -84,11 +82,9 @@ export async function updateContentModel(
   model: Partial<ContentModel>,
   fields: Omit<ContentField, 'id' | 'model_id' | 'created_at' | 'updated_at'>[]
 ): Promise<ContentModel> {
-  // スラッグは空文字列の場合、一時的に空文字列を使用（DBがNULL許容になるまで）
-  if (!model.slug) {
-    // DBにNOT NULL制約がある間は空文字列をセット
-    model.slug = '';
-    // マイグレーション適用後にnullに戻す: model.slug = null;
+  // スラッグが空文字列の場合はnullに設定
+  if (model.slug !== undefined && model.slug?.trim() === '') {
+    model.slug = null;
   }
   
   // Update model

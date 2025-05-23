@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/shared/contexts/theme';
 import { ModalProvider } from '@/shared/contexts/modal';
+import { QueryProvider } from '@/app/providers/QueryProvider';
 import { Toast } from '@/shared/ui/molecules/Toast';
 import { Layout } from '@/widgets/Layout/Layout';
 import Login from '@/pages/Login';
@@ -26,39 +27,41 @@ import './App.css';
 
 function App() {
   return (
-    <ThemeProvider>
-      <ModalProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="content" element={<ContentList />} />
-              <Route path="content/:id" element={<ContentDetail />} />
-              <Route path="content/new" element={<NewContentPage />} />
-              <Route path="models" element={<ContentModels />} />
-              <Route path="models/fields" element={<FieldSettings />} />
-              <Route path="models/relations" element={<RelationSettings />} />
-              <Route path="models/validation" element={<ValidationRules />} />
-              <Route path="models/components" element={<ComponentManagement />} />
-              <Route path="api" element={<ApiManagement />} />
-              <Route path="website" element={<WebsiteManagement />} />
-              <Route path="workflow" element={<WorkflowManagement />} />
-              <Route path="media" element={<MediaManagement />} />
-              <Route path="integrations" element={<IntegrationsManagement />} />
-              <Route path="analytics" element={<AnalyticsManagement />} />
-              <Route path="settings" element={<SettingsManagement />} />
-              <Route path="localization" element={<LocalizationManagement />} />
-            </Route>
-          </Routes>
-          <Toast />
-        </BrowserRouter>
-      </ModalProvider>
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider>
+        <ModalProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Dashboard />} />
+                <Route path="content" element={<ContentList />} />
+                <Route path="content/:id" element={<ContentDetail />} />
+                <Route path="content/new" element={<NewContentPage />} />
+                <Route path="models" element={<ContentModels />} />
+                <Route path="models/fields" element={<FieldSettings />} />
+                <Route path="models/relations" element={<RelationSettings />} />
+                <Route path="models/validation" element={<ValidationRules />} />
+                <Route path="models/components" element={<ComponentManagement />} />
+                <Route path="api" element={<ApiManagement />} />
+                <Route path="website" element={<WebsiteManagement />} />
+                <Route path="workflow" element={<WorkflowManagement />} />
+                <Route path="media" element={<MediaManagement />} />
+                <Route path="integrations" element={<IntegrationsManagement />} />
+                <Route path="analytics" element={<AnalyticsManagement />} />
+                <Route path="settings" element={<SettingsManagement />} />
+                <Route path="localization" element={<LocalizationManagement />} />
+              </Route>
+            </Routes>
+            <Toast />
+          </BrowserRouter>
+        </ModalProvider>
+      </ThemeProvider>
+    </QueryProvider>
   );
 }
 

@@ -1,46 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Plus, Search, Filter, MoreVertical, Text, Hash, Calendar, Image, List, Pencil, Trash } from 'lucide-react';
 import { ContentModel, ContentField } from '@/features/content-models/types';
-import { fetchContentModels, fetchContentFields, deleteContentModel, createContentModel, updateContentModel } from '@/features/content-models/api/contentModelApi';
 import { toast } from 'sonner';
 import { useModal } from '@/shared/contexts/modal/hooks';
 import { ContentModelForm, FormControlHandle } from '@/features/content-models/ui/ContentModelForm';
 import { Button } from '@/shared/ui/atoms/Button';
+import { useContentModels, useAllContentFields, useCreateContentModel, useUpdateContentModel, useDeleteContentModel } from '@/features/content-models/api/hooks/useContentModels';
+
 
 const ContentModels: React.FC = () => {
   const { showModal, hideModal } = useModal();
-  const [models, setModels] = useState<ContentModel[]>([]);
-  const [modelFields, setModelFields] = useState<Record<string, ContentField[]>>({});
-  const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  
+  // React Queryフックを使用してデータを取得
+  const { data: models = [], isLoading: loading } = useContentModels();
+  
+  // モデルIDの配列を取得
+  const modelIds = models.map(model => model.id);
+  
+  // すべてのモデルのフィールドをキャッシュ付きで一括取得
+  const { data: modelFields = {} } = useAllContentFields(modelIds);
+  
+  // ミューテーションフックを取得
+  const createModel = useCreateContentModel();
+  const updateModel = useUpdateContentModel();
+  const deleteModel = useDeleteContentModel();
   
   // コンポーネントのトップレベルで formRef を定義
   const formRef = React.useRef<FormControlHandle>(null);
-
-  useEffect(() => {
-    loadModels();
-  }, []);
-
-  const loadModels = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchContentModels();
-      setModels(data);
-
-      // Fetch fields for each model
-      const fieldsPromises = data.map(model => 
-        fetchContentFields(model.id).then(fields => [model.id, fields])
-      );
-      const fieldsData = await Promise.all(fieldsPromises);
-      const fieldsMap = Object.fromEntries(fieldsData);
-      setModelFields(fieldsMap);
-    } catch (error) {
-      console.error('Error loading models:', error);
-      toast.error('モデルの読み込みに失敗しました');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreateModel = () => {
     const newModel = {
@@ -65,9 +52,9 @@ const ContentModels: React.FC = () => {
             formRef={formRef}
             onSubmit={async (model, fields) => {
               try {
-                await createContentModel(model, fields);
+                await createModel.mutateAsync({ model, fields });
                 toast.success('コンテンツモデルを作成しました');
-                loadModels();
+                // React Queryが自動的にデータを更新
               } catch (error) {
                 console.error('Error creating model:', error);
                 toast.error('コンテンツモデルの作成に失敗しました');
@@ -101,60 +88,59 @@ const ContentModels: React.FC = () => {
     });
   };
 
-  const handleEditModel = async (model: ContentModel) => {
-    try {
-      const fields = await fetchContentFields(model.id);
-      
-      // formRefはコンポーネントのトップレベルで定義済み
-      showModal({
-        title: 'コンテンツモデルを編集',
-        size: '4xl', // 幅を大きく設定
-        content: (
-          <div className="w-full">
-            <ContentModelForm
-              initialModel={model}
-              initialFields={fields}
-              formRef={formRef}
-              onSubmit={async (updatedModel, updatedFields) => {
-                try {
-                  await updateContentModel(model.id, updatedModel, updatedFields);
-                  toast.success('コンテンツモデルを更新しました');
-                  loadModels();
-                } catch (error) {
-                  console.error('Error updating model:', error);
-                  toast.error('コンテンツモデルの更新に失敗しました');
-                } finally {
-                  hideModal();
-                }
-              }}
-            />
-          </div>
-        ),
-        footer: (
-          <div className="w-full flex items-center justify-between">
-            <Button 
-              type="button" 
-              onClick={() => formRef.current?.addField()} 
-              variant="outline" 
-              size="sm"
-            >
-              <Plus size={16} className="mr-2" />
-              フィールドを追加
-            </Button>
-            <Button 
-              type="button" 
-              onClick={() => formRef.current?.submit()}
-              variant="primaryFilled"
-            >
-              保存
-            </Button>
-          </div>
-        ),
-      });
-    } catch (error) {
-      console.error('Error loading fields:', error);
-      toast.error('フィールドの読み込みに失敗しました');
-    }
+  const handleEditModel = (model: ContentModel) => {
+    // キャッシュからフィールドを取得
+    const fields = modelFields[model.id] || [];
+    
+    // formRefはコンポーネントのトップレベルで定義済み
+    showModal({
+      title: 'コンテンツモデルを編集',
+      size: '4xl', // 幅を大きく設定
+      content: (
+        <div className="w-full">
+          <ContentModelForm
+            initialModel={model}
+            initialFields={fields}
+            formRef={formRef}
+            onSubmit={async (updatedModel, updatedFields) => {
+              try {
+                await updateModel.mutateAsync({ 
+                  id: model.id, 
+                  model: updatedModel, 
+                  fields: updatedFields 
+                });
+                toast.success('コンテンツモデルを更新しました');
+                // React Queryが自動的にデータを更新
+              } catch (error) {
+                console.error('Error updating model:', error);
+                toast.error('コンテンツモデルの更新に失敗しました');
+              } finally {
+                hideModal();
+              }
+            }}
+          />
+        </div>
+      ),      footer: (
+        <div className="w-full flex items-center justify-between">
+          <Button 
+            type="button" 
+            onClick={() => formRef.current?.addField()} 
+            variant="outline" 
+            size="sm"
+          >
+            <Plus size={16} className="mr-2" />
+            フィールドを追加
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => formRef.current?.submit()}
+            variant="primaryFilled"
+          >
+            保存
+          </Button>
+        </div>
+      ),
+    });
   };
 
   const handleDeleteModel = useCallback((model: ContentModel) => {
@@ -173,9 +159,9 @@ const ContentModels: React.FC = () => {
           <button
             onClick={async () => {
               try {
-                await deleteContentModel(model.id);
+                await deleteModel.mutateAsync(model.id);
                 toast.success('コンテンツモデルを削除しました');
-                loadModels();
+                // React Queryが自動的にデータを更新
               } catch (error) {
                 console.error('Error deleting model:', error);
                 toast.error('コンテンツモデルの削除に失敗しました');
@@ -190,7 +176,7 @@ const ContentModels: React.FC = () => {
         </>
       ),
     });
-  }, [showModal, hideModal, loadModels]);
+  }, [showModal, hideModal, deleteModel]);
 
   const getFieldIcon = (type: string) => {
     switch (type) {
@@ -300,7 +286,7 @@ const ContentModels: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {modelFields[model.id]?.map(field => (
+                {modelFields[model.id]?.map((field: ContentField) => (
                   <div key={field.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <div className="p-2 bg-white dark:bg-gray-700 rounded-md">
                       {getFieldIcon(field.type)}

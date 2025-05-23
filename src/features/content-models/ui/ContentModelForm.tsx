@@ -224,7 +224,23 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
           <Input
             id="name"
             value={model.name}
-            onChange={e => setModel({ ...model, name: e.target.value })}
+            onChange={e => {
+              const name = e.target.value;
+              setModel({ ...model, name });
+              
+              // モデル名が入力され、スラッグが空の場合は自動生成する
+              if (name && (!model.slug || model.slug === '')) {
+                // スペースをハイフンに置き換え、小文字化し、特殊文字を削除
+                const autoSlug = name
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')
+                  .replace(/[^a-z0-9-]/g, '');
+                
+                if (autoSlug) {
+                  setModel(prev => ({ ...prev, slug: autoSlug }));
+                }
+              }
+            }}
             placeholder="例: ブログ記事"
             required
           />
@@ -238,7 +254,7 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
             placeholder="例: blog-posts"
             // required属性を削除
           />
-          <p className="text-xs text-gray-500 mt-1">任意項目です。空のままにするとスラッグなしで保存されます</p>
+          <p className="text-xs text-gray-500 mt-1">任意項目です。空のままにすると空として保存されます</p>
         </div>
       </div>
 
