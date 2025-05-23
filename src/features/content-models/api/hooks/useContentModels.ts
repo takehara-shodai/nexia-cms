@@ -35,7 +35,7 @@ export const useContentFields = (modelId: string) => {
 // 複数モデルのフィールド一覧を取得するフック
 export const useAllContentFields = (modelIds: string[]) => {
   return useQuery({
-    queryKey: ['allContentFields', modelIds],
+    queryKey: ['allContentFields', ...modelIds],
     queryFn: async () => {
       if (modelIds.length === 0) return {};
       
@@ -82,12 +82,13 @@ export const useUpdateContentModel = () => {
     }: { 
       id: string,
       model: Partial<ContentModel>, 
-      fields: Omit<ContentField, 'id' | 'model_id' | 'created_at' | 'updated_at'>[]
+      fields: ContentField[]
     }) => updateContentModel(id, model, fields),
     onSuccess: (_, variables) => {
       // 成功したらキャッシュを更新
       queryClient.invalidateQueries({ queryKey: [queryKeys.contentModels] });
       queryClient.invalidateQueries({ queryKey: queryKeys.contentFields(variables.id) });
+      queryClient.invalidateQueries({ queryKey: ['allContentFields'] });
     }
   });
 };

@@ -12,14 +12,14 @@ import { useAuth } from '@/shared/hooks/useAuth';
 
 export interface FormControlHandle {
   addField: () => void;
-  getFormData: () => { model: Omit<ContentModel, 'id'>; fields: Omit<ContentField, 'id'>[] };
+  getFormData: () => { model: Omit<ContentModel, 'id'>; fields: ContentField[] };
   submit: () => void;
 }
 
 interface ContentModelFormProps {
-  onSubmit: (model: Omit<ContentModel, 'id'>, fields: Omit<ContentField, 'id'>[]) => Promise<void>;
+  onSubmit: (model: Omit<ContentModel, 'id'>, fields: ContentField[]) => Promise<void>;
   initialModel?: ContentModel | null;
-  initialFields?: Omit<ContentField, 'id'>[];
+  initialFields?: ContentField[];
   formRef?: React.RefObject<FormControlHandle>;
 }
 
@@ -127,7 +127,7 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
     settings: {},
   });
 
-  const [fields, setFields] = useState<Omit<ContentField, 'id'>[]>([]);
+  const [fields, setFields] = useState<ContentField[]>([]);
 
   // Initialize form with initial data if provided
   useEffect(() => {
@@ -141,7 +141,8 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
       });
     }
     if (initialFields) {
-      setFields(initialFields);
+      // 既存のフィールドを正しく扱うために、initialFieldsを完全なContentFieldとして扱う
+      setFields(initialFields as ContentField[]);
     }
   }, [initialModel, initialFields]);
 
@@ -150,12 +151,15 @@ export function ContentModelForm({ onSubmit, initialModel, initialFields, formRe
     setFields(prevFields => [
       ...prevFields,
       {
+        id: `temp-${new Date().getTime()}-${prevFields.length}`, // 一時的なIDを作成
         name: '',
         type: 'text',
         required: false,
         settings: {},
         order_position: prevFields.length,
         model_id: '', // Will be set after model creation
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
     ]);
   }, []);

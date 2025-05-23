@@ -80,7 +80,7 @@ export async function fetchContentFields(modelId: string): Promise<ContentField[
 export async function updateContentModel(
   id: string,
   model: Partial<ContentModel>,
-  fields: Omit<ContentField, 'id' | 'model_id' | 'created_at' | 'updated_at'>[]
+  fields: ContentField[]
 ): Promise<ContentModel> {
   // スラッグが空文字列の場合はnullに設定
   if (model.slug !== undefined && model.slug?.trim() === '') {
@@ -97,27 +97,59 @@ export async function updateContentModel(
 
   if (modelError) throw modelError;
 
-  // Delete existing fields
-  const { error: deleteError } = await supabase
+  // 既存のフィールドを取得
+  const { data: existingFields, error: fetchError } = await supabase
     .from('nexia_cms_content_fields')
-    .delete()
+    .select('id')
     .eq('model_id', id);
 
-  if (deleteError) throw deleteError;
+  if (fetchError) throw fetchError;
 
-  // Create new fields
-  if (fields.length > 0) {
-    const fieldsWithModelId = fields.map((field, index) => ({
-      ...field,
+  // フィールドを既存のものと新規のものに分ける
+  const existingFieldIds = existingFields.map(f => f.id);
+  const fieldsToUpdate = fields.filter(f => f.id && existingFieldIds.includes(f.id));
+  const fieldsToCreate = fields.filter(f => !f.id || !existingFieldIds.includes(f.id));
+  const fieldsToDelete = existingFieldIds.filter(
+    existingId => !fields.some(f => f.id === existingId)
+  );
+
+  // 削除するフィールドがあれば削除
+  if (fieldsToDelete.length > 0) {
+    const { error: deleteError } = await supabase
+      .from('nexia_cms_content_fields')
+      .delete()
+      .in('id', fieldsToDelete);
+
+    if (deleteError) throw deleteError;
+  }
+
+  // 更新するフィールドがあれば更新
+  for (const field of fieldsToUpdate) {
+    const { name, type, required, settings, order_position } = field;
+    const { error: updateError } = await supabase
+      .from('nexia_cms_content_fields')
+      .update({ name, type, required, settings, order_position })
+      .eq('id', field.id);
+
+    if (updateError) throw updateError;
+  }
+
+  // 新規作成するフィールドがあれば作成
+  if (fieldsToCreate.length > 0) {
+    const newFieldsData = fieldsToCreate.map(field => ({
       model_id: id,
-      order_position: index,
+      name: field.name,
+      type: field.type,
+      required: field.required,
+      settings: field.settings,
+      order_position: field.order_position,
     }));
 
-    const { error: fieldsError } = await supabase
+    const { error: createError } = await supabase
       .from('nexia_cms_content_fields')
-      .insert(fieldsWithModelId);
+      .insert(newFieldsData);
 
-    if (fieldsError) throw fieldsError;
+    if (createError) throw createError;
   }
 
   return updatedModel;
