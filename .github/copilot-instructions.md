@@ -104,10 +104,25 @@ tests/                         # グローバルテスト設定 & E2E
 3. 共通 util・hook は `shared/` に抽出  
 4. import は `@/` エイリアスで **絶対パス**  
 5. **ESLint / Prettier / Markuplint** を CI で強制
+6. React.FC は非推奨 — 代わりに通常の関数コンポーネント＋明示的な Props 型を用いる
+7. 明示指示なく UI を変更しない — 問題点の指摘や修正案はコメントで提案すること
 
 ---
 
-## 6. エラー & i18n
+## 6. DB命名規則、権限管理
+1. システム共通テーブル: プレフィックスなし
+  - 例: tenants, settings, users, departments
+2. アプリ固有テーブル: nexia_xxx_テーブル名
+  - 例: nexia_cms_customers, nexia_cms_models
+3. 権限管理システム
+  - Role-Based Access Control (RBAC)
+  - Attribute-Based Access Control (ABAC)
+  - Row Level Security (RLS)による強力なデータ分離
+  - public schemaのtableに対してRLSポリシーを実装して、テナント間のデータ分離を確保（マルチテナント環境）
+
+---
+
+## 7. エラー & i18n
 
 - API エラー共通処理 : `shared/api/error.ts`  
 - 文言・ルート定数 : `shared/constants/*`  
@@ -115,7 +130,12 @@ tests/                         # グローバルテスト設定 & E2E
 
 ---
 
-## 7. テスト最小ライン
+## 8. npmコマンドに関する注意事項
+
+- Dockerで起動しているため、docker exec nexia-cms-app-1 npm ... で実行
+
+---
+## 9. テスト最小ライン
 
 | 種別      | ツール                  | 対象ディレクトリ          |
 |-----------|-------------------------|---------------------------|
